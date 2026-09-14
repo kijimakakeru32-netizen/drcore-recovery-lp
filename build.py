@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from pathlib import Path
 import html, json, re
+import hashlib
 from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parent
@@ -21,8 +22,23 @@ def cta(store, position, extra=''):
 def shops(base):
     cards = ''
     for slug,s in STORES.items():
-        cards += f'''<a class="shop-card" href="{base}gyms/{slug}/" data-store-link="{s['name']}"><span class="shop-card__area">{s['area']}</span><div class="shop-card__title"><h3>{s['name']}</h3><span aria-hidden="true">↗</span></div><p class="shop-card__en" lang="en">{s['en']}</p><p>{s['address']}<br>{s['building']}</p><p class="shop-card__access">{s['access']}</p><span class="shop-card__link">店舗の詳細・体験予約<span aria-hidden="true">→</span></span></a>'''
-    return f'<section class="sec shoplist" id="shoplist"><div class="wrap"><p class="eyebrow">Shop list</p><h2 class="h2">あなたの街の、Dr.core。</h2><p class="shoplist__lead">通いやすい店舗をお選びください。</p><div class="shop-grid">{cards}</div></div></section>'
+        dimensions = 'width="1800" height="1304"' if slug == 'tsukishima' else 'width="2200" height="1650"'
+        station = '月島駅' if slug == 'tsukishima' else '本八幡駅'
+        cards += f'''<a class="shop-card shop-card--{slug}" href="{base}gyms/{slug}/" data-store-link="{s['name']}">
+          <div class="shop-card__visual">
+            <img src="{base}assets/studio-{slug}.png" alt="Dr.core {s['name']}の店内。人工芝のフロアとトレーニング設備" {dimensions} loading="lazy" decoding="async">
+            <span class="shop-card__area">{s['area']}</span>
+            <span class="shop-card__en" lang="en">{s['en']}</span>
+          </div>
+          <div class="shop-card__body">
+            <div class="shop-card__title"><div><p class="shop-card__brand">Dr.core PERSONAL TRAINING</p><h3>{s['name']}</h3></div><span class="shop-card__arrow" aria-hidden="true">↗</span></div>
+            <p class="shop-card__station"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="3" width="14" height="15" rx="3"/><path d="M5 10h14M9 18l-3 4m9-4 3 4M9 21h6"/><circle cx="8.5" cy="14.5" r=".8" fill="currentColor"/><circle cx="15.5" cy="14.5" r=".8" fill="currentColor"/></svg>{station}から徒歩<strong>{s['minutes']}<span>分</span></strong></p>
+            <p class="shop-card__address">{s['address']}<br>{s['building']}</p>
+            <dl class="shop-card__hours"><div><dt>営業時間</dt><dd>{s['hours']}</dd></div><div><dt>定休日</dt><dd>{s['closed']}</dd></div></dl>
+            <span class="shop-card__link">店舗の詳細・体験予約<span aria-hidden="true">→</span></span>
+          </div>
+        </a>'''
+    return f'<section class="sec shoplist" id="shoplist"><div class="wrap"><div class="shoplist__header"><div><p class="eyebrow">Shop list</p><h2 class="h2">あなたの街の、Dr.core。</h2></div><p class="shoplist__lead">月島・本八幡の2店舗。<br>通いやすい店舗をお選びください。</p></div><div class="shop-grid">{cards}</div></div></section>'
 
 def page(slug=None, full=False):
     s = STORES.get(slug)
@@ -38,9 +54,12 @@ def page(slug=None, full=False):
         body = hero + content(s,base) + shops(base)
     links = ''.join(f'<a href="#{i}">{label}</a>' for i,label in [('method','特徴'),('reason','選ばれる理由'),('price','料金'),('flow','体験の流れ')]) if full else ''
     favicon = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"%3E%3Crect width="64" height="64" rx="12" fill="%230e1113"/%3E%3Ctext x="10" y="45" font-family="Arial" font-weight="700" font-size="42" fill="white"%3ED%3C/text%3E%3Ccircle cx="51" cy="44" r="5" fill="%232dd97a"/%3E%3C/svg%3E'
-    doc = f'''<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="format-detection" content="telephone=no"><title>{title}</title><meta name="description" content="{desc}"><meta name="theme-color" content="#0e1113"><meta property="og:type" content="website"><meta property="og:title" content="{title}"><meta property="og:description" content="{desc}"><meta name="twitter:card" content="summary_large_image"><link rel="icon" href='{favicon}'><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="{base}assets/base.css"><link rel="stylesheet" href="{base}assets/site.css"><script src="{base}assets/site.js" defer></script></head><body data-store="{'Dr.core '+s['name'] if s else 'Dr.core 全店舗'}"><a class="skip-link" href="#main">本文へスキップ</a><header class="site-header"><div class="wrap site-header__inner"><a class="site-logo" href="{base}" aria-label="Dr.core トップページ"><img src="{base}assets/logo_white.png" width="124" height="28" alt="Dr.core"><span>{storelabel}</span></a><nav class="desktop-nav" aria-label="メインメニュー">{links}</nav><a class="shop-nav" href="#shoplist">SHOP LIST <span aria-hidden="true">↗</span></a><button class="menu-button" aria-label="メニューを開く" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span></button></div><nav id="mobile-nav" class="mobile-nav" aria-label="モバイルメニュー" hidden>{links}<a href="#shoplist">店舗一覧</a>{cta(s,'menu')}</nav></header><main id="main">{body}</main><div class="booking-bar" hidden><div class="wrap"><div class="booking-bar__text"><span>{brand}</span><b>初回体験 60分 1,000円</b></div>{cta(s,"sticky")}</div></div><footer class="site-footer"><div class="wrap"><div class="footer-top"><a href="{base}"><img src="{base}assets/logo_white.png" width="144" height="32" alt="Dr.core トップページ"></a><p>綺麗に痩せて、動けるカラダへ。</p></div><div class="footer-links"><a href="{base}">トップページ</a><a href="{base}gyms/tsukishima/">月島店</a><a href="{base}gyms/motoyawata/">本八幡店</a><a href="https://drcore.jp/privacy-policy">プライバシーポリシー</a><a href="https://drcore.jp/terms-of-service">利用規約</a><a href="https://drcore.jp/company">運営会社</a></div><p class="copyright">© 2026 Dr.core All Rights Reserved.</p></div></footer></body></html>'''
+    doc = f'''<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="format-detection" content="telephone=no"><title>{title}</title><meta name="description" content="{desc}"><meta name="theme-color" content="#0e1113"><meta property="og:type" content="website"><meta property="og:title" content="{title}"><meta property="og:description" content="{desc}"><meta name="twitter:card" content="summary_large_image"><link rel="icon" href='{favicon}'><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="{base}assets/base.css"><link rel="stylesheet" href="{base}assets/site.css"><script src="{base}assets/site.js" defer></script></head><body data-store="{'Dr.core '+s['name'] if s else 'Dr.core 全店舗'}"><a class="skip-link" href="#main">本文へスキップ</a><header class="site-header"><div class="wrap site-header__inner"><a class="site-logo" href="{base}" aria-label="Dr.core トップページ"><img src="{base}assets/logo-transparent.svg" width="1691" height="393" alt="Dr.core"><span>{storelabel}</span></a><nav class="desktop-nav" aria-label="メインメニュー">{links}</nav><a class="shop-nav" href="#shoplist">SHOP LIST <span aria-hidden="true">↗</span></a><button class="menu-button" aria-label="メニューを開く" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span></button></div><nav id="mobile-nav" class="mobile-nav" aria-label="モバイルメニュー" hidden>{links}<a href="#shoplist">店舗一覧</a>{cta(s,'menu')}</nav></header><main id="main">{body}</main><div class="booking-bar" hidden><div class="wrap"><div class="booking-bar__text"><span>{brand}</span><b>初回体験 60分 1,000円</b></div>{cta(s,"sticky")}</div></div><footer class="site-footer"><div class="wrap"><div class="footer-top"><a href="{base}"><img src="{base}assets/logo-transparent.svg" width="1691" height="393" alt="Dr.core トップページ"></a><p>綺麗に痩せて、動けるカラダへ。</p></div><div class="footer-links"><a href="{base}">トップページ</a><a href="{base}gyms/tsukishima/">月島店</a><a href="{base}gyms/motoyawata/">本八幡店</a><a href="https://drcore.jp/privacy-policy">プライバシーポリシー</a><a href="https://drcore.jp/terms-of-service">利用規約</a><a href="https://drcore.jp/company">運営会社</a></div><p class="copyright">© 2026 Dr.core All Rights Reserved.</p></div></footer></body></html>'''
     tracking=(ROOT/'templates/tracking.html').read_text()
     doc=doc.replace('</head>',tracking+'</head>')
+    for asset in ['base.css', 'site.css', 'site.js']:
+        revision = hashlib.sha256((DIST/'assets'/asset).read_bytes()).hexdigest()[:12]
+        doc = doc.replace(f'{base}assets/{asset}"', f'{base}assets/{asset}?v={revision}"')
     doc=doc.replace('<body data-store=', '<body data-store=')
     if ORIGIN:
         url=ORIGIN+('/gyms/'+slug+'/' if slug else '/')

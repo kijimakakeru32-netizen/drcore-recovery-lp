@@ -28,7 +28,7 @@ class Scan(HTMLParser):
         if tag in ['img', 'script', 'link']:
             ref = a.get('src', a.get('href', ''))
             if ref and not urlparse(ref).scheme:
-                self.assets.append(ref)
+                self.assets.append(urlparse(ref).path)
 
 prices = []
 pages = list(ROOT.rglob('index.html'))

@@ -19,9 +19,11 @@ document.addEventListener('click', e => {
 const bookingBar = document.querySelector('.booking-bar');
 const hero = document.querySelector('.adult-hero');
 const footer = document.querySelector('.site-footer');
-let pastHero=false, atFooter=false;
-function updateBookingBar(){bookingBar.hidden=!pastHero||atFooter;}
+const shopList = document.querySelector('#shoplist');
+let pastHero=false, atFooter=false, atShops=false;
+function updateBookingBar(){bookingBar.hidden=!pastHero||atFooter||atShops;}
 if (bookingBar && 'IntersectionObserver' in window) {
   new IntersectionObserver(entries => { pastHero = !entries[0].isIntersecting && entries[0].boundingClientRect.top < 0; updateBookingBar(); }).observe(hero);
   new IntersectionObserver(entries => { atFooter = entries[0].isIntersecting; updateBookingBar(); }).observe(footer);
+  new IntersectionObserver(entries => { atShops = entries[0].isIntersecting; updateBookingBar(); }).observe(shopList);
 }
