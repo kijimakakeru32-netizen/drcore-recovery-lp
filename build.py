@@ -64,7 +64,7 @@ def page(slug=None, full=False):
     if s:
         revision = hashlib.sha256((DIST/'assets/store-cta.css').read_bytes()).hexdigest()[:12]
         doc = doc.replace('</head>', f'<link rel="stylesheet" href="{base}assets/store-cta.css?v={revision}"></head>')
-    for asset in ['base.css', 'site.css', 'site.js']:
+    for asset in ['base.css', 'site.css', 'site.js', 'logo-transparent.svg']:
         revision = hashlib.sha256((DIST/'assets'/asset).read_bytes()).hexdigest()[:12]
         doc = doc.replace(f'{base}assets/{asset}"', f'{base}assets/{asset}?v={revision}"')
     doc=doc.replace('<body data-store=', '<body data-store=')
