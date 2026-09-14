@@ -36,6 +36,10 @@
 
 ## Netlifyでの公開
 
-GitHubの本番ブランチをNetlifyに連携し、pushするたびに3ページを生成・検証して公開します。設定は `netlify.toml` にまとめてあります。公開ディレクトリは `dist` です。ビルド時にNetlifyの `URL` 環境変数を使い、canonical、OG情報、サイトマップを公開先のドメインにそろえます。
+- 公開サイト：https://drcore-adult-lp.netlify.app/
+- GitHub：https://github.com/kijimakakeru32-netizen/drcore-adult-lp （非公開リポジトリ）
+- Netlify管理画面：https://app.netlify.com/projects/drcore-adult-lp
+
+GitHubの `main` ブランチをNetlifyに連携し、pushするたびに3ページを生成・検証して公開します。設定は `netlify.toml` にまとめてあります。公開ディレクトリは `dist` です。ビルド時にNetlifyの `URL` 環境変数を使い、canonical、OG情報、サイトマップを公開先のドメインにそろえます。
 
 Python標準ライブラリで生成するため、外部パッケージのインストールは不要です。ソースは `build.py` と `templates/`、画像やCSSは `dist/assets/` を編集してください。生成済みHTMLは次のビルドで上書きされます。
