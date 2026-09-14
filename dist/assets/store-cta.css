@@ -1,0 +1,79 @@
+/* Trial CTA and floating button ported from the supplied U18 open site ZIP. */
+.store-trial,.store-floating{--signal:#2DD97A;--on-signal:#07160E;--max:1080px;font-size:15px}
+.store-trial .h2{font-size:clamp(25px,5.4vw,42px)}
+.store-trial .eyebrow{font-size:13px}
+.store-trial .btn--primary{background:var(--signal);color:var(--on-signal);box-shadow:0 10px 26px -12px rgba(45,217,122,.85)}
+.store-trial .btn--primary:hover{background:#25C86F;color:var(--on-signal);transform:translateY(-2px)}
+.cv{background:var(--ink);color:#fff;text-align:center}
+.cv .h2{margin-bottom:18px}
+.cv__lead{font-size:14.5px;line-height:2;color:#C9D0D6;margin:0 auto 30px;max-width:34em}
+
+.sticky{
+  position:fixed;left:0;right:0;bottom:0;z-index:70;
+  background:linear-gradient(180deg,rgba(9,12,14,.88) 0%,rgba(6,8,10,.98) 60%);
+  backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,.10);
+  padding:11px var(--pad) calc(11px + env(safe-area-inset-bottom));
+  display:flex;align-items:center;
+  transform:translateY(115%);transition:transform .34s cubic-bezier(.2,.7,.2,1);
+}
+.sticky.is-on{transform:translateY(0)}
+
+/* 追従CTAボタン（ゴールド） */
+.cta-fixed{
+  position:relative;display:block;width:100%;max-width:580px;margin-inline:auto;
+  border-radius:999px;text-decoration:none;overflow:hidden;isolation:isolate;
+  padding:2px;
+  background:linear-gradient(135deg,#F6E3AC 0%,#D9B75F 24%,#A8802F 50%,#E4C77C 74%,#F8EEC6 100%);
+  box-shadow:0 16px 36px -16px rgba(201,161,74,.9), 0 2px 0 rgba(255,255,255,.16) inset;
+  transition:transform .2s ease,box-shadow .25s ease;
+}
+.cta-fixed::after{
+  content:"";position:absolute;inset:0;z-index:3;pointer-events:none;border-radius:inherit;
+  background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.55) 46%,transparent 62%);
+  transform:translateX(-120%);
+  animation:ctaShine 4.6s ease-in-out infinite;
+}
+@keyframes ctaShine{0%,72%{transform:translateX(-120%)}88%,100%{transform:translateX(120%)}}
+.cta-fixed:hover{transform:translateY(-2px);box-shadow:0 22px 44px -16px rgba(201,161,74,1)}
+.cta-fixed:active{transform:translateY(0)}
+.cta-fixed__inner{
+  position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:5px;
+  border-radius:999px;padding:11px 22px 13px;
+  background:linear-gradient(180deg,#F3DFA4 0%,#DCBB69 46%,#C09B41 100%);
+  color:#2A1D05;
+}
+/* 1行目：期限と価格 */
+.cta-fixed__top{
+  display:inline-flex;align-items:center;gap:7px;
+  background:#2A1D05;color:#F6E3AC;border-radius:999px;
+  padding:5px 16px 6px;
+  font-size:clamp(13px,3.1vw,16px);font-weight:900;letter-spacing:.04em;line-height:1;
+  box-shadow:0 4px 12px -6px rgba(0,0,0,.7);
+}
+.cta-fixed__top b{
+  font-family:var(--f-disp);font-weight:700;letter-spacing:.01em;
+  font-size:clamp(22px,5.4vw,30px);color:#FFE9A8;line-height:.9;
+  margin-inline:1px;
+}
+.cta-fixed__yen{font-size:clamp(13px,3vw,16px);font-weight:900}
+/* 2行目：主要文言 */
+.cta-fixed__main{
+  display:inline-flex;align-items:center;gap:9px;
+  font-size:clamp(14px,3.5vw,18px);font-weight:900;letter-spacing:.03em;line-height:1.25;
+  color:#241802;white-space:nowrap;
+}
+.cta-fixed__arrow{
+  font-family:var(--f-disp);font-style:normal;font-size:1.2em;line-height:1;
+  transition:transform .25s cubic-bezier(.2,.7,.2,1);
+}
+.cta-fixed:hover .cta-fixed__arrow{transform:translateX(5px)}
+@media (max-width:360px){
+  .cta-fixed__main{font-size:13px;gap:7px}
+  .cta-fixed__inner{padding:10px 14px 12px}
+}
+@media (prefers-reduced-motion:reduce){
+  .cta-fixed::after{animation:none;opacity:0}
+}
+
+
+body:has(.store-floating) .site-footer{padding-bottom:calc(var(--floating-height,120px) + 28px)}

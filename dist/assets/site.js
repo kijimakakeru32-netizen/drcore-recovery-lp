@@ -27,3 +27,24 @@ if (bookingBar && 'IntersectionObserver' in window) {
   new IntersectionObserver(entries => { atFooter = entries[0].isIntersecting; updateBookingBar(); }).observe(footer);
   new IntersectionObserver(entries => { atShops = entries[0].isIntersecting; updateBookingBar(); }).observe(shopList);
 }
+
+const storeFloating = document.querySelector('.store-floating');
+if (storeFloating && hero) {
+  function updateStoreFloating(visible) {
+    storeFloating.classList.toggle('is-on', visible);
+    storeFloating.inert = !visible;
+    storeFloating.setAttribute('aria-hidden', String(!visible));
+  }
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(entries => {
+      updateStoreFloating(!entries[0].isIntersecting && entries[0].boundingClientRect.top < 0);
+    }, {threshold: 0}).observe(hero);
+  } else {
+    updateStoreFloating(true);
+  }
+  if ('ResizeObserver' in window) {
+    new ResizeObserver(() => {
+      document.body.style.setProperty('--floating-height', `${storeFloating.offsetHeight}px`);
+    }).observe(storeFloating);
+  }
+}
