@@ -33,3 +33,9 @@
 ## 計測
 
 元資料のGTM（GTM-TJ8DFDN6）とClarityを引き継いでいます。予約クリックは `reserve_click`、店舗選択は `store_select` です。`program: 大人`、`store`、`position`、`destination` をdataLayerに送ります。外部予約の完了計測は予約システム側の設定に依存します。
+
+## Netlifyでの公開
+
+GitHubの本番ブランチをNetlifyに連携し、pushするたびに3ページを生成・検証して公開します。設定は `netlify.toml` にまとめてあります。公開ディレクトリは `dist` です。ビルド時にNetlifyの `URL` 環境変数を使い、canonical、OG情報、サイトマップを公開先のドメインにそろえます。
+
+Python標準ライブラリで生成するため、外部パッケージのインストールは不要です。ソースは `build.py` と `templates/`、画像やCSSは `dist/assets/` を編集してください。生成済みHTMLは次のビルドで上書きされます。

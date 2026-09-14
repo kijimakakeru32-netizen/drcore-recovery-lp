@@ -3,3 +3,6 @@ __pycache__/
 .sites-runtime/
 *.tar.gz
 *.zip
+.netlify/
+.env
+.env.*

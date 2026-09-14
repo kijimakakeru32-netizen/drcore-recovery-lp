@@ -1,0 +1,10 @@
+[build]
+  command = 'python3 build.py --full --origin "$URL" && python3 verify.py && node --check dist/assets/site.js'
+  publish = "dist"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
