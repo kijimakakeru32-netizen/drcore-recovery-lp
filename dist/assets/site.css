@@ -1,4 +1,12 @@
 :root{--signal:#267846;--on-signal:#07160e;--paper:#f3f2ee;--max:1160px}
+#pair-discount{scroll-margin-top:105px}
+.pair__details{margin-top:18px;padding:25px 28px;background:#f3f7f3;border:1px solid #dce6dc;border-radius:4px;color:#34473a}
+.pair__details h3{margin:0 0 16px;font-size:19px;line-height:1.6;color:#244e33}
+.pair__details ul{list-style:none;margin:0;padding:0;display:grid;gap:15px}
+.pair__details li{position:relative;padding-left:20px;font-size:16px;line-height:1.95}
+.pair__details li:before{content:"";position:absolute;left:0;top:.85em;width:6px;height:6px;border-radius:50%;background:#508361}
+.pair__details strong{color:#244e33;font-weight:900}
+@media(max-width:720px){.pair__details{padding:22px 20px}.pair__details h3{font-size:17px}.pair__details li{font-size:15px;line-height:1.9}}
 .shoplist{background:#eef1ed;overflow:hidden}
 .shoplist__header{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin-bottom:44px}
 .shoplist .h2{margin-bottom:0}
