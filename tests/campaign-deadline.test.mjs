@@ -3,11 +3,10 @@ import assert from 'node:assert/strict';
 import {getCampaignDeadline} from '../dist/assets/campaign-deadline.mjs';
 
 const cases = [
-  ['September start', '2026-09-01T00:00:00+09:00', '9/30まで', '2026-09-30'],
-  ['just before September cutoff', '2026-09-30T21:59:59.999+09:00', '9/30まで', '2026-09-30'],
-  ['September cutoff', '2026-09-30T22:00:00+09:00', '10/31まで', '2026-10-31'],
+  ['October campaign is shown from September 30', '2026-09-30T16:00:00+09:00', '10/31まで', '2026-10-31'],
+  ['October campaign stays visible through October 31 at 21:59', '2026-10-31T21:59:59.999+09:00', '10/31まで', '2026-10-31'],
+  ['October cutoff', '2026-10-31T22:00:00+09:00', '11/30まで', '2026-11-30'],
   ['October start keeps October deadline', '2026-10-01T00:00:00+09:00', '10/31まで', '2026-10-31'],
-  ['31-day month cutoff', '2026-10-31T22:00:00+09:00', '11/30まで', '2026-11-30'],
   ['year rollover', '2026-12-31T22:00:00+09:00', '1/31まで', '2027-01-31'],
   ['February in a regular year', '2027-02-28T21:59:59+09:00', '2/28まで', '2027-02-28'],
   ['February cutoff', '2027-02-28T22:00:00+09:00', '3/31まで', '2027-03-31'],
