@@ -396,17 +396,18 @@
 .rate-plan--2 .price-table tbody td b{color:#f8f8f0}
 .rate-plan--2 .price-table tbody td>span{color:#d6e3d9}
 .rate-plan--2 .price-table tbody th,.rate-plan--2 .price-table tbody td{border-bottom-color:#ffffff26}
-.enrollment-plan{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:32px;margin-top:32px;padding:30px 36px;background:#f0ead7;color:#364f3c}
-.enrollment-standard,.enrollment-benefit{display:flex;align-items:center;justify-content:space-between;gap:20px;min-width:0}
-.enrollment-standard h3{font-size:23px;font-weight:700}
+.enrollment-plan{margin-top:32px;color:#364f3c}
+.enrollment-standard{display:flex;align-items:center;justify-content:center;gap:32px;min-width:0;padding:25px 30px;background:#f0ead7}
+.enrollment-standard h3{font-size:22px;font-weight:700}
 .enrollment-standard p{display:flex;align-items:baseline;gap:5px;line-height:1;white-space:nowrap}
-.enrollment-standard p>strong{font-family:var(--display);font-size:49px;font-weight:600;letter-spacing:0}
+.enrollment-standard p>strong{font-family:var(--display);font-size:46px;font-weight:600;letter-spacing:0}
 .enrollment-standard p>span{font-size:18px}
-.enrollment-benefit{border-left:1px solid #c6c8b4;padding-left:32px}
-.enrollment-benefit>span{font-size:16px;font-weight:700}
-.enrollment-benefit>p{display:flex;align-items:baseline;gap:10px;font-size:15px;white-space:nowrap}
-.enrollment-benefit strong{font-family:var(--display);font-size:52px;font-weight:600;line-height:1;color:#776027}
-.enrollment-benefit small{font-family:var(--body);font-size:17px;margin-left:3px}
+.enrollment-benefit{display:flex;flex-direction:column;align-items:center;gap:14px;padding:32px 24px 38px;background:linear-gradient(115deg,#c8a76b 0%,#f1dfa9 52%,#d1b277 100%);color:#143d2a;text-align:center}
+.enrollment-now{padding:5px 30px;background:#143d2a;color:#f8e6b8;font-size:18px;font-weight:700;line-height:1.6;letter-spacing:.12em}
+.enrollment-condition{font-size:24px;font-weight:700;line-height:1.6}
+.enrollment-price{display:flex;align-items:baseline;justify-content:center;gap:18px;font-size:34px;font-weight:900;line-height:1.2;white-space:nowrap}
+.enrollment-price strong{display:inline-flex;align-items:baseline;gap:8px;font-family:var(--display);font-size:132px;font-weight:600;line-height:.95;letter-spacing:0}
+.enrollment-price small{font-family:var(--body);font-size:36px;font-weight:900}
 .site-footer{background:#070a08;color:#e6ebe6}
 .site-footer .brand img{filter:brightness(0) invert(1)}
 .site-footer .brand>span{color:#ddc895;border-left-color:#465047}
@@ -414,9 +415,6 @@
 .site-footer .footer-links>a{color:#d0dad2}
 .site-footer .footer-links>a:hover{color:#ebd19b}
 .site-footer .copyright{color:#a9b8ad}
-@media(max-width:1060px){
-  .enrollment-plan{gap:24px;padding-inline:26px}.enrollment-benefit{padding-left:24px;gap:15px}.enrollment-benefit>span{font-size:15px}
-}
 @media(max-width:760px){
   .campaign-banner,.hero-trial.campaign-banner{padding:25px 0}
   .hero-trial.campaign-banner{margin-top:26px}
@@ -443,10 +441,13 @@
   .pricing-copy>span{display:block}
   .rate-plan,.rate-plan--1,.rate-plan--2{padding:27px 20px}
   .rate-plan h3{font-size:21px}
-  .enrollment-plan{grid-template-columns:1fr;padding:25px 23px;gap:20px}
-  .enrollment-standard h3{font-size:22px}.enrollment-standard p>strong{font-size:46px}
-  .enrollment-benefit{padding:20px 0 0;border-left:0;border-top:1px solid #c6c8b4}
-  .enrollment-benefit>span{font-size:16px}.enrollment-benefit strong{font-size:46px}
+  .enrollment-standard{padding:22px 20px;gap:24px}
+  .enrollment-standard h3{font-size:20px}.enrollment-standard p>strong{font-size:40px}
+  .enrollment-benefit{padding:28px 18px 32px;gap:13px}
+  .enrollment-now{font-size:17px;padding-inline:26px}
+  .enrollment-condition{font-size:21px}
+  .enrollment-price{font-size:28px;gap:12px}
+  .enrollment-price strong{font-size:108px;gap:5px}.enrollment-price small{font-size:30px}
 }
 @media(max-width:560px){
   .rate-plan,.rate-plan--1,.rate-plan--2{padding:24px 12px}
@@ -463,6 +464,8 @@
   .booking-bar .cta-fixed__price b{font-size:28px}
   .concern-grid>li{padding:20px 16px}.concern-copy{grid-template-columns:52px minmax(0,1fr);gap:15px}.concern-grid h3{font-size:17px}
   .first-visit .center-heading h2{font-size:24px}
-  .enrollment-plan{padding:24px 18px}.enrollment-standard p>strong{font-size:43px}
-  .enrollment-benefit>span{font-size:15px}.enrollment-benefit>p{font-size:14px;gap:6px}
+  .enrollment-standard{gap:18px;padding-inline:16px}.enrollment-standard p>strong{font-size:36px}
+  .enrollment-benefit{padding-inline:12px}
+  .enrollment-condition{font-size:19px}.enrollment-price{font-size:26px}
+  .enrollment-price strong{font-size:100px}.enrollment-price small{font-size:28px}
 }

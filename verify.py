@@ -481,7 +481,7 @@ def check_pricing(scan):
                if has_class(element, 'enrollment-benefit') and is_within(element, enrollments[0])]
     assert len(standard) == 1 and compact(standard[0]['text']) == '入会金33,000円', \
         'The separate enrollment card must preserve the 33,000 yen standard fee.'
-    assert len(benefit) == 1 and compact(benefit[0]['text']) == '体験当日のご入会で入会金0円', \
+    assert len(benefit) == 1 and compact(benefit[0]['text']) == '今なら体験当日のご入会で入会金0円', \
         'The separate enrollment card must preserve the same-day enrollment fee waiver.'
 
 
