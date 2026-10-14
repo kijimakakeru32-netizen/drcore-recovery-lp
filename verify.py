@@ -640,6 +640,16 @@ def check_voices(home, page=PAGE, verify_articles=True):
     cards = [element for element in home.elements if has_class(element, 'voice-card')]
     assert tuple(card['attrs'].get('data-voice-id') for card in cards) == VOICE_IDS, \
         'The homepage must contain the corresponding A / D / C cards.'
+    tracks = [element for element in home.elements if element['attrs'].get('id') == 'voice-track']
+    assert len(tracks) == 1 and tracks[0]['attrs'].get('tabindex') == '0' \
+        and all(is_within(card, tracks[0]) for card in cards), \
+        'All voice cards must be in one keyboard-accessible scroll region.'
+    for class_name in ('voice-prev', 'voice-next'):
+        buttons = [element for element in home.elements
+                   if element['tag'] == 'button' and has_class(element, class_name)]
+        assert len(buttons) == 1 and buttons[0]['attrs'].get('aria-controls') == 'voice-track' \
+            and buttons[0]['attrs'].get('aria-label') and buttons[0]['attrs'].get('type') == 'button', \
+            'Voice navigation must have named buttons controlling the scroll region.'
 
     for voice, card in zip(voices, cards):
         slug = voice['slug']
@@ -663,6 +673,12 @@ def check_voices(home, page=PAGE, verify_articles=True):
                             if is_within(element, card) and has_class(element, class_name)]
                 assert len(elements) == 1 and compact(elements[0]['text']) == compact([voice[field]]), \
                     f'Card {slug} does not preserve the supplied {field}.'
+                if field == 'card_title':
+                    lines = [element for element in home.elements
+                             if element['tag'] == 'span' and element['parent'] is elements[0]]
+                    assert len(lines) == 2 and [compact(line['text']) for line in lines] == \
+                        [compact([line]) for line in voice[field].splitlines()], \
+                        f'Card {slug} must preserve both complete title lines.'
         links = [anchor for anchor in home.anchors if is_within(anchor, card)
                  and has_class(anchor, 'voice-read-more')]
         assert len(links) == 1, f'Expected one article link on voice card {slug}.'

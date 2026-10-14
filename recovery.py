@@ -83,10 +83,11 @@ def render_voice_cards(voices, site_prefix='./'):
     cards = []
     for voice in voices:
         title = voice.get('card_title') or '紹介タイトル：原稿確認待ち'
+        title_html = ''.join(f'<span>{escape(line)}</span>' for line in title.splitlines())
         intro = voice.get('card_intro') or '紹介文：原稿確認待ち'
         card_identity = '｜'.join([voice['name'], voice['age']])
-        cards.append(f'''<article class="voice-card" data-voice-id="{escape(voice['slug'])}"><a class="voice-read-more voice-card-link" href="{escape(site_prefix)}voices/{escape(voice['slug'])}/" aria-label="{escape(voice['name'])}のお客様の声を詳しく読む">{render_voice_photo(voice)}<div class="voice-card-content"><p class="voice-identity">{escape(card_identity)}<span class="voice-card-arrow" aria-hidden="true">→</span></p><h3 class="voice-card-title">{escape(title)}</h3><p class="voice-card-intro">{escape(intro)}</p></div></a></article>''')
-    return '<div class="voice-grid">' + '\n'.join(cards) + '</div>'
+        cards.append(f'''<article class="voice-card" data-voice-id="{escape(voice['slug'])}"><a class="voice-read-more voice-card-link" href="{escape(site_prefix)}voices/{escape(voice['slug'])}/" aria-label="{escape(voice['name'])}のお客様の声を詳しく読む">{render_voice_photo(voice)}<div class="voice-card-content"><p class="voice-identity">{escape(card_identity)}<span class="voice-card-arrow" aria-hidden="true">→</span></p><h3 class="voice-card-title">{title_html}</h3><p class="voice-card-intro">{escape(intro)}</p></div></a></article>''')
+    return '''<div class="voice-carousel"><div class="voice-carousel-toolbar"><p>横にスクロール <span aria-hidden="true">→</span></p><div class="voice-carousel-controls" hidden><button class="voice-prev" type="button" aria-label="前のお客様の声を表示" aria-controls="voice-track"><span aria-hidden="true">←</span></button><button class="voice-next" type="button" aria-label="次のお客様の声を表示" aria-controls="voice-track"><span aria-hidden="true">→</span></button></div></div><div class="voice-grid" id="voice-track" tabindex="0" role="region" aria-label="お客様の声。左右にスクロールしてご覧ください">''' + '\n'.join(cards) + '</div></div>'
 
 
 def revision_assets(source):

@@ -55,3 +55,65 @@ if ('IntersectionObserver' in window) {
 } else {
   updateBookingBar(true);
 }
+
+// Enhance the voice track without taking over native horizontal scrolling.
+document.querySelectorAll('.voice-carousel').forEach(carousel => {
+  const track = carousel.querySelector('.voice-grid');
+  const controls = carousel.querySelector('.voice-carousel-controls');
+  const previous = controls?.querySelector('.voice-prev');
+  const next = controls?.querySelector('.voice-next');
+  const cards = track ? Array.from(track.querySelectorAll('.voice-card')) : [];
+  if (!track || !controls || !previous || !next || !cards.length) return;
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const tolerance = 2;
+  let updatePending = false;
+
+  function updateControls() {
+    const maximum = Math.max(0, track.scrollWidth - track.clientWidth);
+    const position = Math.max(0, Math.min(track.scrollLeft, maximum));
+    controls.hidden = maximum <= tolerance;
+    previous.disabled = position <= tolerance;
+    next.disabled = maximum - position <= tolerance;
+  }
+
+  function queueUpdate() {
+    if (updatePending) return;
+    updatePending = true;
+    window.requestAnimationFrame(() => {
+      updatePending = false;
+      updateControls();
+    });
+  }
+
+  function move(direction) {
+    const maximum = Math.max(0, track.scrollWidth - track.clientWidth);
+    const position = Math.max(0, Math.min(track.scrollLeft, maximum));
+    const trackLeft = track.getBoundingClientRect().left + track.clientLeft;
+    const scrollPadding = parseFloat(getComputedStyle(track).scrollPaddingLeft) || 0;
+    const positions = cards.map((card, index) => index === 0 ? 0 : Math.max(0, Math.min(
+      card.getBoundingClientRect().left - trackLeft + track.scrollLeft - scrollPadding,
+      maximum
+    )));
+    const target = direction > 0
+      ? positions.find(left => left > position + tolerance)
+      : positions.reverse().find(left => left < position - tolerance);
+    track.scrollTo({
+      left: target ?? (direction > 0 ? maximum : 0),
+      behavior: reducedMotion.matches ? 'auto' : 'smooth'
+    });
+    queueUpdate();
+  }
+
+  previous.addEventListener('click', () => move(-1));
+  next.addEventListener('click', () => move(1));
+  track.addEventListener('scroll', queueUpdate, { passive: true });
+  window.addEventListener('resize', queueUpdate, { passive: true });
+  window.addEventListener('pageshow', queueUpdate);
+  if ('ResizeObserver' in window) {
+    const observer = new ResizeObserver(queueUpdate);
+    observer.observe(track);
+    cards.forEach(card => observer.observe(card));
+  }
+  updateControls();
+});
