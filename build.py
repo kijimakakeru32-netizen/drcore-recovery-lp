@@ -100,8 +100,13 @@ if __name__ == '__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('--full',action='store_true')
     parser.add_argument('--origin',default='')
+    parser.add_argument('--legacy-adult',action='store_true',help='Regenerate the inherited adult pages instead of the Recovery design')
     args=parser.parse_args()
     ORIGIN=args.origin.rstrip('/')
+    if not args.legacy_adult:
+        from recovery import build_home
+        build_home(ORIGIN)
+        raise SystemExit(0)
     page(full=args.full)
     if args.full:
         for slug in STORES: page(slug,True)

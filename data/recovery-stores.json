@@ -1,0 +1,34 @@
+[
+  {
+    "slug": "tsukishima",
+    "name": "月島店",
+    "en": "TSUKISHIMA",
+    "area": "TOKYO / 東京",
+    "address": "東京都中央区佃2-5-13",
+    "building": "スカイコートパレス月島102",
+    "access": "東京メトロ有楽町線・都営大江戸線「月島駅」徒歩3分",
+    "access_sub": "6番出口からお越しいただくとスムーズです。",
+    "minutes": "3",
+    "reserve": "https://reserve.quick-reserve.com/core?view=eyJ2ZXJzaW9uIjoyLCJzdG9yZXMiOlt7ImlkIjoyMzEsImNvdXJzZUlkcyI6WzIyMjddfV19&eid=UWGwJBTX39DN4vJmVsCbpB9fNa1CMhDO&_gl=1*1etmk5i*_ga*MTk4NjExMTc0My4xNzg2NDEyMTcy*_ga_GQJRGS8KQR*czE3ODk0MDI0MDYkbzkkZzEkdDE3ODk0MDI0MzEkajM1JGwwJGgw",
+    "station": "月島駅",
+    "photo": "assets/studio-tsukishima.png",
+    "photo_width": 1800,
+    "photo_height": 1304
+  },
+  {
+    "slug": "motoyawata",
+    "name": "本八幡店",
+    "en": "MOTOYAWATA",
+    "area": "CHIBA / 千葉",
+    "address": "千葉県市川市八幡3丁目1-1",
+    "building": "プレジデントビル 3F",
+    "access": "JR総武線・都営新宿線「本八幡駅」徒歩2分",
+    "access_sub": "京成本線「京成八幡駅」からも徒歩2分。",
+    "minutes": "2",
+    "reserve": "https://reserve.quick-reserve.com/core?view=eyJzdG9yZXMiOlt7ImlkIjozNDEsImNvdXJzZUlkcyI6WzMxNjNdfV0sInZlcnNpb24iOjJ9&eid=OXeJGjCXlLEqwwfGwW2y2nlVXKg2B59T&_gl=1*1etmk5i*_ga*MTk4NjExMTc0My4xNzg2NDEyMTcy*_ga_GQJRGS8KQR*czE3ODk0MDI0MDYkbzkkZzEkdDE3ODk0MDI0MzEkajM1JGwwJGgw",
+    "station": "本八幡駅",
+    "photo": "assets/studio-motoyawata.png",
+    "photo_width": 2200,
+    "photo_height": 1650
+  }
+]

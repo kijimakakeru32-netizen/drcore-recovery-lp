@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://drcore-adult-lp.netlify.app/sitemap.xml
+Sitemap: https://drcore-recovery-lp.netlify.app/sitemap.xml

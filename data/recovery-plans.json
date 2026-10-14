@@ -1,0 +1,12 @@
+{
+  "session_minutes": 30,
+  "tax_label": null,
+  "enrollment_fee": 33000,
+  "other_hours_surcharge": 1000,
+  "plans": [
+    {"name": "月1プラン", "sessions": 1, "per_session": 6000},
+    {"name": "月2プラン", "sessions": 2, "per_session": 5250},
+    {"name": "月4プラン", "sessions": 4, "per_session": 5000},
+    {"name": "月8プラン", "sessions": 8, "per_session": 4750}
+  ]
+}

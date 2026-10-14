@@ -1,0 +1,46 @@
+/* Store-specific additions to the approved Recovery design. */
+.hero-store-name,.hero-store-station{display:block}
+.hero-store-name{font-size:19px;font-weight:900;line-height:1.6;color:#1f653b;letter-spacing:.025em}
+.hero-store-station{font-size:14px;font-weight:700;line-height:1.7;margin-top:5px;color:#52675b}
+.studio-link{display:block;text-decoration:none;transition:box-shadow .2s ease,transform .2s ease}
+.studio-link:hover{box-shadow:0 12px 30px #17392216;transform:translateY(-3px)}
+.studio-link:focus-visible{outline-offset:5px}
+.studio-detail-link{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-top:21px;padding-top:17px;border-top:1px solid #d8e3d6;color:#1f653b;font-size:16px;font-weight:900;line-height:1.6}
+.studio-detail-link>span{font-size:23px;font-family:Arial,sans-serif;font-weight:400;line-height:1}
+.recovery-store-access{background:#f3f6f1}
+.recovery-store-access .center-heading h2>span{display:block}
+.recovery-store-access .section-eyebrow{color:#6a826f;font-family:var(--display);font-size:17px;letter-spacing:.13em;margin:0 0 14px}
+.recovery-access-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:start;gap:44px}
+.recovery-access-photo img{width:100%;aspect-ratio:1.42;object-fit:cover;object-position:50% 50%;border-radius:12px}
+.recovery-access-content{min-width:0}
+.recovery-access-content dl{margin:0}
+.recovery-access-content dl>div{display:grid;grid-template-columns:88px minmax(0,1fr);gap:20px;padding:20px 0;border-bottom:1px solid #d5dfd3}
+.recovery-access-content dl>div:first-child{padding-top:0}
+.recovery-access-content dt{font-size:15px;color:#54725d;font-weight:700}
+.recovery-access-content dd{margin:0;font-size:17px;line-height:1.9;overflow-wrap:anywhere}
+.recovery-access-content dd small{display:block;margin-top:7px;color:#67766b;font-size:14px;line-height:1.8}
+.recovery-map-link{display:flex;justify-content:space-between;align-items:center;gap:18px;background:#1e5035;color:#fff;text-decoration:none;padding:17px 23px;margin-top:27px;font-size:16px;font-weight:700;line-height:1.6}
+.recovery-map-link:hover{background:#163e29}
+.recovery-map-link>span{font-family:Arial,sans-serif;font-size:21px;font-weight:400;line-height:1}
+.recovery-page-top{display:inline-flex;gap:15px;align-items:center;margin-top:19px;padding-bottom:4px;color:#536c5b;text-decoration:none;border-bottom:1px solid #aebfae;font-size:14px;font-weight:700}
+@media(max-width:900px){
+  .recovery-access-grid{grid-template-columns:1fr;gap:29px;max-width:680px;margin-inline:auto}
+  .recovery-access-photo img{aspect-ratio:1.65}
+}
+@media(max-width:760px){
+  .hero-store-name{font-size:clamp(15px,4.3vw,20px)}
+  .hero-store-station{font-size:14px;margin-top:2px}
+  .studio-detail-link{font-size:15px;margin-top:18px;padding-top:16px}
+}
+@media(max-width:560px){
+  .recovery-store-access .center-heading h2{font-size:clamp(21px,5.7vw,27px);letter-spacing:0;line-height:1.75}
+  .recovery-store-access .section-eyebrow{font-size:15px}
+  .recovery-access-grid{gap:23px}
+  .recovery-access-content dl>div{grid-template-columns:1fr;gap:7px;padding-block:18px}
+  .recovery-access-content dt{font-size:14px}
+  .recovery-access-content dd{font-size:16px;line-height:1.8}
+  .recovery-access-content dd small{font-size:14px;margin-top:6px}
+  .recovery-map-link{font-size:15px;padding:17px 20px;margin-top:23px}
+  .recovery-page-top{font-size:14px}
+}
+@media(prefers-reduced-motion:reduce){.studio-link{transition:none}.studio-link:hover{transform:none}}

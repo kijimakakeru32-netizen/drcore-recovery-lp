@@ -1,0 +1,58 @@
+[
+  {
+    "id": "takakura",
+    "surname": "高倉",
+    "label": "高倉トレーナー",
+    "photo": "assets/trainers/takakura-portrait.webp",
+    "width": 816,
+    "height": 857,
+    "object_position": "50% 28%",
+    "source_url": "https://drcore-recruit-site.netlify.app/#team",
+    "source_name": "高倉 大輝",
+    "source_photo_url": "https://drcore-recruit-site.netlify.app/assets/takakura-portrait.webp",
+    "source_profile_url": "https://drcore-recruit-site.netlify.app/interview-takakura",
+    "sha256": "a12fdc950cdeceb29bd2e3e1d3265d2ba35cbeb959ee27d5bd8c5dc9305c59d9"
+  },
+  {
+    "id": "yoshioka",
+    "surname": "吉岡",
+    "label": "吉岡トレーナー",
+    "photo": "assets/trainers/yoshioka-card.webp",
+    "width": 1121,
+    "height": 1111,
+    "object_position": "50% 25%",
+    "source_url": "https://drcore-recruit-site.netlify.app/#team",
+    "source_name": "吉岡 俊輝",
+    "source_photo_url": "https://drcore-recruit-site.netlify.app/assets/yoshioka-card.webp",
+    "source_profile_url": "https://drcore-recruit-site.netlify.app/interview-yoshioka",
+    "sha256": "6fa7d0bf5a9da5ff21d4278686d8a449bd0f01f27fc515ba9f9ecc88aec6227a"
+  },
+  {
+    "id": "yoshinaga",
+    "surname": "吉永",
+    "label": "吉永トレーナー",
+    "photo": "assets/trainers/yoshinaga-card.webp",
+    "width": 1300,
+    "height": 1185,
+    "object_position": "50% 30%",
+    "source_url": "https://drcore-recruit-site.netlify.app/#team",
+    "source_name": "吉永 建太",
+    "source_photo_url": "https://drcore-recruit-site.netlify.app/assets/yoshinaga-card.webp",
+    "source_profile_url": "https://drcore-recruit-site.netlify.app/interview-yoshinaga",
+    "sha256": "11db7dcec938c3e6afa627ad8fdfe847072ff8965d0704d07f9cd55396afc78f"
+  },
+  {
+    "id": "kuboki",
+    "surname": "久保木",
+    "label": "久保木トレーナー",
+    "photo": "assets/trainers/kuboki-card.webp",
+    "width": 1540,
+    "height": 1323,
+    "object_position": "50% 30%",
+    "source_url": "https://drcore-recruit-site.netlify.app/#team",
+    "source_name": "久保木 舜稀",
+    "source_photo_url": "https://drcore-recruit-site.netlify.app/assets/kuboki-card.webp",
+    "source_profile_url": "https://drcore-recruit-site.netlify.app/interview-kuboki",
+    "sha256": "a69ad325712db18025ecb1f8954c1dc506151b36d935a1a85db155d3f7b45911"
+  }
+]
