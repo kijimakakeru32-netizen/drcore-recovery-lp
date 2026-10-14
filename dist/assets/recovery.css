@@ -469,3 +469,63 @@
   .enrollment-condition{font-size:19px}.enrollment-price{font-size:26px}
   .enrollment-price strong{font-size:100px}.enrollment-price small{font-size:28px}
 }
+
+/* Align supporting cards with the compact customer voice cards. */
+#concerns,#method,#first-visit,#flow,#faq{padding-top:72px}
+#concerns,#method,#flow,#faq{padding-bottom:72px}
+#concerns .center-heading,#method .center-heading,#first-visit .center-heading,#flow .center-heading,#faq .center-heading{margin-bottom:30px}
+#concerns .center-heading h2,#method .center-heading h2,#first-visit .center-heading h2,#flow .center-heading h2,#faq .center-heading h2{font-size:32px;line-height:1.7}
+#concerns .concern-grid,#method .feature-grid,#first-visit .first-visit-grid{max-width:960px;margin-inline:auto;gap:20px}
+#concerns .concern-grid>li{padding:18px;border-radius:10px}
+#concerns .concern-copy{grid-template-columns:52px minmax(0,1fr);gap:15px}
+#concerns .concern-grid h3{font-size:16px;line-height:1.7;padding-block:5px}
+#concerns .concern-grid p{font-size:16px;line-height:1.85;color:#434e52}
+#concerns .concern-closing{max-width:760px;margin-top:36px;padding-top:28px}
+#concerns .concern-closing h3{font-size:23px;line-height:1.7}
+#concerns .concern-closing p{font-size:16px;line-height:1.9;margin-top:18px;color:#4b565a}
+#method .feature-photo>img{aspect-ratio:2.1;border-radius:10px}
+#method .feature-photo>span{width:38px;height:38px;font-size:18px;bottom:-15px;border-width:3px}
+#method .feature h3{font-size:18px;line-height:1.75;margin-top:26px}
+#method .feature-copy>p{font-size:16px;line-height:1.85;margin-top:12px}
+#method .next-step{max-width:960px;margin-inline:auto;padding:20px;gap:17px;border-radius:10px}
+#method .next-icon{width:34px;height:34px;font-size:24px}
+#method .next-step h3{font-size:18px;line-height:1.75}
+#method .next-step p{font-size:16px;line-height:1.85}
+#first-visit .center-heading>p,#flow .center-heading>p{font-size:16px}
+#first-visit .first-visit-card{padding:20px;border-radius:10px}
+#first-visit .intro-step{font-size:30px;margin-bottom:12px}
+#first-visit .first-visit-card>img{aspect-ratio:2.1}
+#first-visit .first-visit-card>img[src$=".svg"]{object-fit:contain}
+#first-visit .first-visit-card h3{font-size:18px;line-height:1.75;margin-top:16px}
+#first-visit .first-visit-card>p{font-size:16px;line-height:1.85;margin-top:12px}
+#flow .recovery-flow-step{padding:18px 15px 20px;border-radius:10px}
+#flow .recovery-flow-number>span{font-size:13px}
+#flow .recovery-flow-number strong{font-size:30px}
+#flow .recovery-flow-image{margin-top:14px}
+#flow .recovery-flow-image img{aspect-ratio:2.1}
+#flow .recovery-flow-image--illustration img{object-fit:contain}
+#flow .recovery-flow-copy h3{font-size:18px;line-height:1.75;margin-top:16px}
+#flow .recovery-flow-copy p{font-size:16px;line-height:1.85;margin-top:10px}
+#faq .faq-list{max-width:760px;margin-inline:auto}
+#faq .faq-list summary{font-size:16px;line-height:1.8;min-height:64px;padding:17px 5px;gap:14px}
+#faq .faq-list .q{font-size:22px}
+#faq .faq-list .answer{font-size:16px;line-height:1.85;padding:0 34px 20px}
+@media(max-width:760px){
+  #concerns,#method,#first-visit,#flow,#faq{padding-top:56px}
+  #concerns,#method,#flow,#faq{padding-bottom:56px}
+  #concerns .center-heading h2,#method .center-heading h2,#first-visit .center-heading h2,#flow .center-heading h2,#faq .center-heading h2{font-size:24px}
+  #concerns .center-heading .concern-title{font-size:clamp(21px,5.6vw,24px)}
+  #concerns .concern-grid,#method .feature-grid,#method .next-step,#first-visit .first-visit-grid,#flow .recovery-flow{width:clamp(276px,76vw,340px);max-width:100%;margin-inline:auto}
+  #concerns .concern-grid{gap:12px}
+  #concerns .concern-grid>li{padding:16px}
+  #concerns .concern-copy{grid-template-columns:52px minmax(0,1fr);gap:12px}
+  #concerns .concern-closing h3{font-size:21px}
+  #method .feature-grid{gap:32px}
+  #method .feature h3,#method .next-step h3,#first-visit .first-visit-card h3,#flow .recovery-flow-copy h3{font-size:16px}
+  #method .next-step{padding:18px;gap:13px}
+  #method .next-step p{font-size:15px}
+  #first-visit .first-visit-grid{gap:18px}
+  #flow .recovery-flow-step{padding:20px}
+  #faq .faq-list summary{padding-block:16px;gap:12px}
+  #faq .faq-list .answer{padding-inline:31px 16px}
+}
