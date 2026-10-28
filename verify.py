@@ -50,7 +50,7 @@ SECTION_ORDER = (
 )
 HOME_COPY = {
     'top': (
-        '自重ストレッチで、しなやかに動ける身体へ。',
+        '自重ストレッチでしなやかに動ける身体へ',
         '器具に支えられながら、自分では届かないところまで。30分のマンツーマン自重ストレッチ',
         '完全予約制マンツーマン',
         '30分だから通いやすい',
@@ -88,8 +88,8 @@ HOME_COPY = {
     ),
     'session': (
         '通常プラン・1回30分',
-        '30分で、全身を心地よく。',
-        'まずは、ゆっくり動かす',
+        '30分で、全身を心地よくDr.coreのアプローチ',
+        '可動域を広げる',
         '器具に支えられて、伸ばす',
         'プロの手で、丁寧に伸ばす',
         '初回体験は、体組成・姿勢診断を含む60分です。',
@@ -337,6 +337,12 @@ def check_home(scan, page=PAGE, store=None):
             assert compact([phrase]) in section_text, f'Missing supplied copy in #{region}: {phrase}'
     heading = next(element for element in scan.elements if element['tag'] == 'h1')
     assert compact(heading['text']) == compact([HOME_COPY['top'][0]]), 'The main headline differs from supplied copy.'
+    hero_lines = [element for element in scan.elements
+                  if element['tag'] == 'span' and has_class(element, 'hero-title-line')
+                  and is_within(element, heading)]
+    assert [compact(element['text']) for element in hero_lines] == [
+        '自重ストレッチで', 'しなやかに動ける', '身体へ'
+    ], 'The main headline must preserve its three explicit, punctuation-free lines.'
     point_lists = [element for element in scan.elements
                    if has_class(element, 'hero-points')]
     assert len(point_lists) == 1, 'Expected one hero feature list.'
@@ -359,6 +365,26 @@ def check_home(scan, page=PAGE, store=None):
     assert [compact(element['text']) for element in title_lines] == [
         '最近、このような', '体の変化はありませんか？'
     ], 'The concern heading must explicitly group the two supplied mobile lines.'
+    concern_closings = [element for element in scan.elements if has_class(element, 'concern-closing')]
+    assert len(concern_closings) == 1, 'Expected one concern-closing block.'
+    closing_headings = [element for element in scan.elements
+                        if element['tag'] == 'h3' and is_within(element, concern_closings[0])]
+    assert len(closing_headings) == 1, 'Expected one concern-closing heading.'
+    closing_lines = [element for element in scan.elements
+                     if element['parent'] is closing_headings[0]]
+    assert all(element['tag'] == 'span' and has_class(element, 'heading-line') for element in closing_lines) \
+        and [compact(element['text']) for element in closing_lines] == [
+            'その重さを、', 'いつものことにしないために。'
+        ] and compact(closing_headings[0]['text']) == HOME_COPY['concerns'][1], \
+        'The concern-closing heading must preserve its two explicit supplied lines.'
+    daytime_scenes = [element for element in scan.elements if has_class(element, 'daytime-scenes')]
+    assert len(daytime_scenes) == 1, 'Expected one weekday-daytime scene block.'
+    daytime_buttons = [anchor for anchor in scan.anchors if is_within(anchor, daytime_scenes[0])]
+    assert len(daytime_buttons) == 1 and has_class(daytime_buttons[0], 'daytime-plan-button') \
+        and not has_class(daytime_buttons[0], 'text-link') \
+        and daytime_buttons[0]['attrs'].get('href') == '#price' \
+        and compact(daytime_buttons[0]['text']) == '平日デイタイムプランを見る', \
+        'The weekday-daytime block needs its dedicated button and existing pricing route.'
     for index, concern in enumerate(concerns):
         for phrase in HOME_COPY['concerns'][2 + index * 2:4 + index * 2]:
             assert compact([phrase]) in compact(concern['text']), \
@@ -440,6 +466,15 @@ def check_home(scan, page=PAGE, store=None):
 
 def check_session(scan):
     session = next(element for element in scan.elements if element['attrs'].get('id') == 'session')
+    headings = [element for element in scan.elements
+                if element['tag'] == 'h2' and is_within(element, session)]
+    assert len(headings) == 1, 'Expected one regular-session heading.'
+    heading_lines = [element for element in scan.elements if element['parent'] is headings[0]]
+    assert all(element['tag'] == 'span' and has_class(element, 'heading-line') for element in heading_lines) \
+        and [compact(element['text']) for element in heading_lines] == [
+            '30分で、全身を心地よく', 'Dr.coreのアプローチ'
+        ] and compact(headings[0]['text']) == HOME_COPY['session'][1], \
+        'The regular-session heading must preserve its two explicit supplied lines.'
     cards = [element for element in scan.elements if has_class(element, 'session-card')
              and is_within(element, session)]
     assert len(cards) == 3, 'Explain the three approaches in the regular 30-minute session.'
@@ -660,14 +695,23 @@ def check_store_identity(scan, page, store=None):
         f'{page.relative_to(ROOT)} has the wrong store identity.'
     assert '準備中' not in compact(body['text']), \
         f'{page.relative_to(ROOT)} still describes its authorized reservation route as unavailable.'
+    hero = next(element for element in scan.elements if element['attrs'].get('id') == 'top')
+    hero_labels = [element for element in scan.elements
+                   if has_class(element, 'hero-label') and is_within(element, hero)]
     if not store:
+        assert not hero_labels and 'Dr.coreの自重ストレッチ' not in compact(hero['text']), \
+            'Remove the entire top-page hero label while retaining store labels.'
         assert 'access' not in scan.ids, 'The top page must not present one store as its sole access location.'
         return
+    assert len(hero_labels) == 1 and hero_labels[0]['tag'] == 'p', \
+        f'{store["slug"]} must retain its hero-label paragraph.'
     hero_names = [element for element in scan.elements if has_class(element, 'hero-store-name')]
     hero_stations = [element for element in scan.elements if has_class(element, 'hero-store-station')]
-    assert len(hero_names) == 1 and store['name'] in compact(hero_names[0]['text']), \
+    assert len(hero_names) == 1 and is_within(hero_names[0], hero_labels[0]) \
+        and store['name'] in compact(hero_names[0]['text']), \
         f'{store["slug"]} must identify the corresponding store in its hero.'
-    assert len(hero_stations) == 1 and store['station'] in compact(hero_stations[0]['text']) \
+    assert len(hero_stations) == 1 and is_within(hero_stations[0], hero_labels[0]) \
+        and store['station'] in compact(hero_stations[0]['text']) \
         and f'徒歩{store["minutes"]}分' in compact(hero_stations[0]['text']), \
         f'{store["slug"]} hero must retain its correct station and walking time.'
     title = next(element for element in scan.elements if element['tag'] == 'title')
