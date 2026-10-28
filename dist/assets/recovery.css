@@ -529,3 +529,74 @@
   #faq .faq-list summary{padding-block:16px;gap:12px}
   #faq .faq-list .answer{padding-inline:31px 16px}
 }
+
+/* Daytime positioning and a gentler explanation of bodyweight stretching. */
+.hero-daytime .hero-point-circle{background:#f8f0da;border-color:#b99d5e;color:#4c4727}
+.hero-daytime strong>span{display:block;font-size:13px;line-height:1.4}
+.hero-daytime strong>span:nth-child(2){margin-top:3px;font-size:12px}
+.hero-daytime b{font-family:var(--display);font-size:30px;font-weight:600;line-height:1.05;letter-spacing:0}
+.daytime-scenes{max-width:960px;margin:36px auto 0;padding:28px;background:#eef2eb;border-radius:10px;text-align:center}
+.daytime-scenes h3{font-size:23px;line-height:1.7;color:#31513c}
+.daytime-scenes ul{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;list-style:none;padding:0;margin:22px 0 18px}
+.daytime-scenes li{padding:14px 10px;background:#fff;color:#35543c;font-size:16px;font-weight:700}
+.daytime-scenes>p{max-width:700px;margin-inline:auto;font-size:16px;line-height:1.85;color:#526357}
+.daytime-scenes .text-link{margin-top:20px;font-size:15px}
+.stretch-session{background:#f5f7f0;padding-block:72px}
+.stretch-session .center-heading h2{font-size:32px}
+.center-heading .session-eyebrow{display:inline-block;margin:0 0 14px;padding:5px 16px;border:1px solid #c3d3bd;color:#426347;font-size:15px;font-weight:700}
+.center-heading .session-lead{font-size:16px;line-height:1.9}
+.session-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;max-width:960px;margin-inline:auto}
+.session-card{padding:24px 22px;background:#fff;border-radius:10px}
+.session-step{display:block;font-family:var(--display);font-size:30px;font-weight:600;line-height:1;color:#6e8769;margin-bottom:17px}
+.session-card h3{font-size:18px;line-height:1.75;color:#2c4f36}
+.session-card>p{font-size:16px;line-height:1.85;margin-top:14px;color:#526357}
+.session-note{max-width:960px;margin:22px auto 0;font-size:14px;line-height:1.8;color:#5a6b5c}
+.voice-results-note{max-width:960px;margin:24px auto 0;color:#dce7db;font-size:14px;line-height:1.8}
+.voice-article .voice-results-note{color:#647366;margin-top:30px}
+.voice-editorial-label{font-size:13px;line-height:1.7;color:#61745e;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #dbe3d6}
+.center-heading .pricing-minimum-note{font-size:14px;margin-top:10px;color:#61745e}
+.pricing .rate-plans{grid-template-columns:1.1fr .9fr;align-items:start}
+.pricing .rate-plan-label{font-size:19px;padding:7px 16px;margin-bottom:14px}
+.pricing .rate-plan-condition{min-height:0;font-size:18px}
+.pricing .rate-plan--2 .rate-plan-label{font-size:17px}
+.pricing .rate-plan--2 .rate-plan-condition{font-size:16px}
+.pricing-format-label{font-size:20px;font-weight:700;line-height:1.7;margin-bottom:20px;color:#31543a}
+.payg-plan{display:grid;grid-template-columns:1fr 1.4fr;gap:30px;align-items:center;padding:30px;margin-top:30px;background:#fff}
+.payg-heading>p{font-size:16px;line-height:1.8;color:#596b5d}
+.payg-heading h3{font-size:24px;line-height:1.7;color:#31543a;margin-block:6px}
+.payg-options{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.payg-options h4{font-size:15px;font-weight:700;line-height:1.7;margin:0 0 10px;color:#536658}
+.payg-price{display:flex;align-items:baseline;gap:5px;color:#2c5f3a;line-height:1.2;white-space:nowrap}
+.payg-price strong{font-family:var(--display);font-size:44px;font-weight:600}
+.payg-price>span{font-size:15px}
+.payg-price--pending{font-size:18px;font-weight:700;line-height:1.8;color:#8a6c28}
+[data-pending-content]{outline:1px dashed #b68b31;outline-offset:5px}
+.pricing .enrollment-plan--free{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 24px;padding:24px;background:#edf3e7}
+.enrollment-plan--free h3{font-size:18px;line-height:1.6;font-weight:700}
+.enrollment-free-price{display:flex;align-items:baseline;gap:14px;font-size:22px;line-height:1.2;font-weight:700;white-space:nowrap}
+.enrollment-free-price strong{font-family:var(--display);font-size:52px;line-height:1;font-weight:600}
+.enrollment-free-price small{font-family:var(--body);font-size:22px;margin-left:4px}
+.enrollment-free-note{flex-basis:100%;font-size:15px;text-align:center;line-height:1.8;color:#526357;margin-top:6px}
+@media(max-width:900px){.pricing .rate-plans{grid-template-columns:1fr}}
+@media(max-width:760px){
+  .hero-daytime strong>span{font-size:11px;line-height:1.35}
+  .hero-daytime strong>span:nth-child(2){font-size:10px;margin-top:2px}
+  .hero-daytime b{font-size:23px}
+  .hero-daytime small{font-size:11px}
+  .daytime-scenes{padding:24px 20px;margin-top:30px}
+  .daytime-scenes h3{font-size:21px}
+  .daytime-scenes ul{grid-template-columns:1fr;gap:10px;margin-top:18px}
+  .daytime-scenes li{padding:12px;font-size:16px}
+  .stretch-session{padding-block:56px}
+  .stretch-session .center-heading h2{font-size:24px}
+  .session-grid{grid-template-columns:1fr;gap:18px;width:clamp(276px,76vw,340px);max-width:100%}
+  .session-card{padding:22px 20px}
+  .session-card h3{font-size:16px}
+  .pricing .rate-plan-label{font-size:18px}
+  .pricing .rate-plan-condition{font-size:17px}
+  .pricing .enrollment-plan--free{padding:22px 16px;gap:8px 18px}
+  .enrollment-plan--free h3{font-size:16px}
+  .payg-plan{grid-template-columns:1fr;gap:24px;padding:24px 20px}
+  .payg-options{grid-template-columns:1fr;gap:18px}
+}
+@media(max-width:360px){.hero-daytime strong>span{font-size:10px}.hero-daytime b{font-size:21px}}

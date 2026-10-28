@@ -32,6 +32,12 @@ VOICE_PROFILES = {
     'd': ('Dさん', '40代男性', '会社員・ゴルフ愛好家', 'ゴルフをもっと楽しめる身体へ'),
     'c': ('Cさん', '50代女性', '主婦', '姿勢・歩きやすさ'),
 }
+DAYTIME_VOICE_LABEL = '平日昼の利用イメージ（取材・写真確認待ち）'
+VOICE_RESULTS_NOTE = '※個人の感想です。感じ方や変化には個人差があります。'
+PAYG_OPTIONS = (
+    ('daytime_price', '平日10:00〜15:00'),
+    ('regular_price', 'その他の平日・土日祝'),
+)
 TRAINER_PROFILES = (
     ('takakura', '高倉トレーナー'),
     ('yoshioka', '吉岡トレーナー'),
@@ -39,30 +45,33 @@ TRAINER_PROFILES = (
     ('kuboki', '久保木トレーナー'),
 )
 SECTION_ORDER = (
-    'top', 'concerns', 'message', 'method', 'first-visit', 'voices',
+    'top', 'concerns', 'message', 'method', 'session', 'first-visit', 'voices',
     'trainers', 'price', 'flow', 'faq', 'locations', 'trial',
 )
 HOME_COPY = {
     'top': (
         '自重ストレッチで、しなやかに動ける身体へ。',
-        '筋肉から脳まで、トレーナーがマンツーマンで整えます',
+        '器具に支えられながら、自分では届かないところまで。30分のマンツーマン自重ストレッチ',
         '完全予約制マンツーマン',
         '30分だから通いやすい',
-        'トレーニングも実施可能',
-        '※トレーニングプランをご利用の方',
+        '平日10〜15時1回4,750円〜',
+        '※平日デイタイムプラン・月8回の場合',
     ),
     'concerns': (
         '最近、このような体の変化はありませんか？',
-        '「年齢のせいだから」と、諦めていませんか？',
+        'その重さを、いつものことにしないために。',
         '疲労', 'しっかり寝たはずなのに、朝から身体がだるい',
         '肩・首', 'デスクワークが続くと、首や肩が重くなる',
         '腰', '立ち上がるたびに、腰の重さが気になる',
         '猫背', 'ふと鏡を見ると、背中が丸くなっている',
         '反り腰', 'まっすぐ立っているだけで、腰がつらい',
         '歩行', '以前より、長く歩くと疲れやすくなった',
-        '以前は気にならなかった身体の重さや、少しずつ変わってきた姿勢。'
-        'その違和感を、当たり前にしないために。'
-        'Dr.coreでは、一人ひとりの身体の状態に合わせたストレッチで、柔軟性や動きやすさの改善をサポートします。',
+        '座りっぱなしの仕事や、毎日の家事。'
+        '気づかないうちに、身体に力が入っていませんか。'
+        'Dr.coreでは、一人ひとりの身体の状態に合わせた自重ストレッチで、柔軟性や動きやすさの改善をサポートします。',
+        '平日昼の30分を、自分のために。',
+        '在宅ワークの昼休みに', '平日休みの日に', '家事の合間に30分',
+        '平日10:00〜15:00なら、日常のすき間に通いやすいデイタイムプランをご利用いただけます。',
     ),
     'message': (
         'Dr.coreは',
@@ -72,10 +81,18 @@ HOME_COPY = {
         'Dr.core 自重ストレッチ3つの強み',
         'プロが導く、最適なストレッチ',
         '身体の状態や柔軟性に合わせて、専門トレーナーがマンツーマンでサポート。自分では伸ばしにくい部分まで、一人ひとりに合わせて丁寧にアプローチします。',
-        '多彩な器具で、全身を深く伸ばす',
-        'TRXをはじめとするさまざまな器具を活用し、自重を利用しながら全身をストレッチ。普段伸ばしにくい筋肉までじっくり伸ばし、柔軟性や可動域の向上を目指します。',
+        '器具に身体を預けて、ラクに深く伸ばす',
+        'TRXなどの器具に身体を支えてもらい、自分の体重を使ってゆっくり伸ばします。トレーナーが角度や体重のかけ方を調整し、無理なく心地よく伸ばせるようサポートします。',
         '伸ばすだけじゃない。動きやすい身体へ。',
         'ただ受けるだけではなく、自分自身のバランス機能も活用しながらストレッチ。柔軟性だけでなく身体の動かしやすさも高め、継続することで元の硬さに戻りにくい、軽やかに動ける身体を目指します。',
+    ),
+    'session': (
+        '通常プラン・1回30分',
+        '30分で、全身を心地よく。',
+        'まずは、ゆっくり動かす',
+        '器具に支えられて、伸ばす',
+        'プロの手で、丁寧に伸ばす',
+        '初回体験は、体組成・姿勢診断を含む60分です。',
     ),
     'first-visit': (
         'まずは一度、カラダの変化を感じてみませんか？',
@@ -92,11 +109,12 @@ HOME_COPY = {
         '経験豊富なトレーナーが、お客様の体をサポートします。',
     ),
     'price': (
-        'パーソナルだけど4,750円〜/回',
+        '平日昼なら、1回4,750円〜',
+        '※平日10:00〜15:00・月8回の場合',
         '1回30分だから、気軽に通えて継続しやすい',
-        '入会金33,000円',
-        'プラン1：平日10:00〜15:00でご利用の場合',
-        'プラン2：平日（上記以外）＆土日祝でご利用の場合',
+        '入会金0円',
+        '平日デイタイムプラン平日10:00〜15:00',
+        'レギュラープラン平日10:00〜15:00以外・土日祝',
     ),
 }
 VOID_TAGS = {
@@ -289,6 +307,11 @@ def check_page(page):
 
     assert not re.search(r'先着5名|永続割引|ペア割|U18|綺麗に痩せて|PRE.?OPEN|プレオープン|先行登録',
                          compact(scan.text), re.I), 'Inherited adult campaign copy remains.'
+    naming_text = ''.join(scan.text) + ''.join(scan.metadata.values()) + ''.join(
+        element['attrs'].get(field, '') for element in scan.elements for field in ('alt', 'aria-label', 'title')
+    )
+    assert not re.search(r'リカバリーストレッチ|ストレッチ専門プラン|パーソナルストレッチ', naming_text), \
+        'Use the unified Japanese service name 自重ストレッチ.'
     assert not re.search(r'\{\{[A-Z_]+\}\}', page.read_text(encoding='utf-8')), \
         f'Unexpanded template marker in {page.relative_to(ROOT)}.'
     return scan
@@ -323,7 +346,7 @@ def check_home(scan, page=PAGE, store=None):
     for element, phrase in zip(points, HOME_COPY['top'][2:5]):
         assert compact([phrase]) in compact(element['text']), f'Missing hero feature: {phrase}'
     assert HOME_COPY['top'][5] in compact(points[2]['text']), \
-        'The training-plan note must stay with the third hero feature.'
+        'The monthly-eight-session condition must stay with the third hero price feature.'
     concern_lists = [element for element in scan.elements if has_class(element, 'concern-grid')]
     assert len(concern_lists) == 1, 'Expected one concern list.'
     concerns = [element for element in scan.elements if element['tag'] == 'li'
@@ -354,6 +377,12 @@ def check_home(scan, page=PAGE, store=None):
                        if element['tag'] == 'h2' and is_within(element, method)]
     assert len(method_headings) == 1 and compact(method_headings[0]['text']) == compact([HOME_COPY['method'][0]]), \
         'The strength heading must remove the separator and keep the supplied wording.'
+    assert not any(has_class(element, 'next-step') and is_within(element, method)
+                   for element in scan.elements), 'Remove the training upsell from the strength section.'
+    for region in section_order:
+        if region != 'faq':
+            assert 'トレーニング' not in compact(scan.regions[region]), \
+                f'Training-plan guidance must remain only in the FAQ, not #{region}.'
 
     campaign_ctas = [anchor for anchor in scan.anchors if has_class(anchor, 'cta-fixed')]
     cta_positions = ('hero', 'intro', 'price', 'bottom', 'sticky')
@@ -394,6 +423,7 @@ def check_home(scan, page=PAGE, store=None):
     ), 'Campaign deadline must remain fixed at October 31, 2026.'
 
     price = compact(scan.regions['price'])
+    check_session(scan)
     check_intro(scan)
     check_pricing(scan)
     check_trainers(scan, page)
@@ -401,11 +431,28 @@ def check_home(scan, page=PAGE, store=None):
     check_store_identity(scan, page, store)
     check_store_navigation(scan, page)
     assert has_amount(text, 1000), 'Missing first-trial price: 1,000.'
-    assert has_amount(price, 33000), 'Missing enrollment fee: 33,000.'
     assert re.search(r'(?:[¥￥]0(?!\d)|(?<![\d,])0円)', price), \
-        'Missing same-day enrollment fee: 0 yen.'
-    assert '当日' in price and '入会金' in price, 'Same-day enrollment offer is missing.'
+        'Missing the free enrollment fee: 0 yen.'
+    assert not has_amount(price, 33000) and '体験当日のご入会' not in price, \
+        'Do not retain the previous enrollment fee or same-day-only restriction.'
     assert '30分' in text and '月額' in price, '30-minute / monthly service terms are missing.'
+
+
+def check_session(scan):
+    session = next(element for element in scan.elements if element['attrs'].get('id') == 'session')
+    cards = [element for element in scan.elements if has_class(element, 'session-card')
+             and is_within(element, session)]
+    assert len(cards) == 3, 'Explain the three approaches in the regular 30-minute session.'
+    for card, title, keywords in zip(cards, HOME_COPY['session'][2:5],
+                                      (('モビリティ',), ('TRX', '器具'), ('ペアストレッチ', 'トレーナー'))):
+        headings = [element for element in scan.elements
+                    if element['tag'] == 'h3' and is_within(element, card)]
+        paragraphs = [element for element in scan.elements
+                      if element['tag'] == 'p' and is_within(element, card)]
+        assert len(headings) == 1 and compact(headings[0]['text']) == title, \
+            'The regular session must preserve the corresponding approach title.'
+        assert len(paragraphs) == 1 and all(keyword in compact(paragraphs[0]['text']) for keyword in keywords), \
+            'Each session approach needs its explanatory body text.'
 
 
 def check_intro(scan):
@@ -430,7 +477,7 @@ def check_intro(scan):
 def check_pricing(scan):
     data = json.loads((ROOT.parent / 'data/recovery-plans.json').read_text(encoding='utf-8'))
     expected_plans = ((1, 6000), (2, 5250), (4, 5000), (8, 4750))
-    assert data['session_minutes'] == 30 and data['enrollment_fee'] == 33000, \
+    assert data['session_minutes'] == 30 and data['enrollment_fee'] == 0, \
         'The supplied session duration or enrollment fee changed.'
     assert data['other_hours_surcharge'] == 1000, 'Other-hours surcharge must be 1,000 yen per session.'
     assert tuple((plan['sessions'], plan['per_session']) for plan in data['plans']) == expected_plans, \
@@ -440,6 +487,17 @@ def check_pricing(scan):
     assert [element['attrs']['data-rate-plan'] for element in groups] == ['1', '2'], \
         'Display exactly two rate plans, with the weekday plan first.'
     for number, group in enumerate(groups, 1):
+        labels = [element for element in scan.elements
+                  if has_class(element, 'rate-plan-label') and is_within(element, group)]
+        conditions = [element for element in scan.elements
+                      if has_class(element, 'rate-plan-condition') and is_within(element, group)]
+        name, condition = (
+            ('平日デイタイムプラン', '平日10:00〜15:00') if number == 1 else
+            ('レギュラープラン', '平日10:00〜15:00以外・土日祝')
+        )
+        assert len(labels) == 1 and compact(labels[0]['text']) == name \
+            and len(conditions) == 1 and compact(conditions[0]['text']) == condition, \
+            f'Rate plan {number} must show its corresponding name and time condition.'
         tables = [element for element in scan.elements
                   if element['tag'] == 'table' and is_within(element, group)]
         assert len(tables) == 1, f'Rate plan {number} must have one comparison table.'
@@ -475,14 +533,58 @@ def check_pricing(scan):
     assert len(enrollments) == 1, 'Show the enrollment fee in one separate plan card.'
     assert not any(has_class(element, 'enrollment-base') and is_within(element, price)
                    for element in scan.elements), 'Remove the enrollment fee from the pricing introduction.'
-    standard = [element for element in scan.elements
-                if has_class(element, 'enrollment-standard') and is_within(element, enrollments[0])]
-    benefit = [element for element in scan.elements
-               if has_class(element, 'enrollment-benefit') and is_within(element, enrollments[0])]
-    assert len(standard) == 1 and compact(standard[0]['text']) == '入会金33,000円', \
-        'The separate enrollment card must preserve the 33,000 yen standard fee.'
-    assert len(benefit) == 1 and compact(benefit[0]['text']) == '今なら体験当日のご入会で入会金0円', \
-        'The separate enrollment card must preserve the same-day enrollment fee waiver.'
+    assert has_class(enrollments[0], 'enrollment-plan--free'), \
+        'The enrollment card must show the free self-weight stretch terms.'
+    fees = [element for element in scan.elements
+            if has_class(element, 'enrollment-free-price') and is_within(element, enrollments[0])]
+    assert len(fees) == 1 and compact(fees[0]['text']) == '入会金0円', \
+        'Display the confirmed free enrollment fee.'
+    assert 'すべての自重ストレッチプランが対象です。' in compact(enrollments[0]['text']), \
+        'The free enrollment terms must clearly apply to self-weight stretch plans.'
+    check_pay_as_you_go(scan, price, checked_payg_prices(data))
+
+
+def checked_payg_prices(data):
+    prices = data.get('pay_as_you_go')
+    assert isinstance(prices, dict) and all(field in prices for field, _ in PAYG_OPTIONS), \
+        'Both pay-as-you-go time bands must exist in the shared price data.'
+    for field, _ in PAYG_OPTIONS:
+        value = prices[field]
+        assert value is None or (type(value) is int and value > 0), \
+            f'Pay-as-you-go {field} must be a confirmed positive integer or null while pending.'
+    return prices
+
+
+def check_pay_as_you_go(scan, price_region, prices):
+    plans = [element for element in scan.elements
+             if has_class(element, 'payg-plan') and is_within(element, price_region)]
+    assert len(plans) == 1 and '都度払い' in compact(plans[0]['text']) \
+        and '1回30分' in compact(plans[0]['text']), 'Show one separate 30-minute pay-as-you-go plan.'
+    options = [element for element in scan.elements
+               if has_class(element, 'payg-options') and is_within(element, plans[0])]
+    assert len(options) == 1, 'Pay-as-you-go must have one time-band comparison.'
+    cards = [element for element in scan.elements if element['parent'] is options[0]]
+    assert len(cards) == 2, 'Show both pay-as-you-go time bands.'
+    for card, (field, label) in zip(cards, PAYG_OPTIONS):
+        headings = [element for element in scan.elements
+                    if element['tag'] == 'h4' and is_within(element, card)]
+        figures = [element for element in scan.elements
+                   if has_class(element, 'payg-price') and is_within(element, card)]
+        pending = [element for element in scan.elements
+                   if 'data-pending-content' in element['attrs'] and is_within(element, card)]
+        assert len(headings) == 1 and compact(headings[0]['text']) == label, \
+            f'Pay-as-you-go {field} must show its corresponding time band.'
+        assert len(figures) == 1, f'Pay-as-you-go {field} needs exactly one price or pending figure.'
+        if prices[field] is None:
+            assert len(pending) == 1 and pending[0] is figures[0] \
+                and has_class(figures[0], 'payg-price--pending') \
+                and compact(figures[0]['text']) == '料金確認中', \
+                f'Unconfirmed pay-as-you-go {field} must retain its explicit pending marker.'
+        else:
+            assert type(prices[field]) is int and prices[field] > 0, f'Invalid confirmed price: {field}.'
+            assert not pending and not has_class(figures[0], 'payg-price--pending') \
+                and compact(figures[0]['text']).replace(',', '') == f'{prices[field]}円／回', \
+                f'Confirmed pay-as-you-go {field} must display exactly {prices[field]:,} yen per visit.'
 
 
 def check_trainers(scan, page=PAGE):
@@ -532,7 +634,7 @@ def check_flow_and_faq(scan):
 
     faq = next(element for element in scan.elements if element['attrs'].get('id') == 'faq')
     questions = [element for element in scan.elements if element['tag'] == 'details' and is_within(element, faq)]
-    assert len(questions) == 7, 'Expected seven stretch-specific FAQ disclosures.'
+    assert len(questions) == 9, 'Expected nine stretch-specific FAQ disclosures.'
     for index, question in enumerate(questions, 1):
         children = [element for element in scan.elements if element['parent'] is question]
         assert children and children[0]['tag'] == 'summary' and compact(children[0]['text']), \
@@ -540,6 +642,15 @@ def check_flow_and_faq(scan):
         assert len([element for element in children if element['tag'] == 'summary']) == 1 \
             and any(has_class(element, 'answer') and compact(element['text']) for element in children[1:]), \
             f'FAQ {index} must have one question and a nonempty answer.'
+    summaries = [compact(element['text']) for element in scan.elements
+                 if element['tag'] == 'summary' and is_within(element, faq)]
+    assert any('服装' in question for question in summaries) \
+        and any('着替' in question and 'シャワー' in question for question in summaries), \
+        'The FAQ must include clothing and changing/shower questions without inferring unconfirmed answers.'
+    training_questions = [question for question in questions if 'トレーニング' in compact(question['text'])]
+    assert len(training_questions) == 1 and all(phrase in compact(training_questions[0]['text']) for phrase in
+        ('自重ストレッチだけ', 'ご希望の方に限り', '別のトレーニングプラン')), \
+        'Explain the separate training service only for customers who request it in the FAQ.'
 
 
 def check_store_identity(scan, page, store=None):
@@ -631,12 +742,23 @@ def check_voice_photo(scan, container, voice, page):
     return slots[0]
 
 
-def check_voices(home, page=PAGE, verify_articles=True):
+def check_voice_results_note(scan, container):
+    notes = [element for element in scan.elements
+             if has_class(element, 'voice-results-note') and is_within(element, container)]
+    assert len(notes) == 1 and compact(notes[0]['text']) == VOICE_RESULTS_NOTE, \
+        'Customer voices must carry the personal-impressions and individual-differences note.'
+
+
+def check_voices(home, page=PAGE, verify_articles=True, report_prefix=''):
     source = ROOT.parent / 'data/voices.json'
     assert source.is_file(), 'Missing shared voice data.'
     voices = json.loads(source.read_text(encoding='utf-8'))
     assert isinstance(voices, list), 'Voice data must be an array.'
     assert tuple(voice['slug'] for voice in voices) == VOICE_IDS, 'Voice cards must remain ordered A, D, C.'
+    assert all(voice.get('is_sample') is True for voice in voices), \
+        'These authored manuscripts must remain samples until actual interviews are confirmed.'
+    voice_section = next(element for element in home.elements if element['attrs'].get('id') == 'voices')
+    check_voice_results_note(home, voice_section)
     cards = [element for element in home.elements if has_class(element, 'voice-card')]
     assert tuple(card['attrs'].get('data-voice-id') for card in cards) == VOICE_IDS, \
         'The homepage must contain the corresponding A / D / C cards.'
@@ -657,6 +779,16 @@ def check_voices(home, page=PAGE, verify_articles=True):
         assert tuple(voice[field] for field in ('name', 'age', 'attribute', 'theme')) == profile, \
             f'Voice {slug} profile differs from supplied information.'
         card_text = compact(card['text'])
+        editorial_labels = [element for element in home.elements
+                            if has_class(element, 'voice-editorial-label') and is_within(element, card)]
+        if slug == 'a':
+            assert voice.get('editorial_label') == DAYTIME_VOICE_LABEL \
+                and '昼' in voice.get('card_title', ''), \
+                'The A sample must identify its weekday-daytime use scenario as an editorial image.'
+            assert len(editorial_labels) == 1 and compact(editorial_labels[0]['text']) == DAYTIME_VOICE_LABEL, \
+                'The A card must display the pending interview/photo label from its sample data.'
+        else:
+            assert not editorial_labels, 'Do not attach the A daytime-image label to other customer cards.'
         for phrase in profile[:2]:
             assert compact([phrase]) in card_text, f'Wrong identity/theme on voice card {slug}: {phrase}'
         identity = [element for element in home.elements
@@ -703,6 +835,7 @@ def check_voices(home, page=PAGE, verify_articles=True):
                          if element['tag'] == 'article' and has_class(element, 'voice-article')]
         assert len(article_cards) == 1, f'Expected one main voice article: {slug}.'
         check_voice_photo(article, article_cards[0], voice, article_path)
+        check_voice_results_note(article, article_cards[0])
         for phrase in profile:
             assert compact([phrase]) in article_text, f'Wrong identity/theme on article {slug}: {phrase}'
         heading = next(element for element in article.elements if element['tag'] == 'h1')
@@ -735,7 +868,7 @@ def check_voices(home, page=PAGE, verify_articles=True):
         ctas = [anchor for anchor in article.anchors if anchor['attrs'].get('href') == '../../#trial']
         assert ctas and all(compact(anchor['text']) == '初回体験予約' for anchor in ctas), \
             f'Wrong reservation CTA on article {slug}.'
-        print(f'voices/{slug}/index.html: OK — corresponding identity, manuscript state, assets and links.')
+        print(f'{report_prefix}voices/{slug}/index.html: OK — corresponding identity, manuscript state, assets and links.')
 
 
 def check_publication(pages, expected_origin=''):
@@ -797,11 +930,34 @@ def check_publication(pages, expected_origin=''):
         'robots.txt must point to the corresponding publication sitemap.'
 
 
-def main(expected_origin=''):
+def check_pending_content(allow_pending_content=False):
+    data = json.loads((ROOT.parent / 'data/recovery-plans.json').read_text(encoding='utf-8'))
+    prices = checked_payg_prices(data)
+    pending_prices = [field for field, _ in PAYG_OPTIONS if prices[field] is None]
+    pending_markers = []
+    for page in sorted(ROOT.rglob('*.html')):
+        scan = Scan()
+        scan.feed(page.read_text(encoding='utf-8'))
+        pending_markers.extend(page for element in scan.elements
+                               if 'data-pending-content' in element['attrs'])
+    description = (f'{len(pending_markers)} data-pending-content elements; '
+                   f'null pay_as_you_go prices: {", ".join(pending_prices) or "none"}')
+    assert allow_pending_content or not (pending_markers or pending_prices), (
+        f'Publication blocked by pending content ({description}). '
+        'Use --allow-pending-content only for local DRAFT verification.'
+    )
+    if allow_pending_content:
+        print(f'DRAFT — pending content allowed for local checks only: {description}.')
+    return len(pending_markers), len(pending_prices)
+
+
+def main(expected_origin='', allow_pending_content=False):
+    pending_markers, pending_prices = check_pending_content(allow_pending_content)
+    report_prefix = 'DRAFT — ' if allow_pending_content else ''
     stores = load_stores()
     pages = {PAGE: check_page(PAGE)}
     check_home(pages[PAGE], PAGE)
-    check_voices(pages[PAGE], PAGE)
+    check_voices(pages[PAGE], PAGE, report_prefix=report_prefix)
     for store in stores:
         page = ROOT / 'gyms' / store['slug'] / 'index.html'
         scan = check_page(page)
@@ -810,12 +966,19 @@ def main(expected_origin=''):
         check_voices(scan, page, verify_articles=False)
     check_publication(pages, expected_origin)
     for page, scan in pages.items():
-        print(f'{page.relative_to(ROOT)}: OK — {len(scan.links)} links, {len(scan.assets)} assets, '
+        print(f'{report_prefix}{page.relative_to(ROOT)}: OK — {len(scan.links)} links, {len(scan.assets)} assets, '
               f'{len(scan.ids)} unique IDs; corresponding Recovery copy, reservation route and prices passed.')
-    print('Verified three Recovery LPs, the shared sample articles, reservation destinations and publication metadata.')
+    if allow_pending_content:
+        print(f'DRAFT checks passed with {pending_markers} pending content elements and {pending_prices} pending prices; '
+              'local verification only, not publication approval.')
+    else:
+        print('Verified three Recovery LPs, the shared sample articles, reservation destinations and publication metadata.')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--origin', default='', help='Optional expected publication origin for canonical and sitemap checks.')
-    main(parser.parse_args().origin)
+    parser.add_argument('--allow-pending-content', action='store_true',
+                        help='Allow unconfirmed content only for local DRAFT checks; never use for publication.')
+    args = parser.parse_args()
+    main(args.origin, args.allow_pending_content)

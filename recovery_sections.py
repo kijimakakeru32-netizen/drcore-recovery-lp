@@ -32,18 +32,38 @@ def trial_banner(position, href='#trial', hero=False):
 def render_pricing():
     data = read_data('recovery-plans.json')
     groups = [
-        (1, '平日10:00〜15:00でご利用の場合', 0),
-        (2, '平日（上記以外）＆土日祝でご利用の場合', data['other_hours_surcharge']),
+        (1, '平日デイタイムプラン', '平日10:00〜15:00', 0),
+        (2, 'レギュラープラン', '平日10:00〜15:00以外・土日祝', data['other_hours_surcharge']),
     ]
     blocks = []
-    for number, condition, surcharge in groups:
+    for number, name, condition, surcharge in groups:
         rows = []
         for plan in data['plans']:
             per_session = plan['per_session'] + surcharge
             monthly = plan['sessions'] * per_session
             rows.append(f'''<tr data-sessions="{plan['sessions']}" data-monthly="{monthly}" data-per-session="{per_session}"><th scope="row"><span>{escape(plan['name'])}</span><small>月{plan['sessions']}回</small></th><td><strong>{monthly:,}</strong><span>円</span></td><td><b>{per_session:,}</b><span>円</span></td></tr>''')
-        blocks.append(f'''<article class="rate-plan rate-plan--{number}" data-rate-plan="{number}" aria-labelledby="rate-plan-{number}"><h3 id="rate-plan-{number}"><span class="rate-plan-label">プラン{number}：</span><span class="rate-plan-condition">{escape(condition)}</span></h3><div class="price-table-wrap"><table class="price-table"><caption class="visually-hidden">プラン{number}：{escape(condition)}の月額・1回あたり料金</caption><thead><tr><th scope="col">プラン</th><th scope="col">月額料金</th><th scope="col">1回あたり</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div></article>''')
-    return '<div class="rate-plans">' + ''.join(blocks) + '</div>'
+        blocks.append(f'''<article class="rate-plan rate-plan--{number}" data-rate-plan="{number}" aria-labelledby="rate-plan-{number}"><h3 id="rate-plan-{number}"><span class="rate-plan-label">{escape(name)}</span><span class="rate-plan-condition">{escape(condition)}</span></h3><div class="price-table-wrap"><table class="price-table"><caption class="visually-hidden">{escape(name)}：{escape(condition)}の月額・1回あたり料金</caption><thead><tr><th scope="col">プラン</th><th scope="col">月額料金</th><th scope="col">1回あたり</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div></article>''')
+    return '<p class="pricing-format-label">定期的に整える、月額プラン</p><div class="rate-plans">' + ''.join(blocks) + '</div>' + render_pay_as_you_go(data)
+
+
+def render_pay_as_you_go(data):
+    prices = data['pay_as_you_go']
+    options = []
+    for field, label in [('daytime_price', '平日10:00〜15:00'), ('regular_price', 'その他の平日・土日祝')]:
+        price = prices[field]
+        if price is None:
+            figure = '<p class="payg-price payg-price--pending" data-pending-content>料金確認中</p>'
+        else:
+            if not isinstance(price, int) or isinstance(price, bool) or price <= 0:
+                raise ValueError(f'Invalid pay-as-you-go {field}')
+            figure = f'<p class="payg-price"><strong>{price:,}</strong><span>円／回</span></p>'
+        options.append(f'<div><h4>{label}</h4>{figure}</div>')
+    return '''<article class="payg-plan" aria-labelledby="payg-title"><div class="payg-heading"><p>1回ずつ、自分のペースで。</p><h3 id="payg-title">都度払い</h3><p>1回30分・マンツーマン自重ストレッチ</p></div><div class="payg-options">''' + ''.join(options) + '</div></article>'
+
+
+def render_enrollment():
+    data = read_data('recovery-plans.json')
+    return f'''<article class="enrollment-plan enrollment-plan--free" aria-labelledby="enrollment-title"><h3 id="enrollment-title">自重ストレッチは</h3><p class="enrollment-free-price">入会金<strong>{data['enrollment_fee']:,}<small>円</small></strong></p><p class="enrollment-free-note">すべての自重ストレッチプランが対象です。</p></article>'''
 
 
 def render_trainers():
@@ -126,7 +146,9 @@ def render_sections(source, store=None):
         '{{CTA_BOTTOM}}': trial_banner('bottom', destination),
         '{{CTA_STICKY}}': trial_banner('sticky', destination),
         '{{RATE_PLANS}}': render_pricing(),
+        '{{ENROLLMENT}}': render_enrollment(),
         '{{TRAINER_CARDS}}': render_trainers(),
+        '{{RECOVERY_SESSION}}': (ROOT / 'templates/partials/recovery-session.html').read_text(encoding='utf-8'),
         '{{RECOVERY_FLOW}}': render_booking_content((ROOT / 'templates/partials/recovery-flow.html').read_text(encoding='utf-8'), store),
         '{{RECOVERY_FAQ}}': render_booking_content((ROOT / 'templates/partials/recovery-faq.html').read_text(encoding='utf-8'), store),
     }

@@ -24,7 +24,7 @@ def load_voices():
         for field in ['name', 'age', 'attribute', 'theme', 'main_concerns']:
             if not isinstance(voice[field], str):
                 raise ValueError(f'{slug}: {field} must be text')
-        for field in ['card_title', 'card_intro', 'article_title']:
+        for field in ['card_title', 'card_intro', 'article_title', 'editorial_label']:
             if voice.get(field) is not None and not isinstance(voice[field], str):
                 raise ValueError(f'{slug}: {field} must be text or null')
         paragraphs = voice.get('paragraphs')
@@ -86,7 +86,8 @@ def render_voice_cards(voices, site_prefix='./'):
         title_html = ''.join(f'<span>{escape(line)}</span>' for line in title.splitlines())
         intro = voice.get('card_intro') or '紹介文：原稿確認待ち'
         card_identity = '｜'.join([voice['name'], voice['age']])
-        cards.append(f'''<article class="voice-card" data-voice-id="{escape(voice['slug'])}"><a class="voice-read-more voice-card-link" href="{escape(site_prefix)}voices/{escape(voice['slug'])}/" aria-label="{escape(voice['name'])}のお客様の声を詳しく読む">{render_voice_photo(voice)}<div class="voice-card-content"><p class="voice-identity">{escape(card_identity)}<span class="voice-card-arrow" aria-hidden="true">→</span></p><h3 class="voice-card-title">{title_html}</h3><p class="voice-card-intro">{escape(intro)}</p></div></a></article>''')
+        editorial = f'<p class="voice-editorial-label">{escape(voice["editorial_label"])}</p>' if voice.get('editorial_label') else ''
+        cards.append(f'''<article class="voice-card" data-voice-id="{escape(voice['slug'])}"><a class="voice-read-more voice-card-link" href="{escape(site_prefix)}voices/{escape(voice['slug'])}/" aria-label="{escape(voice['name'])}のお客様の声を詳しく読む">{render_voice_photo(voice)}<div class="voice-card-content">{editorial}<p class="voice-identity">{escape(card_identity)}<span class="voice-card-arrow" aria-hidden="true">→</span></p><h3 class="voice-card-title">{title_html}</h3><p class="voice-card-intro">{escape(intro)}</p></div></a></article>''')
     return '''<div class="voice-carousel"><div class="voice-carousel-toolbar"><p>横にスクロール <span aria-hidden="true">→</span></p><div class="voice-carousel-controls" hidden><button class="voice-prev" type="button" aria-label="前のお客様の声を表示" aria-controls="voice-track"><span aria-hidden="true">←</span></button><button class="voice-next" type="button" aria-label="次のお客様の声を表示" aria-controls="voice-track"><span aria-hidden="true">→</span></button></div></div><div class="voice-grid" id="voice-track" tabindex="0" role="region" aria-label="お客様の声。左右にスクロールしてご覧ください">''' + '\n'.join(cards) + '</div></div>'
 
 
@@ -148,7 +149,7 @@ def build_landing_page(voices, stores, origin='', store=None):
         f"Dr.core Recovery {store['name']}のマンツーマン自重ストレッチ。{store['access']}。"
         if store else '月島店・本八幡店で、自重ストレッチによる身体のメンテナンス。'
     ) + '通常プランは1回30分。初回体験は体組成・姿勢診断付きの60分・1,000円。料金プランとWeb予約をご案内。'
-    hero_label = f'''<span class="hero-store-name">Dr.core Recovery {escape(store['name'])}</span><span class="hero-store-station">{escape(store['station'])} 徒歩{escape(store['minutes'])}分</span>''' if store else 'Dr.coreのストレッチ専門プラン'
+    hero_label = f'''<span class="hero-store-name">Dr.core Recovery {escape(store['name'])}</span><span class="hero-store-station">{escape(store['station'])} 徒歩{escape(store['minutes'])}分</span>''' if store else 'Dr.coreの自重ストレッチ'
     footer_links = f'<a href="{prefix}#top">トップページ</a>' + ''.join(f'<a href="{prefix}gyms/{escape(item["slug"])}/">{escape(item["name"])}</a>' for item in stores)
     metadata = ''
     if origin:
