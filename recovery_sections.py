@@ -52,7 +52,10 @@ def render_pay_as_you_go(data):
     for field, label in [('daytime_price', '平日10:00〜15:00'), ('regular_price', 'その他の平日・土日祝')]:
         price = prices[field]
         if price is None:
-            figure = '<p class="payg-price payg-price--pending" data-pending-content>料金確認中</p>'
+            if prices.get('unconfirmed_price_display') == 'contact_store':
+                figure = f'<p class="payg-price payg-price--inquiry" data-price-inquiry="{field}">料金は店舗へ<br>お問い合わせください</p>'
+            else:
+                figure = '<p class="payg-price payg-price--pending" data-pending-content>料金確認中</p>'
         else:
             if not isinstance(price, int) or isinstance(price, bool) or price <= 0:
                 raise ValueError(f'Invalid pay-as-you-go {field}')

@@ -624,6 +624,8 @@ def checked_payg_prices(data):
         value = prices[field]
         assert value is None or (type(value) is int and value > 0), \
             f'Pay-as-you-go {field} must be a confirmed positive integer or null while pending.'
+    assert prices.get('unconfirmed_price_display') in {None, 'contact_store'}, \
+        'Unconfirmed pay-as-you-go prices require the explicit contact_store display mode or remain pending.'
     return prices
 
 
@@ -644,17 +646,29 @@ def check_pay_as_you_go(scan, price_region, prices):
                    if has_class(element, 'payg-price') and is_within(element, card)]
         pending = [element for element in scan.elements
                    if 'data-pending-content' in element['attrs'] and is_within(element, card)]
+        inquiries = [element for element in scan.elements
+                     if 'data-price-inquiry' in element['attrs'] and is_within(element, card)]
         assert len(headings) == 1 and compact(headings[0]['text']) == label, \
             f'Pay-as-you-go {field} must show its corresponding time band.'
-        assert len(figures) == 1, f'Pay-as-you-go {field} needs exactly one price or pending figure.'
+        assert len(figures) == 1, f'Pay-as-you-go {field} needs exactly one price, inquiry or pending figure.'
         if prices[field] is None:
-            assert len(pending) == 1 and pending[0] is figures[0] \
-                and has_class(figures[0], 'payg-price--pending') \
-                and compact(figures[0]['text']) == '料金確認中', \
-                f'Unconfirmed pay-as-you-go {field} must retain its explicit pending marker.'
+            if prices.get('unconfirmed_price_display') == 'contact_store':
+                assert not pending and len(inquiries) == 1 and inquiries[0] is figures[0] \
+                    and figures[0]['tag'] == 'p' and has_class(figures[0], 'payg-price--inquiry') \
+                    and not has_class(figures[0], 'payg-price--pending') \
+                    and figures[0]['attrs'].get('data-price-inquiry') == field \
+                    and compact(figures[0]['text']) == '料金は店舗へお問い合わせください', \
+                    f'Unconfirmed pay-as-you-go {field} must show its corresponding public store-inquiry message.'
+            else:
+                assert not inquiries and len(pending) == 1 and pending[0] is figures[0] \
+                    and has_class(figures[0], 'payg-price--pending') \
+                    and not has_class(figures[0], 'payg-price--inquiry') \
+                    and compact(figures[0]['text']) == '料金確認中', \
+                    f'Unconfirmed pay-as-you-go {field} must retain its explicit pending marker.'
         else:
             assert type(prices[field]) is int and prices[field] > 0, f'Invalid confirmed price: {field}.'
-            assert not pending and not has_class(figures[0], 'payg-price--pending') \
+            assert not pending and not inquiries and not has_class(figures[0], 'payg-price--pending') \
+                and not has_class(figures[0], 'payg-price--inquiry') \
                 and compact(figures[0]['text']).replace(',', '') == f'{prices[field]}円／回', \
                 f'Confirmed pay-as-you-go {field} must display exactly {prices[field]:,} yen per visit.'
 
@@ -719,6 +733,25 @@ def check_flow_and_faq(scan):
     assert any('服装' in question for question in summaries) \
         and any('着替' in question and 'シャワー' in question for question in summaries), \
         'The FAQ must include clothing and changing/shower questions without inferring unconfirmed answers.'
+    store_inquiries = [element for element in scan.elements if 'data-store-inquiry' in element['attrs']]
+    assert Counter(element['attrs']['data-store-inquiry'] for element in store_inquiries) == \
+        Counter(('clothing', 'facilities')), 'Show exactly one public inquiry answer for each unconfirmed facility topic.'
+    for field, question_text, answer_text in (
+        ('clothing', '服装は？',
+         '普段着でのご利用やレンタルウェアについては、ご予約前にご利用店舗へお問い合わせください。'),
+        ('facilities', '着替えやシャワーはありますか？',
+         '着替えスペース・シャワーのご利用については、ご予約前にご利用店舗へお問い合わせください。'),
+    ):
+        answer = next(element for element in store_inquiries if element['attrs']['data-store-inquiry'] == field)
+        question = answer['parent']
+        question_summaries = [element for element in scan.elements
+                              if element['tag'] == 'summary' and element['parent'] is question]
+        assert has_class(answer, 'answer') and question['tag'] == 'details' and is_within(answer, faq) \
+            and len(question_summaries) == 1 and compact(question_summaries[0]['text']) == question_text \
+            and compact(answer['text']) == answer_text \
+            and not any('data-pending-content' in element['attrs'] and is_within(element, answer)
+                        for element in scan.elements), \
+            f'The {field} FAQ must retain its corresponding public store-inquiry copy without facility claims or draft markers.'
     training_questions = [question for question in questions if 'トレーニング' in compact(question['text'])]
     assert len(training_questions) == 1 and all(phrase in compact(training_questions[0]['text']) for phrase in
         ('自重ストレッチだけ', 'ご希望の方に限り', '別のトレーニングプラン')), \
@@ -1017,7 +1050,8 @@ def check_publication(pages, expected_origin=''):
 def check_pending_content(allow_pending_content=False):
     data = json.loads((ROOT.parent / 'data/recovery-plans.json').read_text(encoding='utf-8'))
     prices = checked_payg_prices(data)
-    pending_prices = [field for field, _ in PAYG_OPTIONS if prices[field] is None]
+    pending_prices = [field for field, _ in PAYG_OPTIONS
+                      if prices[field] is None and prices.get('unconfirmed_price_display') != 'contact_store']
     pending_markers = []
     for page in sorted(ROOT.rglob('*.html')):
         scan = Scan()

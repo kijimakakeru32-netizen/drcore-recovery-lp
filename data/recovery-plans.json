@@ -3,7 +3,7 @@
   "tax_label": null,
   "enrollment_fee": 0,
   "other_hours_surcharge": 1000,
-  "pay_as_you_go": {"daytime_price": null, "regular_price": null},
+  "pay_as_you_go": {"daytime_price": null, "regular_price": null, "unconfirmed_price_display": "contact_store"},
   "plans": [
     {"name": "月1プラン", "sessions": 1, "per_session": 6000},
     {"name": "月2プラン", "sessions": 2, "per_session": 5250},

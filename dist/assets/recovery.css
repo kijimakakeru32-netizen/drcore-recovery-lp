@@ -696,3 +696,5 @@
 
 /* Keep the supported stretch and both participants in the second strength photo. */
 #method .feature:nth-child(2) .feature-photo>img{object-position:50% 50%}
+
+.payg-price--inquiry{display:block;font-family:var(--body);font-size:17px;font-weight:700;line-height:1.8;white-space:normal;color:#426347}
