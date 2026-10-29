@@ -164,7 +164,7 @@ class Scan(HTMLParser):
                                    for item in attrs['srcset'].split(',') if item.strip())
         if tag == 'link' and attrs.get('href'):
             self.assets.append(attrs['href'])
-        element = {'tag': tag, 'attrs': attrs, 'text': [],
+        element = {'tag': tag, 'attrs': attrs, 'text': [], 'all_text': [],
                    'parent': self.stack[-1] if self.stack else None}
         self.elements.append(element)
         if tag == 'a':
@@ -184,6 +184,8 @@ class Scan(HTMLParser):
                 break
 
     def handle_data(self, data):
+        for element in self.stack:
+            element['all_text'].append(data)
         if any(element['tag'] in {'script', 'style'}
                or element['attrs'].get('aria-hidden') == 'true' for element in self.stack):
             return
@@ -657,7 +659,7 @@ def check_pay_as_you_go(scan, price_region, prices):
                     and figures[0]['tag'] == 'p' and has_class(figures[0], 'payg-price--inquiry') \
                     and not has_class(figures[0], 'payg-price--pending') \
                     and figures[0]['attrs'].get('data-price-inquiry') == field \
-                    and compact(figures[0]['text']) == '料金は店舗へお問い合わせください', \
+                    and compact(figures[0]['all_text']) == '料金は店舗へお問い合わせください', \
                     f'Unconfirmed pay-as-you-go {field} must show its corresponding public store-inquiry message.'
             else:
                 assert not inquiries and len(pending) == 1 and pending[0] is figures[0] \
@@ -746,9 +748,13 @@ def check_flow_and_faq(scan):
         question = answer['parent']
         question_summaries = [element for element in scan.elements
                               if element['tag'] == 'summary' and element['parent'] is question]
+        question_answers = [element for element in scan.elements
+                            if element['parent'] is question and element['tag'] != 'summary']
         assert has_class(answer, 'answer') and question['tag'] == 'details' and is_within(answer, faq) \
             and len(question_summaries) == 1 and compact(question_summaries[0]['text']) == question_text \
-            and compact(answer['text']) == answer_text \
+            and len(question_answers) == 1 and question_answers[0] is answer \
+            and compact(answer['all_text']) == answer_text \
+            and compact(question['text']) == question_text + answer_text \
             and not any('data-pending-content' in element['attrs'] and is_within(element, answer)
                         for element in scan.elements), \
             f'The {field} FAQ must retain its corresponding public store-inquiry copy without facility claims or draft markers.'
