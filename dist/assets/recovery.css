@@ -483,7 +483,7 @@
 #concerns .concern-closing{max-width:760px;margin-top:36px;padding-top:28px}
 #concerns .concern-closing h3{font-size:23px;line-height:1.7}
 #concerns .concern-closing p{font-size:16px;line-height:1.9;margin-top:18px;color:#4b565a}
-#method .feature-photo>img{aspect-ratio:2.1;border-radius:10px}
+#method .feature-photo>img{aspect-ratio:4/3;border-radius:10px}
 #method .feature-photo>span{width:38px;height:38px;font-size:18px;bottom:-15px;border-width:3px}
 #method .feature h3{font-size:18px;line-height:1.75;margin-top:26px}
 #method .feature-copy>p{font-size:16px;line-height:1.85;margin-top:12px}
@@ -695,7 +695,8 @@
 }
 @media(max-width:760px) and (min-aspect-ratio:9/16){.recovery-header~main .hero-visual .hero-photo>img{object-position:58% 10%}}
 
-/* Keep the supported stretch and both participants in the second strength photo. */
+/* Keep the trainer and stretching movement visible in all three strength photos. */
 #method .feature:nth-child(2) .feature-photo>img{object-position:50% 50%}
+#method .feature:nth-child(3) .feature-photo>img{object-position:50% 65%}
 
 .payg-price--inquiry{display:block;font-family:var(--body);font-size:17px;font-weight:700;line-height:1.8;white-space:normal;color:#426347}
