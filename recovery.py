@@ -154,7 +154,7 @@ def build_landing_page(voices, stores, origin='', store=None):
     metadata = ''
     if origin:
         url = origin.rstrip('/') + (f"/gyms/{store['slug']}/" if store else '/')
-        metadata = f'<link rel="canonical" href="{escape(url)}"><meta property="og:url" content="{escape(url)}"><meta property="og:image" content="{escape(origin.rstrip("/"))}/assets/fv_main.jpg">'
+        metadata = f'<link rel="canonical" href="{escape(url)}"><meta property="og:url" content="{escape(url)}"><meta property="og:image" content="{escape(origin.rstrip("/"))}/assets/recovery-hero-portrait.jpg">'
     replacements = {
         '{{PAGE_TITLE}}': escape(title),
         '{{PAGE_DESCRIPTION}}': escape(description),

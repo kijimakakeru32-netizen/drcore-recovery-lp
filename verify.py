@@ -13,6 +13,7 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parent / 'dist'
 PAGE = ROOT / 'index.html'
+HERO_PHOTO = ROOT / 'assets/recovery-hero-portrait.jpg'
 STORE_IDS = ('tsukishima', 'motoyawata')
 STORE_PROFILES = {
     'tsukishima': {
@@ -353,6 +354,42 @@ def check_home(scan, page=PAGE, store=None):
         assert compact([phrase]) in compact(element['text']), f'Missing hero feature: {phrase}'
     assert HOME_COPY['top'][5] in compact(points[2]['text']), \
         'The monthly-eight-session condition must stay with the third hero price feature.'
+    hero = next(element for element in scan.elements if element['attrs'].get('id') == 'top')
+    visuals = [element for element in scan.elements
+               if has_class(element, 'hero-visual') and is_within(element, hero)]
+    details = [element for element in scan.elements
+               if has_class(element, 'hero-details') and is_within(element, hero)]
+    assert len(visuals) == len(details) == 1 \
+        and visuals[0]['parent'] is hero and details[0]['parent'] is hero, \
+        'The hero must separate its first-screen visual from its following detail block.'
+    copies = [element for element in scan.elements if has_class(element, 'hero-copy')]
+    photos = [element for element in scan.elements if has_class(element, 'hero-photo')]
+    assert len(copies) == len(photos) == 1 and is_within(copies[0], visuals[0]) \
+        and is_within(photos[0], visuals[0]) and is_within(heading, copies[0]), \
+        'The hero visual must retain its headline copy and one photo.'
+    leads = [element for element in scan.elements if has_class(element, 'hero-lead')]
+    assert len(leads) == 1 and is_within(leads[0], copies[0]) \
+        and compact(leads[0]['text']) == HOME_COPY['top'][1], \
+        'Keep the existing service explanation with the headline inside the hero visual.'
+    images = [element for element in scan.elements
+              if element['tag'] == 'img' and is_within(element, visuals[0])]
+    assert len(images) == 1 and is_within(images[0], photos[0]) \
+        and local_path(images[0]['attrs'].get('src', ''), page) == HERO_PHOTO \
+        and images[0]['attrs'].get('width') == '1080' and images[0]['attrs'].get('height') == '1920', \
+        'Every LP hero must use the supplied 1080×1920 portrait asset.'
+    assert not any(is_within(anchor, visuals[0]) for anchor in scan.anchors) \
+        and is_within(point_lists[0], details[0]) and not is_within(point_lists[0], visuals[0]), \
+        'Keep the hero visual focused on its photo and copy, with all three features below it.'
+    method_links = [anchor for anchor in scan.anchors if is_within(anchor, details[0])]
+    assert len(method_links) == 1 and method_links[0]['attrs'].get('href') == '#method' \
+        and compact(method_links[0]['text']) == 'どんなストレッチ？', \
+        'Retain the service-detail link below the hero visual beside the three features.'
+    hero_ctas = [anchor for anchor in scan.anchors
+                 if has_class(anchor, 'cta-fixed') and anchor['attrs'].get('data-position') == 'hero']
+    assert len(hero_ctas) == 1 and is_within(hero_ctas[0], hero) \
+        and not is_within(hero_ctas[0], visuals[0]) \
+        and scan.elements.index(visuals[0]) < scan.elements.index(details[0]) < scan.elements.index(hero_ctas[0]), \
+        'Keep the existing hero trial banner after the visual and detail blocks.'
     concern_lists = [element for element in scan.elements if has_class(element, 'concern-grid')]
     assert len(concern_lists) == 1, 'Expected one concern list.'
     concerns = [element for element in scan.elements if element['tag'] == 'li'
@@ -705,6 +742,9 @@ def check_store_identity(scan, page, store=None):
         return
     assert len(hero_labels) == 1 and hero_labels[0]['tag'] == 'p', \
         f'{store["slug"]} must retain its hero-label paragraph.'
+    visual = next(element for element in scan.elements if has_class(element, 'hero-visual'))
+    assert is_within(hero_labels[0], visual), \
+        f'{store["slug"]} must retain its store label within the first-screen visual.'
     hero_names = [element for element in scan.elements if has_class(element, 'hero-store-name')]
     hero_stations = [element for element in scan.elements if has_class(element, 'hero-store-station')]
     assert len(hero_names) == 1 and is_within(hero_names[0], hero_labels[0]) \
