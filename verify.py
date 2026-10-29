@@ -382,10 +382,8 @@ def check_home(scan, page=PAGE, store=None):
     assert not any(is_within(anchor, visuals[0]) for anchor in scan.anchors) \
         and is_within(point_lists[0], details[0]) and not is_within(point_lists[0], visuals[0]), \
         'Keep the hero visual focused on its photo and copy, with all three features below it.'
-    method_links = [anchor for anchor in scan.anchors if is_within(anchor, details[0])]
-    assert len(method_links) == 1 and method_links[0]['attrs'].get('href') == '#method' \
-        and compact(method_links[0]['text']) == 'どんなストレッチ？', \
-        'Retain the service-detail link below the hero visual beside the three features.'
+    assert not any(is_within(anchor, details[0]) for anchor in scan.anchors), \
+        'Remove the service-detail link below the three hero features.'
     hero_ctas = [anchor for anchor in scan.anchors
                  if has_class(anchor, 'cta-fixed') and anchor['attrs'].get('data-position') == 'hero']
     assert len(hero_ctas) == 1 and is_within(hero_ctas[0], hero) \
