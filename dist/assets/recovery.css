@@ -535,12 +535,12 @@
 .hero-daytime strong>span{display:block;font-size:13px;line-height:1.4}
 .hero-daytime strong>span:nth-child(2){margin-top:3px;font-size:12px}
 .hero-daytime b{font-family:var(--display);font-size:30px;font-weight:600;line-height:1.05;letter-spacing:0}
-.daytime-scenes{max-width:960px;margin:36px auto 0;padding:28px;background:#eef2eb;border-radius:10px;text-align:center}
-.daytime-scenes h3{font-size:23px;line-height:1.7;color:#31513c}
+.daytime-scenes{max-width:none;margin:0;padding:64px 0;background:#eef2eb;border-radius:0;text-align:center}
+.daytime-content{max-width:1000px}
+.daytime-scenes h2{font-size:23px;line-height:1.7;color:#31513c}
 .daytime-scenes ul{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;list-style:none;padding:0;margin:22px 0 18px}
 .daytime-scenes li{padding:14px 10px;background:#fff;color:#35543c;font-size:16px;font-weight:700}
-.daytime-scenes>p{max-width:700px;margin-inline:auto;font-size:16px;line-height:1.85;color:#526357}
-.daytime-scenes .text-link{margin-top:20px;font-size:15px}
+.daytime-scenes .daytime-description{max-width:700px;margin-inline:auto;font-size:16px;line-height:1.85;color:#526357}
 .stretch-session{background:#f5f7f0;padding-block:72px}
 .stretch-session .center-heading h2{font-size:32px}
 .center-heading .session-eyebrow{display:inline-block;margin:0 0 14px;padding:5px 16px;border:1px solid #c3d3bd;color:#426347;font-size:15px;font-weight:700}
@@ -583,8 +583,8 @@
   .hero-daytime strong>span:nth-child(2){font-size:10px;margin-top:2px}
   .hero-daytime b{font-size:23px}
   .hero-daytime small{font-size:11px}
-  .daytime-scenes{padding:24px 20px;margin-top:30px}
-  .daytime-scenes h3{font-size:21px}
+  .daytime-scenes{padding:48px 0}
+  .daytime-scenes h2{font-size:21px}
   .daytime-scenes ul{grid-template-columns:1fr;gap:10px;margin-top:18px}
   .daytime-scenes li{padding:12px;font-size:16px}
   .stretch-session{padding-block:56px}
@@ -604,10 +604,10 @@
 /* Fixed headline breaks and a brighter daytime invitation. */
 .hero-title-line{display:block;white-space:nowrap}
 #concerns .concern-closing h3>.heading-line,#session-title>.heading-line{display:block;white-space:nowrap}
-.daytime-scenes{position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(120deg,#fff1c4 0%,#fffdf4 58%,#e1f2f6 100%);box-shadow:0 8px 30px #6e714d0c}
+.daytime-scenes{position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(120deg,#fff1c4 0%,#fffdf4 58%,#e1f2f6 100%)}
 .daytime-scenes:before{content:'';position:absolute;z-index:-1;right:-35px;top:-55px;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,#f4d073 0 34%,#f5d98c55 35% 62%,transparent 63%);pointer-events:none}
-.daytime-scenes>.daytime-eyebrow{display:inline-block;padding:5px 16px;margin:0 0 14px;background:#ffffffc9;border-radius:30px;color:#806126;font-size:14px;font-weight:700;line-height:1.7;letter-spacing:.04em}
-.daytime-scenes h3{color:#345747}
+.daytime-scenes .daytime-eyebrow{display:inline-block;padding:5px 16px;margin:0 0 14px;background:#ffffffc9;border-radius:30px;color:#806126;font-size:14px;font-weight:700;line-height:1.7;letter-spacing:.04em}
+.daytime-scenes h2{color:#345747}
 .daytime-scenes li{background:#ffffffdb;box-shadow:0 2px 10px #8a7b3b08}
 .daytime-plan-button{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;max-width:360px;min-height:60px;margin:24px auto 0;padding:16px;background:#267846;color:#fff;font-size:16px;font-weight:700;line-height:1.6;text-decoration:none;border-radius:4px;box-shadow:0 4px 0 #1a5937;transition:background .2s,transform .2s}
 .daytime-plan-button>span:first-child{min-width:0}

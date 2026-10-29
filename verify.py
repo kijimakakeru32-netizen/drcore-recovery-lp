@@ -46,7 +46,7 @@ TRAINER_PROFILES = (
     ('kuboki', '久保木トレーナー'),
 )
 SECTION_ORDER = (
-    'top', 'concerns', 'message', 'method', 'session', 'first-visit', 'voices',
+    'top', 'concerns', 'daytime', 'message', 'method', 'session', 'first-visit', 'voices',
     'trainers', 'price', 'flow', 'faq', 'locations', 'trial',
 )
 HOME_COPY = {
@@ -70,6 +70,8 @@ HOME_COPY = {
         '座りっぱなしの仕事や、毎日の家事。'
         '気づかないうちに、身体に力が入っていませんか。'
         'Dr.coreでは、一人ひとりの身体の状態に合わせた自重ストレッチで、柔軟性や動きやすさの改善をサポートします。',
+    ),
+    'daytime': (
         '平日昼の30分を、自分のために。',
         '在宅ワークの昼休みに', '平日休みの日に', '家事の合間に30分',
         '平日10:00〜15:00なら、日常のすき間に通いやすいデイタイムプランをご利用いただけます。',
@@ -415,7 +417,24 @@ def check_home(scan, page=PAGE, store=None):
         ] and compact(closing_headings[0]['text']) == HOME_COPY['concerns'][1], \
         'The concern-closing heading must preserve its two explicit supplied lines.'
     daytime_scenes = [element for element in scan.elements if has_class(element, 'daytime-scenes')]
-    assert len(daytime_scenes) == 1, 'Expected one weekday-daytime scene block.'
+    assert len(daytime_scenes) == 1, 'Expected one weekday-daytime scene section.'
+    daytime = daytime_scenes[0]
+    main = next(element for element in scan.elements if element['attrs'].get('id') == 'main')
+    concern_section = next(element for element in scan.elements if element['attrs'].get('id') == 'concerns')
+    assert daytime['tag'] == 'section' and has_class(daytime, 'section') \
+        and daytime['attrs'].get('id') == 'daytime' and daytime['parent'] is main \
+        and daytime['attrs'].get('aria-labelledby') == 'daytime-title' \
+        and not is_within(daytime, concern_section), \
+        'The weekday-daytime section must stand directly within main, outside the gray concern section.'
+    daytime_contents = [element for element in scan.elements
+                        if has_class(element, 'daytime-content') and element['parent'] is daytime]
+    assert len(daytime_contents) == 1 and daytime_contents[0]['tag'] == 'div' \
+        and has_class(daytime_contents[0], 'wrap'), 'Wrap the independent daytime section content consistently.'
+    daytime_headings = [element for element in scan.elements
+                        if element['tag'] == 'h2' and is_within(element, daytime_contents[0])]
+    assert len(daytime_headings) == 1 and daytime_headings[0]['attrs'].get('id') == 'daytime-title' \
+        and compact(daytime_headings[0]['text']) == HOME_COPY['daytime'][0], \
+        'The independent daytime section must retain its supplied, labelled h2 heading.'
     daytime_buttons = [anchor for anchor in scan.anchors if is_within(anchor, daytime_scenes[0])]
     assert len(daytime_buttons) == 1 and has_class(daytime_buttons[0], 'daytime-plan-button') \
         and not has_class(daytime_buttons[0], 'text-link') \
