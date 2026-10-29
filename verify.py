@@ -347,8 +347,8 @@ def check_home(scan, page=PAGE, store=None):
                   if element['tag'] == 'span' and has_class(element, 'hero-title-line')
                   and is_within(element, heading)]
     assert [compact(element['text']) for element in hero_lines] == [
-        '自重ストレッチで', 'しなやかに動ける', '身体へ'
-    ], 'The main headline must preserve its three explicit, punctuation-free lines.'
+        '自重ストレッチで', 'しなやかに動ける身体へ'
+    ], 'The main headline must preserve its two explicit, punctuation-free lines.'
     point_lists = [element for element in scan.elements
                    if has_class(element, 'hero-points')]
     assert len(point_lists) == 1, 'Expected one hero feature list.'

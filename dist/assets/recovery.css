@@ -626,8 +626,8 @@
 .hero-brand{position:absolute;z-index:2;top:var(--hero-brand-top);left:max(var(--pad),calc((100% - var(--max))/2));line-height:0}
 .hero-brand>img{display:block;width:124px;height:auto;filter:drop-shadow(0 1px 3px #10291f59)}
 .hero-visual .hero-copy{position:static;z-index:1;min-width:0;padding-block:60px 72px;color:#fff}
-.hero-visual h1{font-size:clamp(40px,4.1vw,60px);font-weight:700;line-height:1.45;letter-spacing:.025em;text-shadow:0 2px 18px #07181024}
-.hero-visual .hero-title-main{color:inherit}
+.hero-visual h1{font-size:clamp(40px,4.1vw,60px);font-weight:700;line-height:1.45em;letter-spacing:.025em;text-shadow:0 2px 18px #07181024}
+.hero-visual .hero-title-main{color:inherit;font-size:.88em;line-height:inherit}
 .hero-visual .hero-lead{max-width:520px;margin-top:25px;color:#fff;font-size:17px;line-height:1.95;letter-spacing:.02em;text-shadow:0 1px 10px #07181055}
 .hero-visual .hero-label{position:absolute;top:calc(var(--hero-brand-top) + 46px);left:max(var(--pad),calc((100% - var(--max))/2));max-width:calc(100% - 48px);margin:0;padding:10px 14px;border-left:2px solid #c6ad75;background:#142e25c7;color:#fff}
 .hero-visual .hero-store-name{color:#fff;font-size:18px;font-weight:700}
@@ -660,7 +660,7 @@
   .recovery-header~main .hero-visual .hero-photo>img{object-fit:cover;object-position:58% 50%}
   .hero-visual:after{background:linear-gradient(0deg,#0c241be6 0%,#0c241ba6 15%,#0c241b24 36%,#0c241b00 55%)}
   .hero-visual .hero-copy{width:100%;max-width:none;padding:80px 24px max(38px,env(safe-area-inset-bottom));margin:0}
-  .hero-visual h1{font-size:clamp(30px,8.2vw,43px);font-weight:700;line-height:1.45;letter-spacing:.015em}
+  .hero-visual h1{font-size:clamp(30px,8.2vw,43px);font-weight:700;line-height:1.45em;letter-spacing:.015em}
   .hero-visual .hero-lead{max-width:440px;font-size:16px;line-height:1.85;letter-spacing:0;margin-top:19px}
   .hero-visual .hero-label{top:calc(var(--hero-brand-top) + 46px);left:24px;padding-left:12px}
   .hero-visual .hero-store-name{font-size:16px}
@@ -690,7 +690,7 @@
 @media(max-width:760px) and (max-height:600px){
   .hero-visual{min-height:480px}
   .hero-visual .hero-copy{padding-bottom:max(26px,env(safe-area-inset-bottom))}
-  .hero-visual h1{font-size:28px;line-height:1.4}
+  .hero-visual h1{font-size:28px;line-height:1.4em}
   .hero-visual .hero-lead{font-size:15px;line-height:1.7;margin-top:13px}
 }
 @media(max-width:760px) and (min-aspect-ratio:9/16){.recovery-header~main .hero-visual .hero-photo>img{object-position:58% 10%}}
