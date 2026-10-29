@@ -149,7 +149,7 @@ def build_landing_page(voices, stores, origin='', store=None):
         f"Dr.core Recovery {store['name']}のマンツーマン自重ストレッチ。{store['access']}。"
         if store else '月島店・本八幡店で、自重ストレッチによる身体のメンテナンス。'
     ) + '通常プランは1回30分。初回体験は体組成・姿勢診断付きの60分・1,000円。料金プランとWeb予約をご案内。'
-    hero_label = f'''<p class="hero-label"><span class="hero-store-name">Dr.core Recovery {escape(store['name'])}</span><span class="hero-store-station">{escape(store['station'])} 徒歩{escape(store['minutes'])}分</span></p>''' if store else ''
+    hero_label = f'''<p class="hero-label"><span class="hero-store-name">{escape(store['name'])}</span><span class="hero-store-station">{escape(store['station'])} 徒歩{escape(store['minutes'])}分</span></p>''' if store else ''
     footer_links = f'<a href="{prefix}#top">トップページ</a>' + ''.join(f'<a href="{prefix}gyms/{escape(item["slug"])}/">{escape(item["name"])}</a>' for item in stores)
     metadata = ''
     if origin:

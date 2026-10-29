@@ -14,6 +14,7 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parent / 'dist'
 PAGE = ROOT / 'index.html'
 HERO_PHOTO = ROOT / 'assets/recovery-hero-portrait.jpg'
+HERO_LOGO = ROOT / 'assets/logo-transparent.svg'
 STORE_IDS = ('tsukishima', 'motoyawata')
 STORE_PROFILES = {
     'tsukishima': {
@@ -376,11 +377,20 @@ def check_home(scan, page=PAGE, store=None):
         and compact(leads[0]['text']) == HOME_COPY['top'][1], \
         'Keep the existing service explanation with the headline inside the hero visual.'
     images = [element for element in scan.elements
-              if element['tag'] == 'img' and is_within(element, visuals[0])]
-    assert len(images) == 1 and is_within(images[0], photos[0]) \
+              if element['tag'] == 'img' and is_within(element, photos[0])]
+    assert len(images) == 1 \
         and local_path(images[0]['attrs'].get('src', ''), page) == HERO_PHOTO \
         and images[0]['attrs'].get('width') == '1080' and images[0]['attrs'].get('height') == '1920', \
         'Every LP hero must use the supplied 1080×1920 portrait asset.'
+    brands = [element for element in scan.elements if has_class(element, 'hero-brand')]
+    assert len(brands) == 1 and brands[0]['tag'] == 'div' and brands[0]['parent'] is visuals[0], \
+        'Show one unlinked brand directly inside the initial hero visual.'
+    brand_images = [element for element in scan.elements
+                    if element['tag'] == 'img' and element['parent'] is brands[0]]
+    assert len(brand_images) == 1 and brand_images[0]['attrs'].get('alt') == 'Dr.core' \
+        and local_path(brand_images[0]['attrs'].get('src', ''), page) == HERO_LOGO \
+        and brand_images[0]['attrs'].get('width') == '1691' and brand_images[0]['attrs'].get('height') == '393', \
+        'The initial hero logo must retain the local white Dr.core SVG and its intrinsic dimensions.'
     assert not any(is_within(anchor, visuals[0]) for anchor in scan.anchors) \
         and is_within(point_lists[0], details[0]) and not is_within(point_lists[0], visuals[0]), \
         'Keep the hero visual focused on its photo and copy, with all three features below it.'
