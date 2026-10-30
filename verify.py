@@ -68,11 +68,7 @@ HOME_COPY = {
     ),
     'concerns': (
         '最近こんなお悩みはありませんか？',
-        'その重さを、いつものことにしないために。',
         *(''.join(lines) for _, lines in CONCERN_CARDS),
-        '座りっぱなしの仕事や、毎日の家事。'
-        '気づかないうちに、身体に力が入っていませんか。'
-        'Dr.coreでは、一人ひとりの身体の状態に合わせた自重ストレッチで、柔軟性や動きやすさの改善をサポートします。',
     ),
     'daytime': (
         '平日昼の30分を、自分のために。',
@@ -417,18 +413,8 @@ def check_home(scan, page=PAGE, store=None):
         and [compact(element['text']) for element in title_lines] == [
             '最近こんな', 'お悩みはありませんか？'
         ], 'The concern heading must explicitly group the two supplied mobile lines.'
-    concern_closings = [element for element in scan.elements if has_class(element, 'concern-closing')]
-    assert len(concern_closings) == 1, 'Expected one concern-closing block.'
-    closing_headings = [element for element in scan.elements
-                        if element['tag'] == 'h3' and is_within(element, concern_closings[0])]
-    assert len(closing_headings) == 1, 'Expected one concern-closing heading.'
-    closing_lines = [element for element in scan.elements
-                     if element['parent'] is closing_headings[0]]
-    assert all(element['tag'] == 'span' and has_class(element, 'heading-line') for element in closing_lines) \
-        and [compact(element['text']) for element in closing_lines] == [
-            'その重さを、', 'いつものことにしないために。'
-        ] and compact(closing_headings[0]['text']) == HOME_COPY['concerns'][1], \
-        'The concern-closing heading must preserve its two explicit supplied lines.'
+    assert not any(has_class(element, 'concern-closing') for element in scan.elements), \
+        'Remove the concern-closing heading and body block below the five cards.'
     daytime_scenes = [element for element in scan.elements if has_class(element, 'daytime-scenes')]
     assert len(daytime_scenes) == 1, 'Expected one weekday-daytime scene section.'
     daytime = daytime_scenes[0]
