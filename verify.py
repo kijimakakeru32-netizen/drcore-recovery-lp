@@ -46,6 +46,13 @@ TRAINER_PROFILES = (
     ('yoshinaga', '吉永トレーナー'),
     ('kuboki', '久保木トレーナー'),
 )
+CONCERN_CARDS = (
+    ('shoulder-back.svg', ('肩・腰の重さ', 'が気になる')),
+    ('steady-steps.svg', ('つまずき', 'やすくなった')),
+    ('desk-posture.svg', ('姿勢が', '気になる')),
+    ('seated-flexibility.svg', ('身体が硬く', '伸ばしにくい')),
+    ('golf-mobility.svg', ('スポーツで', '動きづらい')),
+)
 SECTION_ORDER = (
     'top', 'concerns', 'daytime', 'message', 'method', 'session', 'first-visit', 'voices',
     'trainers', 'price', 'flow', 'faq', 'locations', 'trial',
@@ -60,14 +67,9 @@ HOME_COPY = {
         '※平日デイタイムプラン・月8回の場合',
     ),
     'concerns': (
-        '最近、このような体の変化はありませんか？',
+        '最近こんなお悩みはありませんか？',
         'その重さを、いつものことにしないために。',
-        '疲労', 'しっかり寝たはずなのに、朝から身体がだるい',
-        '肩・首', 'デスクワークが続くと、首や肩が重くなる',
-        '腰', '立ち上がるたびに、腰の重さが気になる',
-        '猫背', 'ふと鏡を見ると、背中が丸くなっている',
-        '反り腰', 'まっすぐ立っているだけで、腰がつらい',
-        '歩行', '以前より、長く歩くと疲れやすくなった',
+        *(''.join(lines) for _, lines in CONCERN_CARDS),
         '座りっぱなしの仕事や、毎日の家事。'
         '気づかないうちに、身体に力が入っていませんか。'
         'Dr.coreでは、一人ひとりの身体の状態に合わせた自重ストレッチで、柔軟性や動きやすさの改善をサポートします。',
@@ -406,14 +408,15 @@ def check_home(scan, page=PAGE, store=None):
     assert len(concern_lists) == 1, 'Expected one concern list.'
     concerns = [element for element in scan.elements if element['tag'] == 'li'
                 and element['parent'] is concern_lists[0]]
-    assert len(concerns) == 6, 'Expected six supplied concern cards.'
+    assert len(concerns) == len(CONCERN_CARDS), 'Expected five supplied concern cards.'
     concern_titles = [element for element in scan.elements
                       if element['tag'] == 'h2' and has_class(element, 'concern-title')]
     assert len(concern_titles) == 1, 'Expected one concern heading.'
     title_lines = [element for element in scan.elements if element['parent'] is concern_titles[0]]
-    assert [compact(element['text']) for element in title_lines] == [
-        '最近、このような', '体の変化はありませんか？'
-    ], 'The concern heading must explicitly group the two supplied mobile lines.'
+    assert all(element['tag'] == 'span' for element in title_lines) \
+        and [compact(element['text']) for element in title_lines] == [
+            '最近こんな', 'お悩みはありませんか？'
+        ], 'The concern heading must explicitly group the two supplied mobile lines.'
     concern_closings = [element for element in scan.elements if has_class(element, 'concern-closing')]
     assert len(concern_closings) == 1, 'Expected one concern-closing block.'
     closing_headings = [element for element in scan.elements
@@ -451,13 +454,29 @@ def check_home(scan, page=PAGE, store=None):
         and daytime_buttons[0]['attrs'].get('href') == '#price' \
         and compact(daytime_buttons[0]['text']) == '平日デイタイムプランを見る', \
         'The weekday-daytime block needs its dedicated button and existing pricing route.'
-    for index, concern in enumerate(concerns):
-        for phrase in HOME_COPY['concerns'][2 + index * 2:4 + index * 2]:
-            assert compact([phrase]) in compact(concern['text']), \
-                f'Concern card {index + 1} differs from supplied copy: {phrase}'
+    for index, (concern, (filename, expected_lines)) in enumerate(zip(concerns, CONCERN_CARDS), 1):
         images = [element for element in scan.elements
                   if element['tag'] == 'img' and is_within(element, concern)]
-        assert not images, f'Concern card {index + 1} must omit its illustration as requested.'
+        copies = [element for element in scan.elements
+                  if has_class(element, 'concern-copy') and element['parent'] is concern]
+        children = [element for element in scan.elements if element['parent'] is concern]
+        assert len(images) == len(copies) == 1 and children == [images[0], copies[0]] \
+            and copies[0]['tag'] == 'div', f'Concern card {index} must contain only its symbol and title block.'
+        image = images[0]
+        assert has_class(image, 'concern-symbol') and image['attrs'].get('alt') == '' \
+            and image['attrs'].get('aria-hidden') == 'true' \
+            and image['attrs'].get('width') == image['attrs'].get('height') == '128' \
+            and local_path(image['attrs'].get('src', ''), page) == ROOT / 'assets/concerns' / filename, \
+            f'Concern card {index} must use its corresponding decorative 128×128 local SVG.'
+        headings = [element for element in scan.elements if element['parent'] is copies[0]]
+        assert len(headings) == 1 and headings[0]['tag'] == 'h3' \
+            and not any(element['tag'] == 'p' and is_within(element, concern) for element in scan.elements), \
+            f'Concern card {index} must omit the previous descriptive paragraph.'
+        lines = [element for element in scan.elements if element['parent'] is headings[0]]
+        assert all(element['tag'] == 'span' for element in lines) \
+            and tuple(compact(element['text']) for element in lines) == expected_lines \
+            and compact(concern['text']) == ''.join(expected_lines), \
+            f'Concern card {index} must preserve its two supplied title lines without extra copy.'
     strengths = [element for element in scan.elements if has_class(element, 'feature')]
     assert len(strengths) == 3, 'Expected three supplied strength cards.'
     for index, strength in enumerate(strengths):

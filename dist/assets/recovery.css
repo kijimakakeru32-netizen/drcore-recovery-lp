@@ -700,3 +700,35 @@
 #method .feature:nth-child(3) .feature-photo>img{object-position:50% 65%}
 
 .payg-price--inquiry{display:block;font-family:var(--body);font-size:17px;font-weight:700;line-height:1.8;white-space:normal;color:#426347}
+
+/* Five everyday concerns, with original line icons on a charcoal palette. */
+#concerns{background:#282f33;color:#f6f7f5}
+#concerns .center-heading .concern-title{font-size:clamp(26px,2.7vw,32px);line-height:1.6;letter-spacing:.015em;color:#fff}
+#concerns .concern-title>span{display:inline}
+#concerns .center-heading h2:after{background:#b8c0c3;width:36px}
+#concerns .concern-grid{display:grid;width:100%;max-width:960px;grid-template-columns:repeat(6,minmax(0,1fr));gap:20px;margin-inline:auto;text-align:center}
+#concerns .concern-grid>li{display:flex;flex-direction:column;align-items:center;justify-content:center;grid-column:span 2;min-width:0;gap:18px;padding:28px 20px;background:#363e43;border:1px solid #515c62;border-radius:16px}
+#concerns .concern-grid>li:nth-child(4){grid-column:2/span 2}
+#concerns .concern-grid>li:nth-child(5){grid-column:4/span 2}
+#concerns .concern-symbol{display:block;flex-shrink:0;width:100px;height:100px;object-fit:contain}
+#concerns .concern-copy{display:block;width:100%;text-align:center}
+#concerns .concern-grid h3{display:block;margin:0;padding:0;border:0;background:none;color:#f8f8f6;font-size:19px;font-weight:700;line-height:1.65;letter-spacing:.015em;text-align:center}
+#concerns .concern-grid h3>span{display:block;white-space:nowrap}
+#concerns .concern-closing{margin-top:40px;padding-top:30px;border-top-color:#515c62}
+#concerns .concern-closing h3{color:#f8f8f6}
+#concerns .concern-closing p{color:#d6dde0}
+@media(max-width:760px){
+  #concerns .center-heading .concern-title{font-size:clamp(22px,6vw,26px)}
+  #concerns .concern-title>span{display:block}
+  #concerns .concern-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+  #concerns .concern-grid>li{gap:12px;padding:20px 12px;border-radius:12px}
+  #concerns .concern-grid>li:nth-child(4){grid-column:span 2}
+  #concerns .concern-grid>li:nth-child(5){grid-column:2/span 2}
+  #concerns .concern-symbol{width:82px;height:82px}
+  #concerns .concern-grid h3{font-size:17px;line-height:1.65;letter-spacing:0}
+}
+@media(max-width:360px){
+  #concerns .concern-grid>li{padding:18px 10px}
+  #concerns .concern-symbol{width:72px;height:72px}
+  #concerns .concern-grid h3{font-size:16px}
+}
