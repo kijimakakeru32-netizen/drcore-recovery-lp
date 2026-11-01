@@ -52,8 +52,8 @@ TRAINER_PROFILES = (
 )
 CONCERN_CARDS = (
     ('shoulder-back.svg', ('肩・腰の重さ', 'が気になる')),
-    ('steady-steps.svg', ('つまずき', 'やすくなった')),
-    ('desk-posture.svg', ('姿勢が', '気になる')),
+    ('desk-posture.svg', ('座りっぱなしで', '身体が固まる')),
+    ('standing-rounded-posture.svg', ('姿勢が', '気になる')),
     ('seated-flexibility.svg', ('身体が硬く', '伸ばしにくい')),
     ('golf-mobility.svg', ('スポーツで', '動きづらい')),
 )
