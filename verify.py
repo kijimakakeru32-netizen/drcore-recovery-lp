@@ -7,7 +7,6 @@ from pathlib import Path
 from urllib.parse import unquote, urlparse
 import json
 import re
-import ast
 import argparse
 import xml.etree.ElementTree as ET
 
@@ -15,6 +14,11 @@ ROOT = Path(__file__).resolve().parent / 'dist'
 PAGE = ROOT / 'index.html'
 HERO_PHOTO = ROOT / 'assets/recovery-hero-portrait.jpg'
 HERO_LOGO = ROOT / 'assets/logo-transparent.svg'
+RESERVATION_URLS = {
+    'all': 'https://reserve.quick-reserve.com/core?view=eyJzdG9yZXMiOlt7ImlkIjozNDEsImNvdXJzZUlkcyI6WzM2ODddfSx7ImlkIjoyMzEsImNvdXJzZUlkcyI6WzM2ODhdfV0sInZlcnNpb24iOjJ9',
+    'tsukishima': 'https://reserve.quick-reserve.com/core?view=eyJzdG9yZXMiOlt7ImlkIjoyMzEsImNvdXJzZUlkcyI6WzM2ODhdfV0sInZlcnNpb24iOjJ9',
+    'motoyawata': 'https://reserve.quick-reserve.com/core?view=eyJzdG9yZXMiOlt7ImlkIjozNDEsImNvdXJzZUlkcyI6WzM2ODddfV0sInZlcnNpb24iOjJ9',
+}
 STORE_IDS = ('tsukishima', 'motoyawata')
 STORE_PROFILES = {
     'tsukishima': {
@@ -245,18 +249,13 @@ def load_stores():
     stores = json.loads(source.read_text(encoding='utf-8'))
     assert isinstance(stores, list) and tuple(store['slug'] for store in stores) == STORE_IDS, \
         'Recovery store data must contain the corresponding Tsukishima and Motoyawata stores.'
-    legacy_source = ast.parse((ROOT.parent / 'build.py').read_text(encoding='utf-8'))
-    legacy_assignment = next(node for node in legacy_source.body if isinstance(node, ast.Assign)
-                             and any(isinstance(target, ast.Name) and target.id == 'STORES'
-                                     for target in node.targets))
-    legacy_stores = ast.literal_eval(legacy_assignment.value)
     for store in stores:
         slug = store['slug']
         for field, expected in STORE_PROFILES[slug].items():
             assert compact([str(store[field])]) == compact([expected]), \
                 f'Recovery store {slug} has the wrong {field}.'
-        assert store['reserve'] == legacy_stores[slug]['reserve'], \
-            f'Recovery store {slug} must use the existing adult reservation URL authorized by the user.'
+        assert store['reserve'] == RESERVATION_URLS[slug], \
+            f'Recovery store {slug} must use its user-supplied Recovery reservation URL.'
         parsed = urlparse(store['reserve'])
         assert parsed.scheme == 'https' and parsed.netloc == 'reserve.quick-reserve.com', \
             f'Recovery store {slug} needs its approved HTTPS reservation URL.'
@@ -279,16 +278,22 @@ def check_page(page):
     for reference in scan.assets:
         check_asset(reference, page, visited_css)
 
-    approved_reservations = {store['reserve'] for store in load_stores()}
+    approved_reservations = {store['reserve'] for store in load_stores()} | {RESERVATION_URLS['all']}
+    reservation_scope = bodies[0]['attrs'].get('data-store', 'all')
+    assert reservation_scope in RESERVATION_URLS, 'The page has an unknown reservation store identity.'
+    expected_reservation = RESERVATION_URLS[reservation_scope]
     for anchor in scan.anchors:
         reference = anchor['attrs'].get('href', '')
         assert reference.strip(), 'An anchor has an empty href.'
         parsed = urlparse(reference)
-        if 'quick-reserve' in parsed.netloc.lower():
+        if 'quick-reserve' in parsed.netloc.lower() or 'data-reservation' in anchor['attrs']:
             assert reference in approved_reservations, f'Unapproved reservation URL: {reference}'
+            assert reference == expected_reservation, \
+                f'{page.relative_to(ROOT)} mixes another page\'s reservation destination.'
             assert anchor['attrs'].get('target') == '_blank' \
-                and 'noopener' in anchor['attrs'].get('rel', '').split(), \
-                'External reservation links must open with target="_blank" and rel="noopener".'
+                and 'noopener' in anchor['attrs'].get('rel', '').split() \
+                and 'data-reservation' in anchor['attrs'], \
+                'External reservation links must retain target="_blank", rel="noopener" and data-reservation.'
         destination = local_path(reference, page)
         if destination is None:
             continue
@@ -492,8 +497,9 @@ def check_campaigns(scan, page, store=None):
     assert offer['trial_price'] == 1000 and offer['trial_minutes'] == 60 \
         and offer['included'] == '体組成・姿勢診断付き' \
         and offer['deadline'] == '2026-11-30' and offer['deadline_label'] == '11/30まで' \
-        and offer['button_label'] == 'ストレッチ体験をWEB予約する', \
-        'The shared trial offer must retain its confirmed price, duration, diagnosis, November deadline and button copy.'
+        and offer['button_label'] == 'ストレッチ体験をWEB予約する' \
+        and offer.get('reserve') == RESERVATION_URLS['all'] and offer.get('web_note') == 'WEB予約簡単30秒', \
+        'The shared trial offer must retain its confirmed terms, common Recovery reservation URL and 30-second web note.'
     expected_experience = (
         ('assessment', 'カウンセリング＆身体評価', 15),
         ('stretch', 'ストレッチ', 30),
@@ -516,17 +522,25 @@ def check_campaigns(scan, page, store=None):
     cta_positions = ('intro', 'price', 'bottom', 'sticky')
     assert Counter(anchor['attrs'].get('data-position') for anchor in campaign_ctas) == Counter(cta_positions), \
         'Expected one trial CTA in each introduction, pricing, bottom and floating position.'
+    expected_route = store['reserve'] if store else offer['reserve']
+    header_ctas = [anchor for anchor in scan.anchors if has_class(anchor, 'header-cta')]
+    assert len(header_ctas) == 1 and header_ctas[0]['attrs'].get('href') == expected_route, \
+        'The header reservation button must link directly to this page\'s Recovery booking URL.'
+    mobile_nav = next(element for element in scan.elements if element['attrs'].get('id') == 'mobile-nav')
+    mobile_ctas = [anchor for anchor in scan.anchors
+                   if is_within(anchor, mobile_nav) and 'data-reservation' in anchor['attrs']]
+    assert len(mobile_ctas) == 1 and mobile_ctas[0]['attrs'].get('href') == expected_route \
+        and not any(is_within(anchor, mobile_nav) and urlparse(anchor['attrs'].get('href', '')).fragment == 'trial'
+                    for anchor in scan.anchors), \
+        'The mobile reservation link must directly open this page\'s Recovery booking URL.'
     for anchor in campaign_ctas:
         position = anchor['attrs']['data-position']
-        expected_route = store['reserve'] if store else '#locations'
-        assert anchor['attrs'].get('href') == expected_route \
-            and compact(anchor['text']).endswith(offer['button_label']), \
-            f'Campaign CTA {position} must preserve its route and supplied reservation label.'
-        if store:
-            assert anchor['attrs'].get('target') == '_blank' \
-                and 'noopener' in anchor['attrs'].get('rel', '').split() \
-                and 'data-reservation' in anchor['attrs'], \
-                f'Campaign CTA {position} must retain the store reservation link attributes.'
+        assert anchor['attrs'].get('href') == expected_route, \
+            f'Campaign CTA {position} must directly open this page\'s Recovery reservation destination.'
+        assert anchor['attrs'].get('target') == '_blank' \
+            and 'noopener' in anchor['attrs'].get('rel', '').split() \
+            and 'data-reservation' in anchor['attrs'], \
+            f'Campaign CTA {position} must retain its external reservation link attributes.'
         assert compact(item(anchor, 'cta-fixed__main')['text']) == offer['button_label'], \
             f'Campaign CTA {position} has the wrong main label.'
         item(anchor, 'cta-fixed__arrow')
@@ -537,6 +551,11 @@ def check_campaigns(scan, page, store=None):
         description = item(banner, 'campaign-banner-description')
         assert compact(description['text']) == offer['included'] and not is_within(description, anchor), \
             f'Campaign CTA {position} must retain the diagnosis description outside its button.'
+        web_notes = [element for element in scan.elements
+                     if has_class(element, 'campaign-web-note') and is_within(element, banner)]
+        assert len(web_notes) == (0 if position == 'sticky' else 1) \
+            and all(compact(note['text']) == offer['web_note'] for note in web_notes), \
+            f'Campaign CTA {position} must show the web note only on full creatives, keeping the floating CTA compact.'
         banner_deadlines = [element for element in scan.elements
                             if element['tag'] == 'time' and is_within(element, banner)]
         assert len(banner_deadlines) == 1, f'Campaign CTA {position} needs exactly one deadline.'
@@ -1032,8 +1051,12 @@ def check_voices(home, page=PAGE, verify_articles=True, report_prefix=''):
             assert len(pending) == 1 and '原稿' in compact(pending[0]['text']) \
                 and '未提供' in compact(pending[0]['text']), f'Missing manuscript-pending disclosure: {slug}.'
         assert '../../#voices' in article.links, f'Missing return link on article {slug}.'
-        ctas = [anchor for anchor in article.anchors if anchor['attrs'].get('href') == '../../#trial']
-        assert ctas and all(compact(anchor['text']) == '初回体験予約' for anchor in ctas), \
+        ctas = [anchor for anchor in article.anchors if anchor['attrs'].get('data-position') == 'voice-article']
+        assert len(ctas) == 1 and ctas[0]['attrs'].get('href') == RESERVATION_URLS['all'] \
+            and compact(ctas[0]['text']) == '初回体験予約' \
+            and ctas[0]['attrs'].get('target') == '_blank' \
+            and 'noopener' in ctas[0]['attrs'].get('rel', '').split() \
+            and 'data-reservation' in ctas[0]['attrs'] and '../../#trial' not in article.links, \
             f'Wrong reservation CTA on article {slug}.'
         print(f'{report_prefix}voices/{slug}/index.html: OK — corresponding identity, manuscript state, assets and links.')
 

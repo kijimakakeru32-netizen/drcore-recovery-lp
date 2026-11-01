@@ -4,7 +4,7 @@ import hashlib
 import html
 import json
 import re
-from recovery_sections import load_stores, render_sections, render_store_access, render_store_cards
+from recovery_sections import load_stores, render_sections, render_store_access, render_store_cards, reservation_url
 
 ROOT = Path(__file__).resolve().parent
 DIST = ROOT / 'dist'
@@ -123,6 +123,7 @@ def build_voice_pages(voices, origin=''):
             url = escape(origin.rstrip('/') + f"/voices/{voice['slug']}/")
             metadata = f'<link rel="canonical" href="{url}"><meta property="og:url" content="{url}">'
         replacements = {
+            '{{RESERVATION_URL}}': escape(reservation_url()),
             '{{VOICE_ID}}': escape(voice['slug']),
             '{{VOICE_TITLE}}': escape(title),
             '{{VOICE_IDENTITY}}': escape(voice_identity(voice)),

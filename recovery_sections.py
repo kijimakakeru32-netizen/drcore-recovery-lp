@@ -15,6 +15,10 @@ def read_data(name):
     return json.loads((ROOT / 'data' / name).read_text(encoding='utf-8'))
 
 
+def reservation_url(store=None):
+    return store['reserve'] if store else read_data('recovery-offer.json')['reserve']
+
+
 def trial_cta(position, href='#trial'):
     offer = read_data('recovery-offer.json')
     external = ' target="_blank" rel="noopener" data-reservation' if href.startswith('https://') else ''
@@ -39,13 +43,14 @@ def trial_banner(position, href='#trial'):
     offer = read_data('recovery-offer.json')
     classes = f'campaign-banner campaign-banner--{escape(position)}'
     description = f'<p class="campaign-banner-description">{escape(offer["included"])}</p>'
+    web_note = escape(offer['web_note']).replace('WEB予約', 'WEB予約<br>', 1)
     if position == 'sticky':
         return f'''<div class="{classes}"><div class="wrap campaign-banner-inner">{description}{trial_cta(position, href)}</div></div>'''
     steps = []
     for step in offer['experience']:
         label = escape(step['label']).replace('＆', '＆<br>')
         steps.append(f'''<li data-trial-step="{escape(step['id'])}" data-minutes="{step['minutes']}"><span class="campaign-step-icon">{campaign_icon(step['icon'])}</span><span class="campaign-step-label">{label}</span><span class="campaign-step-minutes"><strong>{step['minutes']}</strong>分</span></li>''')
-    return f'''<div class="{classes}"><div class="wrap campaign-banner-inner"><div class="campaign-creative"><p class="campaign-headline">あなたの柔軟性に合わせて、<span>マンツーマン。</span></p><div class="campaign-offer">{campaign_laurel()}<time datetime="{escape(offer['deadline'])}">{escape(offer['deadline_label'])}</time><p class="campaign-offer-price"><span>初回</span><strong>{offer['trial_price']:,}</strong><span>円</span><span class="campaign-offer-caption">キャンペーン実施中</span></p>{campaign_laurel()}</div><div class="campaign-content"><figure class="campaign-photo"><picture><source media="(max-width:560px)" srcset="./assets/recovery-hero-portrait.jpg"><img src="./assets/recovery-first-visit-plan.png" alt="トレーナーに支えてもらい、TRXで身体を伸ばす女性" width="958" height="737" loading="lazy" decoding="async"></picture><figcaption class="campaign-duration"><span>まずは体験！</span><strong>{offer['trial_minutes']}<small>分</small></strong></figcaption></figure><div class="campaign-experience"><h3>体験内容</h3><ol class="campaign-steps">{''.join(steps)}</ol>{description}</div></div><div class="campaign-action"><span class="campaign-web-note" aria-hidden="true">WEB予約<br>受付中</span>{trial_cta(position, href)}</div></div></div></div>'''
+    return f'''<div class="{classes}"><div class="wrap campaign-banner-inner"><div class="campaign-creative"><p class="campaign-headline">あなたの柔軟性に合わせて、<span>マンツーマン。</span></p><div class="campaign-offer">{campaign_laurel()}<time datetime="{escape(offer['deadline'])}">{escape(offer['deadline_label'])}</time><p class="campaign-offer-price"><span>初回</span><strong>{offer['trial_price']:,}</strong><span>円</span><span class="campaign-offer-caption">キャンペーン実施中</span></p>{campaign_laurel()}</div><div class="campaign-content"><figure class="campaign-photo"><picture><source media="(max-width:560px)" srcset="./assets/recovery-hero-portrait.jpg"><img src="./assets/recovery-first-visit-plan.png" alt="トレーナーに支えてもらい、TRXで身体を伸ばす女性" width="958" height="737" loading="lazy" decoding="async"></picture><figcaption class="campaign-duration"><span>まずは体験！</span><strong>{offer['trial_minutes']}<small>分</small></strong></figcaption></figure><div class="campaign-experience"><h3>体験内容</h3><ol class="campaign-steps">{''.join(steps)}</ol>{description}</div></div><div class="campaign-action"><span class="campaign-web-note">{web_note}</span>{trial_cta(position, href)}</div></div></div></div>'''
 
 
 def render_pricing():
@@ -113,16 +118,14 @@ def render_store_access(store):
 
 def render_booking_content(markup, store=None):
     button_label = escape(read_data('recovery-offer.json')['button_label'])
-    if store:
-        faq_booking = f'このページの「{button_label}」ボタンから、Web予約にお進みください。'
-    else:
-        faq_booking = f'<a href="#locations">店舗一覧</a>から店舗を選び、店舗ページの「{button_label}」からWeb予約にお進みください。'
+    faq_booking = f'このページの「{button_label}」ボタンから、Web予約にお進みください。'
     return markup.replace('{{RESERVATION_FAQ}}', faq_booking)
 
 
 def render_sections(source, store=None):
-    destination = store['reserve'] if store else '#locations'
+    destination = reservation_url(store)
     replacements = {
+        '{{RESERVATION_URL}}': escape(destination),
         '{{CTA_INTRO}}': trial_banner('intro', destination),
         '{{CTA_PRICE}}': trial_banner('price', destination),
         '{{CTA_BOTTOM}}': trial_banner('bottom', destination),

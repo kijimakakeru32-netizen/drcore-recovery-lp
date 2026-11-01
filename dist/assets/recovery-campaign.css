@@ -10,7 +10,7 @@
 .campaign-laurel:last-child{transform:scaleX(-1)}
 .campaign-offer>time{display:flex;align-items:center;justify-content:center;flex:none;padding:11px 9px;border:1px solid #e4c56f;color:#fff0b9;font-size:16px;font-weight:700;letter-spacing:0;line-height:1.3;white-space:nowrap}
 .campaign-offer-price{display:flex;align-items:baseline;justify-content:center;gap:2px;margin:0;font-family:"Yu Mincho","Hiragino Mincho ProN",serif;font-size:25px;line-height:1.2;font-weight:700;letter-spacing:0;white-space:nowrap}
-.campaign-offer-price>strong{font-family:Georgia,"Times New Roman",serif;font-size:52px;line-height:1;font-weight:700;letter-spacing:-.035em}
+.campaign-offer-price>strong{font-family:var(--body);font-size:52px;line-height:1;font-weight:700;letter-spacing:0}
 .campaign-offer-caption{margin-left:5px;font-size:24px}
 .campaign-content{display:grid;grid-template-columns:1.1fr 1fr}
 .campaign-photo{position:relative;margin:0;min-width:0;min-height:304px;overflow:hidden;background:#dfe5d3}
@@ -18,7 +18,7 @@
 .campaign-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 40%}
 .campaign-duration{position:absolute;left:14px;top:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:122px;aspect-ratio:1;border:2px solid #d8b451;border-radius:50%;background:linear-gradient(135deg,#fffef6,#faf4df);color:#003d2b;box-shadow:0 3px 10px #172f2420;line-height:1}
 .campaign-duration>span{font-size:16px;font-weight:700;letter-spacing:0;border-bottom:1px solid #c2a45d;padding-bottom:7px}
-.campaign-duration>strong{font-family:Georgia,"Times New Roman",serif;font-size:65px;line-height:.9;font-weight:700;letter-spacing:-.055em}
+.campaign-duration>strong{font-family:var(--body);font-size:65px;line-height:1;font-weight:700;letter-spacing:0}
 .campaign-duration small{font-family:"Yu Mincho","Hiragino Mincho ProN",serif;font-size:23px;margin-left:3px;letter-spacing:0}
 .campaign-experience{min-width:0;padding:16px 17px 12px;color:#f7e6a6}
 .campaign-experience>h3{display:flex;align-items:center;justify-content:center;gap:12px;margin:0 0 13px;font-family:"Yu Mincho","Hiragino Mincho ProN",serif;font-size:25px;font-weight:700;line-height:1.3;letter-spacing:.2em;white-space:nowrap}
@@ -29,7 +29,7 @@
 .campaign-step-icon svg{display:block;width:28px;height:28px}
 .campaign-step-label{flex:1;min-width:0;font-size:17px;font-weight:700;letter-spacing:0;line-height:1.35}
 .campaign-step-minutes{display:flex;align-items:baseline;justify-content:center;flex:none;gap:1px;min-width:56px;border-left:1px solid #b8994b;padding-left:9px;font-family:"Yu Mincho","Hiragino Mincho ProN",serif;font-size:18px;font-weight:700;white-space:nowrap;line-height:1.2;letter-spacing:0}
-.campaign-step-minutes>strong{font-family:Georgia,"Times New Roman",serif;font-size:29px;font-weight:700}
+.campaign-step-minutes>strong{font-family:var(--body);font-size:29px;font-weight:700}
 .campaign-banner .campaign-banner-description{margin:10px 0 0;color:#f8edca;font-size:13px;line-height:1.5;letter-spacing:.03em;text-align:center}
 .campaign-action{position:relative;padding:20px 12px 12px}
 .campaign-action .cta-fixed{max-width:none;padding:4px;border:1px solid #eacb6c;border-radius:7px;background:#003e2c;box-shadow:0 3px 6px #0005;transition:filter .2s}
@@ -47,9 +47,9 @@
 .booking-bar .cta-fixed__top{width:auto;max-width:100%;gap:10px;padding:0;background:transparent;color:#003b28;line-height:1.1;border:0;border-radius:0}
 .booking-bar .cta-fixed__top time{order:0;padding:3px 6px;border:0;background:#00432e;color:#fff0b3;font-size:12px;letter-spacing:0}
 .booking-bar .cta-fixed__duration{font-size:12px;gap:1px;letter-spacing:0}
-.booking-bar .cta-fixed__duration strong{font-family:Georgia,"Times New Roman",serif;font-size:19px}
+.booking-bar .cta-fixed__duration strong{font-family:var(--body);font-size:19px;font-weight:700}
 .booking-bar .cta-fixed__price{padding:0 0 0 10px;border-left:1px solid #846c3c80;gap:2px}
-.booking-bar .cta-fixed__price b{font-family:Georgia,"Times New Roman",serif;color:#003b28;font-size:24px;line-height:.9;font-weight:700}
+.booking-bar .cta-fixed__price b{font-family:var(--body);color:#003b28;font-size:24px;line-height:.9;font-weight:700}
 .booking-bar .cta-fixed__price>span{font-size:12px}
 .booking-bar .cta-fixed__main{font-size:19px;gap:9px;letter-spacing:0;line-height:1.15;font-weight:900}
 .booking-bar .cta-fixed__arrow{font-size:1.1em}

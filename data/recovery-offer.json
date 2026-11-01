@@ -5,6 +5,8 @@
   "deadline": "2026-11-30",
   "deadline_label": "11/30まで",
   "button_label": "ストレッチ体験をWEB予約する",
+  "web_note": "WEB予約簡単30秒",
+  "reserve": "https://reserve.quick-reserve.com/core?view=eyJzdG9yZXMiOlt7ImlkIjozNDEsImNvdXJzZUlkcyI6WzM2ODddfSx7ImlkIjoyMzEsImNvdXJzZUlkcyI6WzM2ODhdfV0sInZlcnNpb24iOjJ9",
   "experience": [
     {"id": "assessment", "label": "カウンセリング＆身体評価", "minutes": 15, "icon": "assessment"},
     {"id": "stretch", "label": "ストレッチ", "minutes": 30, "icon": "stretch"},
