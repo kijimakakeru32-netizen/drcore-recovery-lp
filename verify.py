@@ -470,43 +470,7 @@ def check_home(scan, page=PAGE, store=None):
             assert 'トレーニング' not in compact(scan.regions[region]), \
                 f'Training-plan guidance must remain only in the FAQ, not #{region}.'
 
-    campaign_ctas = [anchor for anchor in scan.anchors if has_class(anchor, 'cta-fixed')]
-    cta_positions = ('intro', 'price', 'bottom', 'sticky')
-    assert Counter(anchor['attrs'].get('data-position') for anchor in campaign_ctas) == Counter(cta_positions), \
-        'Expected one shared gold CTA in each introduction, pricing, bottom and floating position.'
-    for anchor in campaign_ctas:
-        position = anchor['attrs']['data-position']
-        expected_route = store['reserve'] if store else '#locations'
-        assert anchor['attrs'].get('href') == expected_route \
-            and compact(anchor['text']).endswith('初回体験予約'), \
-            f'Campaign CTA {position} must preserve its route and supplied reservation label.'
-        main_labels = [element for element in scan.elements
-                       if is_within(element, anchor) and has_class(element, 'cta-fixed__main')]
-        assert len(main_labels) == 1 and compact(main_labels[0]['text']) == '初回体験予約', \
-            f'Campaign CTA {position} has the wrong main label.'
-        top_labels = [element for element in scan.elements
-                      if is_within(element, anchor) and has_class(element, 'cta-fixed__top')]
-        assert len(top_labels) == 1 and '初回60分' in compact(top_labels[0]['text']) \
-            and '10/31まで' in compact(top_labels[0]['text']) \
-            and has_amount(compact(top_labels[0]['text']), 1000), \
-            f'Campaign CTA {position} must show the trial duration, deadline and price in its top frame.'
-        top_deadlines = [element for element in scan.elements
-                         if element['tag'] == 'time' and is_within(element, top_labels[0])]
-        assert len(top_deadlines) == 1, f'Campaign CTA {position} needs one deadline in its top frame.'
-        banner = anchor['parent']
-        while banner is not None and not has_class(banner, 'campaign-banner'):
-            banner = banner['parent']
-        assert banner is not None, 'Each trial button must belong to its shared banner.'
-        descriptions = [element for element in scan.elements
-                        if is_within(element, banner) and has_class(element, 'campaign-banner-description')]
-        assert len(descriptions) == 1 and compact(descriptions[0]['text']) == '体組成・姿勢診断付き' \
-            and not is_within(descriptions[0], anchor), \
-            f'Campaign CTA {position} must retain the diagnosis description beside its button.'
-    deadlines = [element for element in scan.elements if element['tag'] == 'time']
-    assert len(deadlines) == len(cta_positions) and all(
-        element['attrs'].get('datetime') == '2026-10-31'
-        and compact(element['text']) == '10/31まで' for element in deadlines
-    ), 'Campaign deadline must remain fixed at October 31, 2026.'
+    check_campaigns(scan, page, store)
 
     price = compact(scan.regions['price'])
     check_method_heading(scan)
@@ -521,6 +485,121 @@ def check_home(scan, page=PAGE, store=None):
     assert not has_amount(price, 33000) and '体験当日のご入会' not in price, \
         'Do not retain the previous enrollment fee or same-day-only restriction.'
     assert '30分' in text and '月額' in price, '30-minute / monthly service terms are missing.'
+
+
+def check_campaigns(scan, page, store=None):
+    offer = json.loads((ROOT.parent / 'data/recovery-offer.json').read_text(encoding='utf-8'))
+    assert offer['trial_price'] == 1000 and offer['trial_minutes'] == 60 \
+        and offer['included'] == '体組成・姿勢診断付き' \
+        and offer['deadline'] == '2026-11-30' and offer['deadline_label'] == '11/30まで' \
+        and offer['button_label'] == 'ストレッチ体験をWEB予約する', \
+        'The shared trial offer must retain its confirmed price, duration, diagnosis, November deadline and button copy.'
+    expected_experience = (
+        ('assessment', 'カウンセリング＆身体評価', 15),
+        ('stretch', 'ストレッチ', 30),
+        ('plan', '改善プラン提案', 15),
+    )
+    experience = offer.get('experience')
+    assert isinstance(experience, list) and all(isinstance(step, dict) for step in experience) \
+        and tuple((step.get('id'), step.get('label'), step.get('minutes')) for step in experience) == expected_experience \
+        and all(isinstance(step.get('icon'), str) and step['icon'].strip() for step in experience) \
+        and sum(step['minutes'] for step in experience) == offer['trial_minutes'], \
+        'Trial content must retain its 15/30/15-minute assessment, stretch and improvement-plan sequence and icons.'
+
+    def item(container, class_name):
+        matches = [element for element in scan.elements
+                   if has_class(element, class_name) and is_within(element, container)]
+        assert len(matches) == 1, f'Expected one {class_name} in its campaign component.'
+        return matches[0]
+
+    campaign_ctas = [anchor for anchor in scan.anchors if has_class(anchor, 'cta-fixed')]
+    cta_positions = ('intro', 'price', 'bottom', 'sticky')
+    assert Counter(anchor['attrs'].get('data-position') for anchor in campaign_ctas) == Counter(cta_positions), \
+        'Expected one trial CTA in each introduction, pricing, bottom and floating position.'
+    for anchor in campaign_ctas:
+        position = anchor['attrs']['data-position']
+        expected_route = store['reserve'] if store else '#locations'
+        assert anchor['attrs'].get('href') == expected_route \
+            and compact(anchor['text']).endswith(offer['button_label']), \
+            f'Campaign CTA {position} must preserve its route and supplied reservation label.'
+        if store:
+            assert anchor['attrs'].get('target') == '_blank' \
+                and 'noopener' in anchor['attrs'].get('rel', '').split() \
+                and 'data-reservation' in anchor['attrs'], \
+                f'Campaign CTA {position} must retain the store reservation link attributes.'
+        assert compact(item(anchor, 'cta-fixed__main')['text']) == offer['button_label'], \
+            f'Campaign CTA {position} has the wrong main label.'
+        item(anchor, 'cta-fixed__arrow')
+        banner = anchor['parent']
+        while banner is not None and not has_class(banner, 'campaign-banner'):
+            banner = banner['parent']
+        assert banner is not None, 'Each trial button must belong to its shared banner.'
+        description = item(banner, 'campaign-banner-description')
+        assert compact(description['text']) == offer['included'] and not is_within(description, anchor), \
+            f'Campaign CTA {position} must retain the diagnosis description outside its button.'
+        banner_deadlines = [element for element in scan.elements
+                            if element['tag'] == 'time' and is_within(element, banner)]
+        assert len(banner_deadlines) == 1, f'Campaign CTA {position} needs exactly one deadline.'
+        deadline = banner_deadlines[0]
+        creatives = [element for element in scan.elements
+                     if has_class(element, 'campaign-creative') and is_within(element, banner)]
+        if position == 'sticky':
+            assert not creatives, 'The floating CTA must retain its compact layout.'
+            top = item(anchor, 'cta-fixed__top')
+            duration = item(top, 'cta-fixed__duration')
+            price = item(top, 'cta-fixed__price')
+            assert is_within(deadline, top) and compact(duration['text']) == '初回60分' \
+                and compact(price['text']) == '1,000円' \
+                and scan.elements.index(deadline) < scan.elements.index(duration) < scan.elements.index(price), \
+                'The floating CTA top must read deadline, trial duration, then price.'
+            continue
+        assert len(creatives) == 1 and is_within(anchor, creatives[0]), \
+            f'Campaign CTA {position} must belong to one full trial creative.'
+        creative = creatives[0]
+        assert not any(has_class(element, 'cta-fixed__top') and is_within(element, anchor)
+                       for element in scan.elements), 'Full trial creatives need a single reservation button below their content.'
+        assert compact(item(creative, 'campaign-headline')['text']) == 'あなたの柔軟性に合わせて、マンツーマン。', \
+            'Full trial creatives must retain their supplied headline.'
+        offer_block = item(creative, 'campaign-offer')
+        price = item(offer_block, 'campaign-offer-price')
+        assert is_within(deadline, offer_block) and not is_within(deadline, anchor) \
+            and scan.elements.index(deadline) < scan.elements.index(price) \
+            and compact(price['text']) == '初回1,000円キャンペーン実施中', \
+            'Full trial creatives must show the November deadline before the first-trial offer.'
+        photo = item(creative, 'campaign-photo')
+        images = [element for element in scan.elements if element['tag'] == 'img' and is_within(element, photo)]
+        assert len(images) == 1 and images[0]['attrs'].get('alt', '').strip(), \
+            'Each full trial creative needs one described photo.'
+        photo_path = local_path(images[0]['attrs'].get('src', ''), page)
+        assert images[0]['attrs'].get('src', '').strip() and photo_path is not None and photo_path.is_file() \
+            and photo_path.is_relative_to(ROOT / 'assets') \
+            and photo_path.suffix.lower() in {'.jpg', '.jpeg', '.png', '.webp', '.avif'}, \
+            'Campaign photos must use nonempty references to existing local photo assets.'
+        assert compact(item(creative, 'campaign-duration')['text']) == 'まずは体験！60分', \
+            'The full creative duration badge must retain its 60-minute trial copy.'
+        experience_block = item(creative, 'campaign-experience')
+        headings = [element for element in scan.elements if element['tag'] in {'h2', 'h3', 'h4', 'h5', 'h6'}
+                    and is_within(element, experience_block) and compact(element['text']) == '体験内容']
+        assert len(headings) == 1, \
+            'Label the trial content before its three steps.'
+        steps_list = item(experience_block, 'campaign-steps')
+        steps = [element for element in scan.elements if element['parent'] is steps_list and element['tag'] == 'li']
+        assert steps_list['tag'] == 'ol' and len(steps) == 3 \
+            and scan.elements.index(headings[0]) < scan.elements.index(steps_list), \
+            'Show three ordered trial-content steps after their heading.'
+        for step, supplied in zip(steps, experience):
+            assert step['attrs'].get('data-trial-step') == supplied['id'] \
+                and step['attrs'].get('data-minutes') == str(supplied['minutes']) \
+                and compact(item(step, 'campaign-step-label')['text']) == supplied['label'] \
+                and compact(item(step, 'campaign-step-minutes')['text']) == f'{supplied["minutes"]}分', \
+                'Each trial-content step must preserve its corresponding label, time and sequence.'
+        assert scan.elements.index(steps_list) < scan.elements.index(anchor), \
+            'Place the full creative reservation button after the trial-content steps.'
+    deadlines = [element for element in scan.elements if element['tag'] == 'time']
+    assert len(deadlines) == 4 and all(element['attrs'].get('datetime') == offer['deadline']
+                                     and compact(element['text']) == offer['deadline_label'] for element in deadlines), \
+        'Show exactly three full-banner deadlines and one floating deadline, fixed at November 30, 2026.'
+    assert '10/31まで' not in compact(scan.text), 'Remove the previous campaign deadline from the LP.'
 
 
 def check_method_heading(scan):

@@ -2,7 +2,12 @@
   "trial_price": 1000,
   "trial_minutes": 60,
   "included": "体組成・姿勢診断付き",
-  "deadline": "2026-10-31",
-  "deadline_label": "10/31まで",
-  "button_label": "初回体験予約"
+  "deadline": "2026-11-30",
+  "deadline_label": "11/30まで",
+  "button_label": "ストレッチ体験をWEB予約する",
+  "experience": [
+    {"id": "assessment", "label": "カウンセリング＆身体評価", "minutes": 15, "icon": "assessment"},
+    {"id": "stretch", "label": "ストレッチ", "minutes": 30, "icon": "stretch"},
+    {"id": "plan", "label": "改善プラン提案", "minutes": 15, "icon": "plan"}
+  ]
 }

@@ -18,13 +18,34 @@ def read_data(name):
 def trial_cta(position, href='#trial'):
     offer = read_data('recovery-offer.json')
     external = ' target="_blank" rel="noopener" data-reservation' if href.startswith('https://') else ''
-    return f'''<a class="cta-fixed" href="{escape(href)}"{external} data-position="{escape(position)}"><span class="cta-fixed__inner"><span class="cta-fixed__top"><span class="cta-fixed__duration">初回<strong>{offer['trial_minutes']}</strong>分</span><time datetime="{escape(offer['deadline'])}">{escape(offer['deadline_label'])}</time><span class="cta-fixed__price"><b>{offer['trial_price']:,}</b><span>円</span></span></span><span class="cta-fixed__main">{escape(offer['button_label'])}<i class="cta-fixed__arrow" aria-hidden="true">→</i></span></span></a>'''
+    top = f'''<span class="cta-fixed__top"><time datetime="{escape(offer['deadline'])}">{escape(offer['deadline_label'])}</time><span class="cta-fixed__duration">初回<strong>{offer['trial_minutes']}</strong>分</span><span class="cta-fixed__price"><b>{offer['trial_price']:,}</b><span>円</span></span></span>''' if position == 'sticky' else ''
+    return f'''<a class="cta-fixed" href="{escape(href)}"{external} data-position="{escape(position)}"><span class="cta-fixed__inner">{top}<span class="cta-fixed__main">{escape(offer['button_label'])}<i class="cta-fixed__arrow" aria-hidden="true">&#9656;</i></span></span></a>'''
+
+
+def campaign_icon(kind):
+    drawings = {
+        'assessment': '<rect x="9" y="7" width="22" height="28" rx="2"/><path d="M16 7V4h8v3M15 15h10M15 21h10M15 27h7"/>',
+        'stretch': '<circle cx="24" cy="7" r="3"/><path d="m21 14-6 8-7 6m13-14 7 6 5-1m-13-2 2 10 6 9m-6-9-9 8"/>',
+        'plan': '<path d="M6 35h29M10 29V20h5v9M20 29V14h5v15M30 29V6h5v23"/>',
+    }
+    return '<svg viewBox="0 0 42 42" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + drawings[kind] + '</svg>'
+
+
+def campaign_laurel():
+    return '''<svg class="campaign-laurel" viewBox="0 0 36 80" fill="currentColor" aria-hidden="true"><path d="M27 76C8 56 8 30 25 6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M24 11c-9-2-12 5-9 11 7-1 11-5 9-11M17 24C7 23 5 30 10 36c6-2 10-6 7-12M12 39C2 40 2 48 8 52c6-3 8-9 4-13M13 55C4 59 7 67 14 68c5-5 5-10-1-13M25 17c8 1 8 9 2 13-5-3-6-8-2-13M20 32c9 2 8 10 1 13-5-4-5-9-1-13M20 49c9 2 9 9 2 13-5-3-6-8-2-13M25 65c9-1 12 5 9 11-6 1-10-3-9-11"/></svg>'''
 
 
 def trial_banner(position, href='#trial'):
     offer = read_data('recovery-offer.json')
     classes = f'campaign-banner campaign-banner--{escape(position)}'
-    return f'''<div class="{classes}"><div class="wrap campaign-banner-inner"><p class="campaign-banner-description">{escape(offer['included'])}</p>{trial_cta(position, href)}</div></div>'''
+    description = f'<p class="campaign-banner-description">{escape(offer["included"])}</p>'
+    if position == 'sticky':
+        return f'''<div class="{classes}"><div class="wrap campaign-banner-inner">{description}{trial_cta(position, href)}</div></div>'''
+    steps = []
+    for step in offer['experience']:
+        label = escape(step['label']).replace('＆', '＆<br>')
+        steps.append(f'''<li data-trial-step="{escape(step['id'])}" data-minutes="{step['minutes']}"><span class="campaign-step-icon">{campaign_icon(step['icon'])}</span><span class="campaign-step-label">{label}</span><span class="campaign-step-minutes"><strong>{step['minutes']}</strong>分</span></li>''')
+    return f'''<div class="{classes}"><div class="wrap campaign-banner-inner"><div class="campaign-creative"><p class="campaign-headline">あなたの柔軟性に合わせて、<span>マンツーマン。</span></p><div class="campaign-offer">{campaign_laurel()}<time datetime="{escape(offer['deadline'])}">{escape(offer['deadline_label'])}</time><p class="campaign-offer-price"><span>初回</span><strong>{offer['trial_price']:,}</strong><span>円</span><span class="campaign-offer-caption">キャンペーン実施中</span></p>{campaign_laurel()}</div><div class="campaign-content"><figure class="campaign-photo"><picture><source media="(max-width:560px)" srcset="./assets/recovery-hero-portrait.jpg"><img src="./assets/recovery-first-visit-plan.png" alt="トレーナーに支えてもらい、TRXで身体を伸ばす女性" width="958" height="737" loading="lazy" decoding="async"></picture><figcaption class="campaign-duration"><span>まずは体験！</span><strong>{offer['trial_minutes']}<small>分</small></strong></figcaption></figure><div class="campaign-experience"><h3>体験内容</h3><ol class="campaign-steps">{''.join(steps)}</ol>{description}</div></div><div class="campaign-action"><span class="campaign-web-note" aria-hidden="true">WEB予約<br>受付中</span>{trial_cta(position, href)}</div></div></div></div>'''
 
 
 def render_pricing():
@@ -91,10 +112,11 @@ def render_store_access(store):
 
 
 def render_booking_content(markup, store=None):
+    button_label = escape(read_data('recovery-offer.json')['button_label'])
     if store:
-        faq_booking = 'このページの「初回体験予約」ボタンから、Web予約にお進みください。'
+        faq_booking = f'このページの「{button_label}」ボタンから、Web予約にお進みください。'
     else:
-        faq_booking = '<a href="#locations">店舗一覧</a>から店舗を選び、店舗ページの「初回体験予約」からWeb予約にお進みください。'
+        faq_booking = f'<a href="#locations">店舗一覧</a>から店舗を選び、店舗ページの「{button_label}」からWeb予約にお進みください。'
     return markup.replace('{{RESERVATION_FAQ}}', faq_booking)
 
 

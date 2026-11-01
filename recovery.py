@@ -92,7 +92,7 @@ def render_voice_cards(voices, site_prefix='./'):
 
 
 def revision_assets(source):
-    for name in ['recovery.css', 'recovery-stores.css', 'recovery.js', 'voices.css', 'logo-transparent.svg', 'logo-dark.svg', 'concerns/golf-mobility.svg']:
+    for name in ['recovery.css', 'recovery-stores.css', 'recovery-campaign.css', 'recovery.js', 'voices.css', 'logo-transparent.svg', 'logo-dark.svg', 'concerns/golf-mobility.svg']:
         revision = hashlib.sha256((DIST / 'assets' / name).read_bytes()).hexdigest()[:12]
         source = source.replace(f'assets/{name}"', f'assets/{name}?v={revision}"')
     return source

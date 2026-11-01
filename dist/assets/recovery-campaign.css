@@ -1,0 +1,129 @@
+/* Shared green and gold trial campaign, with a compact floating version. */
+.campaign-banner{--campaign-green:#003d2b;--campaign-gold:#e4c56f;--campaign-cream:#faf7e9;padding:42px 20px;background:#f4eedb;color:var(--campaign-green)}
+.campaign-banner--bottom{background:#102a20}
+.campaign-banner-inner{width:100%;max-width:800px;padding:0;gap:0}
+.campaign-creative{width:100%;background:var(--campaign-green);box-shadow:0 10px 35px #233e2720}
+.campaign-headline{margin:0;padding:14px 12px 15px;background:var(--campaign-cream);color:#102b20;font-family:"Yu Mincho","Hiragino Mincho ProN",serif;font-weight:700;font-size:clamp(20px,3.5vw,30px);line-height:1.4;letter-spacing:.025em;text-align:center}
+.campaign-headline>span{white-space:nowrap}
+.campaign-offer{display:flex;align-items:center;justify-content:center;gap:14px;min-height:85px;padding:9px 16px;border-block:3px solid #d6b75e;background:linear-gradient(105deg,#003424,#07533a 52%,#003424);color:#f7e6a6}
+.campaign-laurel{width:24px;height:57px;flex:none;color:#e9cb73}
+.campaign-laurel:last-child{transform:scaleX(-1)}
+.campaign-offer>time{display:flex;align-items:center;justify-content:center;flex:none;padding:11px 9px;border:1px solid #e4c56f;color:#fff0b9;font-size:16px;font-weight:700;letter-spacing:0;line-height:1.3;white-space:nowrap}
+.campaign-offer-price{display:flex;align-items:baseline;justify-content:center;gap:2px;margin:0;font-family:"Yu Mincho","Hiragino Mincho ProN",serif;font-size:25px;line-height:1.2;font-weight:700;letter-spacing:0;white-space:nowrap}
+.campaign-offer-price>strong{font-family:Georgia,"Times New Roman",serif;font-size:52px;line-height:1;font-weight:700;letter-spacing:-.035em}
+.campaign-offer-caption{margin-left:5px;font-size:24px}
+.campaign-content{display:grid;grid-template-columns:1.1fr 1fr}
+.campaign-photo{position:relative;margin:0;min-width:0;min-height:304px;overflow:hidden;background:#dfe5d3}
+.campaign-photo picture{position:absolute;inset:0;display:block}
+.campaign-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 40%}
+.campaign-duration{position:absolute;left:14px;top:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:122px;aspect-ratio:1;border:2px solid #d8b451;border-radius:50%;background:linear-gradient(135deg,#fffef6,#faf4df);color:#003d2b;box-shadow:0 3px 10px #172f2420;line-height:1}
+.campaign-duration>span{font-size:16px;font-weight:700;letter-spacing:0;border-bottom:1px solid #c2a45d;padding-bottom:7px}
+.campaign-duration>strong{font-family:Georgia,"Times New Roman",serif;font-size:65px;line-height:.9;font-weight:700;letter-spacing:-.055em}
+.campaign-duration small{font-family:"Yu Mincho","Hiragino Mincho ProN",serif;font-size:23px;margin-left:3px;letter-spacing:0}
+.campaign-experience{min-width:0;padding:16px 17px 12px;color:#f7e6a6}
+.campaign-experience>h3{display:flex;align-items:center;justify-content:center;gap:12px;margin:0 0 13px;font-family:"Yu Mincho","Hiragino Mincho ProN",serif;font-size:25px;font-weight:700;line-height:1.3;letter-spacing:.2em;white-space:nowrap}
+.campaign-experience>h3:before,.campaign-experience>h3:after{content:"";flex:1;height:1px;background:#b69743}
+.campaign-steps{display:grid;gap:9px;margin:0;padding:0;list-style:none}
+.campaign-steps>li{display:flex;align-items:center;gap:10px;min-width:0;min-height:66px;padding:8px 10px 8px 8px;background:var(--campaign-cream);border:1px solid #e0cf91;border-radius:7px;color:#073d2c}
+.campaign-step-icon{display:grid;place-items:center;flex:none;width:40px;height:40px;border:1px solid #c1a04a;border-radius:50%;background:#064632;color:#fff5cf;box-shadow:inset 0 0 0 3px #faf7e9}
+.campaign-step-icon svg{display:block;width:28px;height:28px}
+.campaign-step-label{flex:1;min-width:0;font-size:17px;font-weight:700;letter-spacing:0;line-height:1.35}
+.campaign-step-minutes{display:flex;align-items:baseline;justify-content:center;flex:none;gap:1px;min-width:56px;border-left:1px solid #b8994b;padding-left:9px;font-family:"Yu Mincho","Hiragino Mincho ProN",serif;font-size:18px;font-weight:700;white-space:nowrap;line-height:1.2;letter-spacing:0}
+.campaign-step-minutes>strong{font-family:Georgia,"Times New Roman",serif;font-size:29px;font-weight:700}
+.campaign-banner .campaign-banner-description{margin:10px 0 0;color:#f8edca;font-size:13px;line-height:1.5;letter-spacing:.03em;text-align:center}
+.campaign-action{position:relative;padding:20px 12px 12px}
+.campaign-action .cta-fixed{max-width:none;padding:4px;border:1px solid #eacb6c;border-radius:7px;background:#003e2c;box-shadow:0 3px 6px #0005;transition:filter .2s}
+.campaign-action .cta-fixed__inner{min-height:92px;padding:22px 13px 17px;border:1px solid #f8df85;border-radius:3px;background:radial-gradient(ellipse at 50% 8%,#fffbd4 0%,#fbe68b 48%,#d6ad39 100%);color:#003926;gap:0;box-shadow:inset 0 0 0 2px #e7c963,inset 0 2px 8px #fff8}
+.campaign-action .cta-fixed__main{display:flex;width:100%;justify-content:center;gap:11px;font-size:clamp(20px,4.2vw,34px);font-weight:900;line-height:1.25;letter-spacing:-.02em;white-space:nowrap;text-shadow:0 1px 0 #fff4}
+.campaign-action .cta-fixed__arrow{font-size:1.1em;color:inherit}
+.campaign-action .cta-fixed:hover{transform:none;filter:brightness(1.06)}
+.campaign-action .cta-fixed:focus-visible{outline:3px solid #fff4ba;outline-offset:4px}
+.campaign-web-note{position:absolute;left:27px;top:1px;z-index:1;padding:6px 11px;background:#00432e;border:2px solid #fff4c4;border-radius:4px;box-shadow:0 2px 4px #0005;color:#fffbea;text-align:center;font-size:15px;font-weight:700;line-height:1.1;letter-spacing:.02em;transform:translateY(-50%);pointer-events:none}
+.campaign-web-note:after{content:"";position:absolute;left:21px;bottom:-7px;width:10px;height:10px;background:#00432e;border-right:2px solid #fff4c4;border-bottom:2px solid #fff4c4;transform:rotate(45deg)}
+.booking-bar .campaign-banner--sticky{padding:5px 15px calc(5px + env(safe-area-inset-bottom));background:#003624}
+.booking-bar .campaign-banner-inner{width:100%;max-width:620px;padding:0}
+.booking-bar .cta-fixed{max-width:none;padding:2px;border:1px solid #d5ba61;border-radius:4px;background:#d5ba61;box-shadow:none}
+.booking-bar .cta-fixed__inner{padding:5px 9px 6px;gap:4px;border:1px solid #fff0a4;border-radius:2px;background:linear-gradient(115deg,#dfbb4d,#fff0a8 45%,#deb847);color:#003b28}
+.booking-bar .cta-fixed__top{width:auto;max-width:100%;gap:10px;padding:0;background:transparent;color:#003b28;line-height:1.1;border:0;border-radius:0}
+.booking-bar .cta-fixed__top time{order:0;padding:3px 6px;border:0;background:#00432e;color:#fff0b3;font-size:12px;letter-spacing:0}
+.booking-bar .cta-fixed__duration{font-size:12px;gap:1px;letter-spacing:0}
+.booking-bar .cta-fixed__duration strong{font-family:Georgia,"Times New Roman",serif;font-size:19px}
+.booking-bar .cta-fixed__price{padding:0 0 0 10px;border-left:1px solid #846c3c80;gap:2px}
+.booking-bar .cta-fixed__price b{font-family:Georgia,"Times New Roman",serif;color:#003b28;font-size:24px;line-height:.9;font-weight:700}
+.booking-bar .cta-fixed__price>span{font-size:12px}
+.booking-bar .cta-fixed__main{font-size:19px;gap:9px;letter-spacing:0;line-height:1.15;font-weight:900}
+.booking-bar .cta-fixed__arrow{font-size:1.1em}
+.booking-bar .cta-fixed:hover{transform:none}
+@media(max-width:760px){
+  .campaign-banner{padding:32px 16px}
+  .campaign-headline{font-size:clamp(18px,3.8vw,27px);letter-spacing:0;padding:13px 8px}
+  .campaign-offer{gap:10px;padding:10px 12px;min-height:76px}
+  .campaign-offer>time{font-size:14px;padding:9px 6px}
+  .campaign-offer-price{font-size:21px}
+  .campaign-offer-price>strong{font-size:45px}
+  .campaign-offer-caption{font-size:19px}
+  .campaign-laurel{width:20px;height:48px}
+  .campaign-content{grid-template-columns:1fr 1fr}
+  .campaign-photo{min-height:285px}
+  .campaign-duration{width:104px;left:11px;top:11px}
+  .campaign-duration>span{font-size:13px;padding-bottom:6px}
+  .campaign-duration>strong{font-size:56px}
+  .campaign-duration small{font-size:19px}
+  .campaign-experience{padding:14px 12px 11px}
+  .campaign-experience>h3{font-size:22px;gap:8px;margin-bottom:11px}
+  .campaign-steps>li{gap:7px;padding:7px 7px 7px 6px;min-height:62px}
+  .campaign-step-icon{width:34px;height:34px}
+  .campaign-step-icon svg{width:24px;height:24px}
+  .campaign-step-label{font-size:15px}
+  .campaign-step-minutes{min-width:49px;padding-left:7px;font-size:15px}
+  .campaign-step-minutes>strong{font-size:26px}
+  .campaign-action .cta-fixed__inner{min-height:82px;padding:21px 10px 14px}
+  .campaign-web-note{left:23px;font-size:13px}
+}
+@media(max-width:560px){
+  .campaign-headline{font-size:clamp(18px,4.5vw,23px);line-height:1.45;padding:10px 6px}
+  .campaign-offer{gap:11px;padding:9px 10px;min-height:78px;border-block-width:2px}
+  .campaign-offer>time{font-size:13px;padding:10px 6px}
+  .campaign-laurel{display:none}
+  .campaign-offer-price{display:grid;grid-template-columns:auto auto auto;align-items:baseline;column-gap:2px;row-gap:2px;font-size:19px}
+  .campaign-offer-price>strong{font-size:39px}
+  .campaign-offer-caption{grid-column:1/-1;margin:0;font-size:14px;text-align:center;letter-spacing:.05em}
+  .campaign-content{grid-template-columns:minmax(0,.67fr) minmax(0,1fr)}
+  .campaign-photo{min-height:257px}
+  .campaign-photo img{object-position:50% 27%}
+  .campaign-duration{top:auto;bottom:12px;left:9px;width:83px;gap:5px}
+  .campaign-duration>span{font-size:10px;padding-bottom:5px}
+  .campaign-duration>strong{font-size:43px}
+  .campaign-duration small{font-size:16px;margin-left:2px}
+  .campaign-experience{padding:11px 9px 10px}
+  .campaign-experience>h3{font-size:19px;letter-spacing:.12em;gap:7px;margin-bottom:9px}
+  .campaign-steps{gap:7px}
+  .campaign-steps>li{gap:5px;min-height:58px;padding:6px 5px;border-radius:5px}
+  .campaign-step-icon{width:27px;height:27px;box-shadow:inset 0 0 0 2px #faf7e9}
+  .campaign-step-icon svg{width:21px;height:21px}
+  .campaign-step-label{font-size:12.5px;line-height:1.4}
+  .campaign-steps>li:first-child .campaign-step-label{letter-spacing:-.06em}
+  .campaign-step-minutes{min-width:36px;padding-left:4px;font-size:12px}
+  .campaign-step-minutes>strong{font-size:23px}
+  .campaign-banner .campaign-banner-description{font-size:11px;margin-top:8px;letter-spacing:0}
+  .campaign-action{padding:22px 8px 9px}
+  .campaign-action .cta-fixed{padding:3px}
+  .campaign-action .cta-fixed__inner{min-height:68px;padding:19px 6px 12px}
+  .campaign-action .cta-fixed__main{font-size:clamp(16px,4.2vw,23px);gap:5px;letter-spacing:-.04em}
+  .campaign-web-note{left:18px;font-size:11px;padding:5px 9px}
+  .booking-bar .campaign-banner--sticky{padding-inline:10px}
+  .booking-bar .cta-fixed__top{gap:8px}
+  .booking-bar .cta-fixed__main{font-size:clamp(14px,3.8vw,18px);gap:5px}
+}
+@media(max-width:360px){
+  .campaign-banner{padding-inline:10px}
+  .campaign-content{grid-template-columns:minmax(0,.47fr) minmax(0,1fr)}
+  .campaign-experience{padding-inline:7px}
+  .campaign-step-icon{width:25px;height:25px}
+  .campaign-step-icon svg{width:18px;height:18px}
+  .campaign-step-label{font-size:12.5px}
+  .campaign-step-minutes{min-width:35px;font-size:11px;padding-left:4px}
+  .campaign-step-minutes>strong{font-size:21px}
+  .campaign-action .cta-fixed__main{font-size:15px}
+}
+@media(prefers-reduced-motion:reduce){.campaign-action .cta-fixed{transition:none}}
