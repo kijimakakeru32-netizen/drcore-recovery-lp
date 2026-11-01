@@ -853,7 +853,7 @@ def check_faq(scan):
                    for anchor in scan.anchors), 'Remove navigation links to the deleted flow section.'
     faq = next(element for element in scan.elements if element['attrs'].get('id') == 'faq')
     questions = [element for element in scan.elements if element['tag'] == 'details' and is_within(element, faq)]
-    assert len(questions) == 9, 'Expected nine stretch-specific FAQ disclosures.'
+    assert len(questions) == 8, 'Expected eight stretch-specific FAQ disclosures.'
     for index, question in enumerate(questions, 1):
         children = [element for element in scan.elements if element['parent'] is question]
         assert children and children[0]['tag'] == 'summary' and compact(children[0]['text']), \
@@ -861,34 +861,34 @@ def check_faq(scan):
         assert len([element for element in children if element['tag'] == 'summary']) == 1 \
             and any(has_class(element, 'answer') and compact(element['text']) for element in children[1:]), \
             f'FAQ {index} must have one question and a nonempty answer.'
-    summaries = [compact(element['text']) for element in scan.elements
-                 if element['tag'] == 'summary' and is_within(element, faq)]
-    assert any('服装' in question for question in summaries) \
-        and any('着替' in question and 'シャワー' in question for question in summaries), \
-        'The FAQ must include clothing and changing/shower questions without inferring unconfirmed answers.'
-    store_inquiries = [element for element in scan.elements if 'data-store-inquiry' in element['attrs']]
-    assert Counter(element['attrs']['data-store-inquiry'] for element in store_inquiries) == \
-        Counter(('clothing', 'facilities')), 'Show exactly one public inquiry answer for each unconfirmed facility topic.'
-    for field, question_text, answer_text in (
-        ('clothing', '服装は？',
-         '普段着でのご利用やレンタルウェアについては、ご予約前にご利用店舗へお問い合わせください。'),
-        ('facilities', '着替えやシャワーはありますか？',
-         '着替えスペース・シャワーのご利用については、ご予約前にご利用店舗へお問い合わせください。'),
-    ):
-        answer = next(element for element in store_inquiries if element['attrs']['data-store-inquiry'] == field)
-        question = answer['parent']
-        question_summaries = [element for element in scan.elements
-                              if element['tag'] == 'summary' and element['parent'] is question]
-        question_answers = [element for element in scan.elements
-                            if element['parent'] is question and element['tag'] != 'summary']
-        assert has_class(answer, 'answer') and question['tag'] == 'details' and is_within(answer, faq) \
-            and len(question_summaries) == 1 and compact(question_summaries[0]['text']) == question_text \
-            and len(question_answers) == 1 and question_answers[0] is answer \
-            and compact(answer['all_text']) == answer_text \
-            and compact(question['text']) == question_text + answer_text \
-            and not any('data-pending-content' in element['attrs'] and is_within(element, answer)
-                        for element in scan.elements), \
-            f'The {field} FAQ must retain its corresponding public store-inquiry copy without facility claims or draft markers.'
+    assert not any('data-store-inquiry' in element['attrs'] for element in scan.elements), \
+        'Remove the former clothing and facilities inquiry attributes.'
+    public_text = compact(scan.display_text) + compact(scan.metadata.values())
+    assert all(compact([phrase]) not in public_text for phrase in (
+        '服装は？', '着替えやシャワーはありますか？',
+        '普段着でのご利用やレンタルウェアについては、ご予約前にご利用店舗へお問い合わせください。',
+        '着替えスペース・シャワーのご利用については、ご予約前にご利用店舗へお問い合わせください。',
+    )), 'Remove the two former clothing/facilities questions and inquiry answers.'
+    question_text = '体験のときの持ち物は必要ですか？'
+    answer_text = 'レンタルウェア・汗ふきシート・ウォーターサーバーをすべて無料でご用意しています。手ぶらでお越しいただけます。'
+    amenities = [element for element in scan.elements if 'data-trial-amenities' in element['attrs']]
+    assert len(amenities) == 1, 'Show exactly one confirmed trial-amenities answer.'
+    answer = amenities[0]
+    question = answer['parent']
+    question_summaries = [element for element in scan.elements
+                          if element['tag'] == 'summary' and element['parent'] is question]
+    question_answers = [element for element in scan.elements
+                        if element['parent'] is question and element['tag'] != 'summary']
+    assert has_class(answer, 'answer') and question['tag'] == 'details' and is_within(answer, faq) \
+        and len(question_summaries) == 1 and compact(question_summaries[0]['text']) == question_text \
+        and len(question_answers) == 1 and question_answers[0] is answer \
+        and compact(answer['all_text']) == answer_text \
+        and compact(question['text']) == question_text + answer_text \
+        and not any('data-pending-content' in element['attrs'] and is_within(element, answer)
+                    for element in scan.elements), \
+        'The trial-amenities FAQ must preserve its confirmed question and free-amenities answer exactly.'
+    assert sum(question_text in compact(item['text']) for item in questions) == 1, \
+        'Do not duplicate the trial-amenities question.'
     training_questions = [question for question in questions if 'トレーニング' in compact(question['text'])]
     assert len(training_questions) == 1 and all(phrase in compact(training_questions[0]['text']) for phrase in
         ('自重ストレッチだけ', 'ご希望の方に限り', '別のトレーニングプラン')), \
