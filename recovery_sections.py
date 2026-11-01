@@ -30,12 +30,13 @@ def trial_banner(position, href='#trial'):
 def render_pricing():
     data = read_data('recovery-plans.json')
     groups = [
-        (1, '平日デイタイムプラン', '平日10:00〜15:00', 0),
-        (2, 'レギュラープラン', '平日10:00〜15:00以外・土日祝', data['other_hours_surcharge']),
+        (1, '平日デイタイムプラン', '平日10:00〜15:00', 0, 'daytime_price'),
+        (2, 'レギュラープラン', '平日10:00〜15:00以外・土日祝', data['other_hours_surcharge'], 'regular_price'),
     ]
     blocks = []
-    for number, name, condition, surcharge in groups:
-        rows = []
+    for number, name, condition, surcharge, payg_field in groups:
+        payg_price = data['pay_as_you_go'][payg_field]
+        rows = [f'''<tr data-payment="pay-as-you-go" data-per-session="{payg_price}"><th scope="row"><span>都度払い</span></th><td><span aria-label="月額料金なし">-</span></td><td><b>{payg_price:,}</b><span>円</span></td></tr>''']
         for plan in data['plans']:
             per_session = plan['per_session'] + surcharge
             monthly = plan['sessions'] * per_session

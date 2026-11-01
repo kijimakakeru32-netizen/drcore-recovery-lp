@@ -576,6 +576,9 @@ def check_pricing(scan):
     assert data['other_hours_surcharge'] == 1000, 'Other-hours surcharge must be 1,000 yen per session.'
     assert tuple((plan['sessions'], plan['per_session']) for plan in data['plans']) == expected_plans, \
         'The existing plan counts or base per-session rates changed.'
+    payg_prices = checked_payg_prices(data)
+    assert tuple(payg_prices[field] for field, _ in PAYG_OPTIONS) == (7000, 8000), \
+        'Confirmed pay-as-you-go prices must remain 7,000 yen daytime and 8,000 yen regular.'
     groups = [element for element in scan.elements
               if element['tag'] == 'article' and element['attrs'].get('data-rate-plan')]
     assert [element['attrs']['data-rate-plan'] for element in groups] == ['1', '2'], \
@@ -598,9 +601,22 @@ def check_pricing(scan):
         rows = [element for element in scan.elements
                 if element['tag'] == 'tr' and is_within(element, tables[0])
                 and element['parent']['tag'] == 'tbody']
-        assert len(rows) == 4, f'Rate plan {number} must show all four monthly plans.'
+        assert len(rows) == 5, f'Rate plan {number} must show one pay-as-you-go row followed by all four monthly plans.'
+        payg_row = rows[0]
+        payg_price = payg_prices[PAYG_OPTIONS[number - 1][0]]
+        assert payg_row['attrs'].get('data-payment') == 'pay-as-you-go' \
+            and payg_row['attrs'].get('data-per-session') == str(payg_price) \
+            and sum(row['attrs'].get('data-payment') == 'pay-as-you-go' for row in rows) == 1, \
+            f'Rate plan {number} must begin with its corresponding pay-as-you-go row.'
+        payg_cells = [element for element in scan.elements if element['parent'] is payg_row
+                      and element['tag'] in {'th', 'td'}]
+        assert len(payg_cells) == 3 and payg_cells[0]['tag'] == 'th' \
+            and payg_cells[0]['attrs'].get('scope') == 'row' \
+            and compact(payg_cells[0]['text']) == '都度払い' and compact(payg_cells[1]['text']) == '-' \
+            and compact(payg_cells[2]['text']).replace(',', '') == f'{payg_price}円', \
+            f'Rate plan {number} pay-as-you-go must display no monthly charge and exactly {payg_price:,} yen per session.'
         surcharge = 1000 if number == 2 else 0
-        for row, plan in zip(rows, data['plans']):
+        for row, plan in zip(rows[1:], data['plans']):
             sessions = plan['sessions']
             per_session = plan['per_session'] + surcharge
             monthly = sessions * per_session
@@ -635,7 +651,7 @@ def check_pricing(scan):
         'Display the confirmed free enrollment fee.'
     assert 'すべての自重ストレッチプランが対象です。' in compact(enrollments[0]['text']), \
         'The free enrollment terms must clearly apply to self-weight stretch plans.'
-    check_pay_as_you_go(scan, price, checked_payg_prices(data))
+    check_pay_as_you_go(scan, price, payg_prices)
 
 
 def checked_payg_prices(data):
