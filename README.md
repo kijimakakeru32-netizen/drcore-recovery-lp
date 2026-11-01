@@ -115,9 +115,17 @@ FAQは、採用サイトではなくDr.core公式サービスサイトの構成�
 
 `data/trainers.json` に人物と写真の対応、画像サイズ、トリミング位置、取得元URL、SHA-256を記録しています。画像原データは `dist/assets/trainers/` に保存し、外部画像への直接参照に依存しません。詳しい確認記録は `data/trainers-sources.md` を参照してください。木嶋氏は別セクションの代表として掲載されており、今回の4名には含めていません。
 
+## 計測
+
+既存の公開済みGTMコンテナ `GTM-TJ8DFDN6` を利用します。トップ・2店舗・お客様の声3記事の計6ページに、charsetメタ直後の標準ローダーとbody開始直後の非表示noscript iframeを共通partialから1回ずつ展開し、通常ビルド後も維持します。`verify.py` は設置位置・ID・重複を確認します。
+
+予約導線の既存 `recovery_trial_interest` イベント（`program`・`position`・`destination`）は引き続き `dataLayer` へ送ります。Clarityの直接埋め込みは追加していません。
+
 ## 編集・ビルド
 
 - `templates/recovery-home.html`：トップページの構成・本文・共通部品の配置
+- `templates/partials/gtm-head.html`：共通GTMローダー
+- `templates/partials/gtm-body.html`：body先頭の共通GTM noscript iframe
 - `templates/partials/recovery-faq.html`：9問のFAQ（うち2問は服装・設備の問い合わせ案内）
 - `recovery_sections.py`：体験予約バナー・追従CTA・料金表（都度払い・月額）・トレーナーカードの生成
 - `data/recovery-offer.json`：初回体験の時間・診断内容・価格・キャンペーン期日・ボタン文言・体験内容の内訳とアイコン

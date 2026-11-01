@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parent / 'dist'
 PAGE = ROOT / 'index.html'
 HERO_PHOTO = ROOT / 'assets/recovery-hero-portrait.jpg'
 HERO_LOGO = ROOT / 'assets/logo-transparent.svg'
+GTM_CONTAINER_ID = 'GTM-TJ8DFDN6'
 RESERVATION_URLS = {
     'all': 'https://reserve.quick-reserve.com/core?view=eyJzdG9yZXMiOlt7ImlkIjozNDEsImNvdXJzZUlkcyI6WzM2ODddfSx7ImlkIjoyMzEsImNvdXJzZUlkcyI6WzM2ODhdfV0sInZlcnNpb24iOjJ9',
     'tsukishima': 'https://reserve.quick-reserve.com/core?view=eyJzdG9yZXMiOlt7ImlkIjoyMzEsImNvdXJzZUlkcyI6WzM2ODhdfV0sInZlcnNpb24iOjJ9',
@@ -265,10 +266,55 @@ def load_stores():
     return stores
 
 
+def check_gtm(scan, page, source):
+    container_pattern = r'\bGTM-[A-Z0-9]+\b'
+    for name in ('gtm-head.html', 'gtm-body.html'):
+        partial = ROOT.parent / 'templates/partials' / name
+        assert partial.is_file(), f'Missing shared GTM partial: {name}.'
+        assert re.findall(container_pattern, partial.read_text(encoding='utf-8'), re.I) == [GTM_CONTAINER_ID], \
+            f'{name} must contain the approved GTM container ID exactly once, without other IDs.'
+    assert re.findall(container_pattern, source, re.I) == [GTM_CONTAINER_ID, GTM_CONTAINER_ID], \
+        f'{page.relative_to(ROOT)} must contain one GTM head loader and one body fallback, using the approved ID only.'
+    heads = [element for element in scan.elements if element['tag'] == 'head']
+    bodies = [element for element in scan.elements if element['tag'] == 'body']
+    assert len(heads) == len(bodies) == 1, 'GTM requires one document head and body.'
+    head_children = [element for element in scan.elements if element['parent'] is heads[0]]
+    loaders = [element for element in scan.elements if element['tag'] == 'script'
+               and ('googletagmanager.com/gtm.js' in ''.join(element['all_text']) + element['attrs'].get('src', '')
+                    or re.search(container_pattern, ''.join(element['all_text']), re.I))]
+    assert len(loaders) == 1 and loaders[0]['parent'] is heads[0] and not loaders[0]['attrs'].get('src'), \
+        'Install exactly one inline GTM loader inside the head.'
+    loader_code = ''.join(loaders[0]['all_text'])
+    assert all(token in loader_code for token in
+               (GTM_CONTAINER_ID, 'dataLayer', 'gtm.start', 'gtm.js', 'https://www.googletagmanager.com/gtm.js?id=')) \
+        and re.search(r'\.async\s*=\s*true', loader_code), 'Keep the standard asynchronous GTM dataLayer loader.'
+    assert len(head_children) >= 2 and head_children[0]['tag'] == 'meta' \
+        and head_children[0]['attrs'].get('charset', '').lower() == 'utf-8' \
+        and head_children[1] is loaders[0], 'Place the GTM head loader immediately after the charset meta.'
+    frames = [element for element in scan.elements if element['tag'] == 'iframe'
+              and 'googletagmanager.com' in element['attrs'].get('src', '').lower()]
+    assert len(frames) == 1, 'Install exactly one GTM noscript iframe.'
+    frame = frames[0]
+    fallback = frame['parent']
+    body_children = [element for element in scan.elements if element['parent'] is bodies[0]]
+    assert fallback is not None and fallback['tag'] == 'noscript' and fallback['parent'] is bodies[0] \
+        and body_children and body_children[0] is fallback, 'Place the GTM noscript fallback first inside body.'
+    style = dict(declaration.split(':', 1)
+                 for declaration in re.sub(r'\s+', '', frame['attrs'].get('style', '')).lower().split(';')
+                 if ':' in declaration)
+    assert frame['attrs'].get('src') == f'https://www.googletagmanager.com/ns.html?id={GTM_CONTAINER_ID}' \
+        and frame['attrs'].get('height') == frame['attrs'].get('width') == '0' \
+        and frame['attrs'].get('title') == 'Google Tag Manager' \
+        and style.get('display') == 'none' and style.get('visibility') == 'hidden', \
+        'Keep the standard hidden GTM iframe, its approved ID and accessible title.'
+    assert not re.search(r'clarity\.ms/tag', source, re.I), 'Do not add a separate Clarity tracking script.'
+
+
 def check_page(page):
     assert page.is_file(), f'Build {page.relative_to(ROOT)} before verification.'
+    source = page.read_text(encoding='utf-8')
     scan = Scan()
-    scan.feed(page.read_text(encoding='utf-8'))
+    scan.feed(source)
     assert scan.h1 == 1, f'{page.name}: expected one h1; found {scan.h1}.'
     duplicates = [name for name, count in Counter(scan.ids).items() if count > 1]
     assert not duplicates, f'Duplicate IDs: {duplicates}'
@@ -276,6 +322,7 @@ def check_page(page):
     bodies = [element for element in scan.elements if element['tag'] == 'body']
     assert len(bodies) == 1 and bodies[0]['attrs'].get('data-program') == 'Recovery', \
         f'{page.relative_to(ROOT)} must be a Recovery page.'
+    check_gtm(scan, page, source)
 
     visited_css = set()
     for reference in scan.assets:

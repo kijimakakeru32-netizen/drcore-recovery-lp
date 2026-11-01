@@ -98,6 +98,16 @@ def revision_assets(source):
     return source
 
 
+def render_tracking(source):
+    for marker, filename in (
+        ('{{GTM_HEAD}}', 'gtm-head.html'),
+        ('{{GTM_BODY}}', 'gtm-body.html'),
+    ):
+        snippet = (ROOT / 'templates/partials' / filename).read_text(encoding='utf-8').strip()
+        source = source.replace(marker, snippet)
+    return source
+
+
 def build_voice_pages(voices, origin=''):
     template = (ROOT / 'templates/recovery-voice.html').read_text(encoding='utf-8')
     for voice in voices:
@@ -131,7 +141,7 @@ def build_voice_pages(voices, origin=''):
             source = source.replace(placeholder, replacement)
         destination = DIST / 'voices' / voice['slug']
         destination.mkdir(parents=True, exist_ok=True)
-        (destination / 'index.html').write_text(revision_assets(source), encoding='utf-8')
+        (destination / 'index.html').write_text(revision_assets(render_tracking(source)), encoding='utf-8')
 
 
 def build_landing_page(voices, stores, origin='', store=None):
@@ -168,7 +178,7 @@ def build_landing_page(voices, stores, origin='', store=None):
         source = source.replace(marker, markup)
     # Shared section assets remain template-relative; each generated page uses
     # its own relative prefix so direct access and subfolder hosting both work.
-    source = revision_assets(source.replace('./assets/', prefix + 'assets/'))
+    source = revision_assets(render_tracking(source.replace('./assets/', prefix + 'assets/')))
     source = re.sub(r'[ \t]+\n', '\n', source)
     if re.search(r'\{\{[A-Z_]+\}\}', source):
         raise ValueError(f'Unresolved template marker in {store["slug"] if store else "home"}')
