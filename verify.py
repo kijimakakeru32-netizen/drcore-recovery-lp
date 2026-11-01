@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Verify Recovery's homepage, two store LPs and shared sample voice articles."""
+"""Verify Dr.core's homepage, two store LPs and shared sample voice articles."""
 from collections import Counter
 from html.parser import HTMLParser
 from pathlib import Path
@@ -129,6 +129,7 @@ class Scan(HTMLParser):
         self.controls = []
         self.h1 = 0
         self.text = []
+        self.display_text = []
         self.regions = {}
         self.stack = []
         self.elements = []
@@ -182,8 +183,10 @@ class Scan(HTMLParser):
     def handle_data(self, data):
         for element in self.stack:
             element['all_text'].append(data)
-        if any(element['tag'] in {'script', 'style'}
-               or element['attrs'].get('aria-hidden') == 'true' for element in self.stack):
+        if any(element['tag'] in {'script', 'style'} for element in self.stack):
+            return
+        self.display_text.append(data)
+        if any(element['attrs'].get('aria-hidden') == 'true' for element in self.stack):
             return
         self.text.append(data)
         for element in self.stack:
@@ -312,6 +315,24 @@ def check_page(page):
     )
     assert not re.search(r'リカバリーストレッチ|ストレッチ専門プラン|パーソナルストレッチ', naming_text), \
         'Use the unified Japanese service name 自重ストレッチ.'
+    # Publication URLs and asset paths retain their compatibility identifiers.
+    # Check rendered copy (including aria-hidden copy), readable metadata and
+    # accessible labels without rejecting those technical URL values.
+    metadata_urls = {
+        'og:url', 'og:image', 'og:image:url', 'og:image:secure_url',
+        'og:video', 'og:video:url', 'og:video:secure_url',
+        'og:audio', 'og:audio:url', 'og:audio:secure_url',
+        'twitter:url', 'twitter:image', 'twitter:image:src',
+    }
+    brand_text = ''.join(scan.display_text) + ''.join(
+        value for name, value in scan.metadata.items() if name not in metadata_urls
+    ) + ''.join(
+        element['attrs'].get(field, '') for element in scan.elements
+        for field in ('alt', 'aria-label', 'aria-description', 'aria-placeholder',
+                      'aria-roledescription', 'aria-valuetext', 'title', 'placeholder', 'label')
+    )
+    assert not re.search(r'recovery', brand_text, re.I), \
+        f'{page.relative_to(ROOT)} must use Dr.core in public copy, metadata and accessible labels.'
     assert not re.search(r'\{\{[A-Z_]+\}\}', page.read_text(encoding='utf-8')), \
         f'Unexpanded template marker in {page.relative_to(ROOT)}.'
     return scan
@@ -330,7 +351,7 @@ def check_home(scan, page=PAGE, store=None):
                                                 for element in scan.elements), \
         'Remove the customer-purpose section as requested.'
     text = compact(scan.text)
-    assert 'Recovery' in text and 'TRX' in text, 'Recovery / TRX identity is missing.'
+    assert 'Dr.core' in text and 'TRX' in text, 'Dr.core / TRX identity is missing.'
     for region, phrases in HOME_COPY.items():
         section_text = compact(scan.regions[region])
         for phrase in phrases:
@@ -857,10 +878,10 @@ def check_store_identity(scan, page, store=None):
         and f'徒歩{store["minutes"]}分' in compact(hero_stations[0]['text']), \
         f'{store["slug"]} hero must retain its correct station and walking time.'
     title = next(element for element in scan.elements if element['tag'] == 'title')
-    assert store['name'] in compact(title['text']) and 'Recovery' in compact(title['text']) \
+    assert store['name'] in compact(title['text']) and 'Dr.core' in compact(title['text']) \
         and store['station'] in compact(title['text']) \
         and f'徒歩{store["minutes"]}分' in compact(title['text']), \
-        f'{store["slug"]} page title must identify the Recovery store.'
+        f'{store["slug"]} page title must identify the Dr.core store.'
     for field in ('description', 'og:title', 'og:description'):
         metadata_text = compact([scan.metadata.get(field, '')])
         assert store['name'] in metadata_text and store['station'] in metadata_text \

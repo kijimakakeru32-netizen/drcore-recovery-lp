@@ -145,9 +145,9 @@ def build_voice_pages(voices, origin=''):
 def build_landing_page(voices, stores, origin='', store=None):
     """Use the approved template for the general LP and both full store LPs."""
     prefix = '../../' if store else './'
-    title = f"Dr.core Recovery {store['name']}｜{store['station']}徒歩{store['minutes']}分・自重ストレッチ" if store else 'Dr.core Recovery｜自重ストレッチ・身体のメンテナンス'
+    title = f"Dr.core {store['name']}｜{store['station']}徒歩{store['minutes']}分・自重ストレッチ" if store else 'Dr.core｜自重ストレッチ・身体のメンテナンス'
     description = (
-        f"Dr.core Recovery {store['name']}のマンツーマン自重ストレッチ。{store['access']}。"
+        f"Dr.core {store['name']}のマンツーマン自重ストレッチ。{store['access']}。"
         if store else '月島店・本八幡店で、自重ストレッチによる身体のメンテナンス。'
     ) + '通常プランは1回30分。初回体験は体組成・姿勢診断付きの60分・1,000円。料金プランとWeb予約をご案内。'
     hero_label = f'''<p class="hero-label"><span class="hero-store-name">{escape(store['name'])}</span><span class="hero-store-station">{escape(store['station'])} 徒歩{escape(store['minutes'])}分</span></p>''' if store else ''
@@ -198,4 +198,4 @@ def build_home(origin=''):
     sitemap = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + ''.join(f'<url><loc>{escape(url)}</loc></url>' for url in urls) + '</urlset>'
     (DIST / 'sitemap.xml').write_text(sitemap, encoding='utf-8')
     (DIST / 'robots.txt').write_text('User-agent: *\nAllow: /\n' + (f'Sitemap: {origin}/sitemap.xml\n' if origin else ''), encoding='utf-8')
-    print('Generated Dr.core Recovery home page, 2 full store LPs and 3 sample voice pages.')
+    print('Generated Dr.core home page, 2 full store LPs and 3 sample voice pages.')
