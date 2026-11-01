@@ -148,7 +148,6 @@ def render_sections(source, store=None):
         '{{RATE_PLANS}}': render_pricing(),
         '{{ENROLLMENT}}': render_enrollment(),
         '{{TRAINER_CARDS}}': render_trainers(),
-        '{{RECOVERY_SESSION}}': (ROOT / 'templates/partials/recovery-session.html').read_text(encoding='utf-8'),
         '{{RECOVERY_FLOW}}': render_booking_content((ROOT / 'templates/partials/recovery-flow.html').read_text(encoding='utf-8'), store),
         '{{RECOVERY_FAQ}}': render_booking_content((ROOT / 'templates/partials/recovery-faq.html').read_text(encoding='utf-8'), store),
     }

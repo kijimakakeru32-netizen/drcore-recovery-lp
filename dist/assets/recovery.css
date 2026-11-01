@@ -604,7 +604,8 @@
 
 /* Fixed headline breaks and a brighter daytime invitation. */
 .hero-title-line{display:block;white-space:nowrap}
-#concerns .concern-closing h3>.heading-line,#session-title>.heading-line{display:block;white-space:nowrap}
+#concerns .concern-closing h3>.heading-line,#method-title>.heading-line{display:block;white-space:nowrap}
+@media(max-width:760px){#method .center-heading #method-title{font-size:clamp(21px,6.4vw,24px)}}
 .daytime-scenes{position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(120deg,#fff1c4 0%,#fffdf4 58%,#e1f2f6 100%)}
 .daytime-scenes:before{content:'';position:absolute;z-index:-1;right:-35px;top:-55px;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,#f4d073 0 34%,#f5d98c55 35% 62%,transparent 63%);pointer-events:none}
 .daytime-scenes .daytime-eyebrow{display:inline-block;padding:5px 16px;margin:0 0 14px;background:#ffffffc9;border-radius:30px;color:#806126;font-size:14px;font-weight:700;line-height:1.7;letter-spacing:.04em}

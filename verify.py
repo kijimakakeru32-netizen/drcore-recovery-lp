@@ -54,7 +54,7 @@ CONCERN_CARDS = (
     ('golf-mobility.svg', ('スポーツで', '動きづらい')),
 )
 SECTION_ORDER = (
-    'top', 'concerns', 'message', 'method', 'daytime', 'session', 'first-visit', 'voices',
+    'top', 'concerns', 'message', 'method', 'daytime', 'first-visit', 'voices',
     'trainers', 'price', 'flow', 'faq', 'locations', 'trial',
 )
 HOME_COPY = {
@@ -80,21 +80,14 @@ HOME_COPY = {
         'カラダの緊張をほどき、軽やかに動けるように導きます',
     ),
     'method': (
-        'Dr.core 自重ストレッチ3つの強み',
+        '通常プラン・1回30分',
+        '30分で、全身を心地よくDr.coreのアプローチ',
         'プロが導く、最適なストレッチ',
         '身体の状態や柔軟性に合わせて、専門トレーナーがマンツーマンでサポート。自分では伸ばしにくい部分まで、一人ひとりに合わせて丁寧にアプローチします。',
         '器具に身体を預けて、ラクに深く伸ばす',
         'TRXなどの器具に身体を支えてもらい、自分の体重を使ってゆっくり伸ばします。トレーナーが角度や体重のかけ方を調整し、無理なく心地よく伸ばせるようサポートします。',
         '伸ばすだけじゃない。動きやすい身体へ。',
         'ただ受けるだけではなく、自分自身のバランス機能も活用しながらストレッチ。柔軟性だけでなく身体の動かしやすさも高め、継続することで元の硬さに戻りにくい、軽やかに動ける身体を目指します。',
-    ),
-    'session': (
-        '通常プラン・1回30分',
-        '30分で、全身を心地よくDr.coreのアプローチ',
-        '可動域を広げる',
-        '器具に支えられて、伸ばす',
-        'プロの手で、丁寧に伸ばす',
-        '初回体験は、体組成・姿勢診断を含む60分です。',
     ),
     'first-visit': (
         'まずは一度、カラダの変化を感じてみませんか？',
@@ -468,14 +461,10 @@ def check_home(scan, page=PAGE, store=None):
     strengths = [element for element in scan.elements if has_class(element, 'feature')]
     assert len(strengths) == 3, 'Expected three supplied strength cards.'
     for index, strength in enumerate(strengths):
-        for phrase in HOME_COPY['method'][1 + index * 2:3 + index * 2]:
+        for phrase in HOME_COPY['method'][2 + index * 2:4 + index * 2]:
             assert compact([phrase]) in compact(strength['text']), \
                 f'Strength card {index + 1} differs from supplied copy: {phrase}'
     method = next(element for element in scan.elements if element['attrs'].get('id') == 'method')
-    method_headings = [element for element in scan.elements
-                       if element['tag'] == 'h2' and is_within(element, method)]
-    assert len(method_headings) == 1 and compact(method_headings[0]['text']) == compact([HOME_COPY['method'][0]]), \
-        'The strength heading must remove the separator and keep the supplied wording.'
     assert not any(has_class(element, 'next-step') and is_within(element, method)
                    for element in scan.elements), 'Remove the training upsell from the strength section.'
     for region in section_order:
@@ -522,7 +511,7 @@ def check_home(scan, page=PAGE, store=None):
     ), 'Campaign deadline must remain fixed at October 31, 2026.'
 
     price = compact(scan.regions['price'])
-    check_session(scan)
+    check_method_heading(scan)
     check_intro(scan)
     check_pricing(scan)
     check_trainers(scan, page)
@@ -537,30 +526,28 @@ def check_home(scan, page=PAGE, store=None):
     assert '30分' in text and '月額' in price, '30-minute / monthly service terms are missing.'
 
 
-def check_session(scan):
-    session = next(element for element in scan.elements if element['attrs'].get('id') == 'session')
+def check_method_heading(scan):
+    old_session_classes = ('stretch-session', 'session-grid', 'session-card', 'session-step', 'session-lead', 'session-note')
+    assert 'session' not in scan.ids and 'session-title' not in scan.ids \
+        and not any(has_class(element, name) for element in scan.elements for name in old_session_classes), \
+        'Remove the former standalone session section and its cards, lead and note.'
+    method = next(element for element in scan.elements if element['attrs'].get('id') == 'method')
+    assert method['attrs'].get('aria-labelledby') == 'method-title', \
+        'Label the three-approach section with its new method heading.'
+    eyebrows = [element for element in scan.elements if has_class(element, 'session-eyebrow')]
+    assert len(eyebrows) == 1 and eyebrows[0]['tag'] == 'p' and is_within(eyebrows[0], method) \
+        and compact(eyebrows[0]['text']) == HOME_COPY['method'][0], \
+        'Keep the regular 30-minute plan label above the three-approach heading.'
     headings = [element for element in scan.elements
-                if element['tag'] == 'h2' and is_within(element, session)]
-    assert len(headings) == 1, 'Expected one regular-session heading.'
+                if element['tag'] == 'h2' and is_within(element, method)]
+    assert len(headings) == 1 and headings[0]['attrs'].get('id') == 'method-title', \
+        'Expected one labelled heading for the existing three approach cards.'
     heading_lines = [element for element in scan.elements if element['parent'] is headings[0]]
     assert all(element['tag'] == 'span' and has_class(element, 'heading-line') for element in heading_lines) \
         and [compact(element['text']) for element in heading_lines] == [
             '30分で、全身を心地よく', 'Dr.coreのアプローチ'
-        ] and compact(headings[0]['text']) == HOME_COPY['session'][1], \
-        'The regular-session heading must preserve its two explicit supplied lines.'
-    cards = [element for element in scan.elements if has_class(element, 'session-card')
-             and is_within(element, session)]
-    assert len(cards) == 3, 'Explain the three approaches in the regular 30-minute session.'
-    for card, title, keywords in zip(cards, HOME_COPY['session'][2:5],
-                                      (('モビリティ',), ('TRX', '器具'), ('ペアストレッチ', 'トレーナー'))):
-        headings = [element for element in scan.elements
-                    if element['tag'] == 'h3' and is_within(element, card)]
-        paragraphs = [element for element in scan.elements
-                      if element['tag'] == 'p' and is_within(element, card)]
-        assert len(headings) == 1 and compact(headings[0]['text']) == title, \
-            'The regular session must preserve the corresponding approach title.'
-        assert len(paragraphs) == 1 and all(keyword in compact(paragraphs[0]['text']) for keyword in keywords), \
-            'Each session approach needs its explanatory body text.'
+        ] and compact(headings[0]['text']) == HOME_COPY['method'][1], \
+        'The three-approach heading must preserve its two explicit supplied lines.'
 
 
 def check_intro(scan):
