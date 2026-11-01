@@ -36,31 +36,15 @@ def render_pricing():
     blocks = []
     for number, name, condition, surcharge, payg_field in groups:
         payg_price = data['pay_as_you_go'][payg_field]
+        if type(payg_price) is not int or payg_price <= 0:
+            raise ValueError(f'Invalid pay-as-you-go {payg_field}')
         rows = [f'''<tr data-payment="pay-as-you-go" data-per-session="{payg_price}"><th scope="row"><span>都度払い</span></th><td><span aria-label="月額料金なし">-</span></td><td><b>{payg_price:,}</b><span>円</span></td></tr>''']
         for plan in data['plans']:
             per_session = plan['per_session'] + surcharge
             monthly = plan['sessions'] * per_session
             rows.append(f'''<tr data-sessions="{plan['sessions']}" data-monthly="{monthly}" data-per-session="{per_session}"><th scope="row"><span>{escape(plan['name'])}</span></th><td><strong>{monthly:,}</strong><span>円</span></td><td><b>{per_session:,}</b><span>円</span></td></tr>''')
         blocks.append(f'''<article class="rate-plan rate-plan--{number}" data-rate-plan="{number}" aria-labelledby="rate-plan-{number}"><h3 id="rate-plan-{number}"><span class="rate-plan-label">{escape(name)}</span><span class="rate-plan-condition">{escape(condition)}</span></h3><div class="price-table-wrap"><table class="price-table"><caption class="visually-hidden">{escape(name)}：{escape(condition)}の月額・1回あたり料金</caption><thead><tr><th scope="col">プラン</th><th scope="col">月額料金</th><th scope="col">1回あたり</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div></article>''')
-    return '<div class="rate-plans">' + ''.join(blocks) + '</div>' + render_pay_as_you_go(data)
-
-
-def render_pay_as_you_go(data):
-    prices = data['pay_as_you_go']
-    options = []
-    for field, label in [('daytime_price', '平日10:00〜15:00'), ('regular_price', 'その他の平日・土日祝')]:
-        price = prices[field]
-        if price is None:
-            if prices.get('unconfirmed_price_display') == 'contact_store':
-                figure = f'<p class="payg-price payg-price--inquiry" data-price-inquiry="{field}">料金は店舗へ<br>お問い合わせください</p>'
-            else:
-                figure = '<p class="payg-price payg-price--pending" data-pending-content>料金確認中</p>'
-        else:
-            if not isinstance(price, int) or isinstance(price, bool) or price <= 0:
-                raise ValueError(f'Invalid pay-as-you-go {field}')
-            figure = f'<p class="payg-price"><strong>{price:,}</strong><span>円／回</span></p>'
-        options.append(f'<div><h4>{label}</h4>{figure}</div>')
-    return '''<article class="payg-plan" aria-labelledby="payg-title"><div class="payg-heading"><p>1回ずつ、自分のペースで。</p><h3 id="payg-title">都度払い</h3><p>1回30分・マンツーマン自重ストレッチ</p></div><div class="payg-options">''' + ''.join(options) + '</div></article>'
+    return '<div class="rate-plans">' + ''.join(blocks) + '</div>'
 
 
 def render_enrollment():

@@ -651,7 +651,10 @@ def check_pricing(scan):
         'Display the confirmed free enrollment fee.'
     assert 'すべての自重ストレッチプランが対象です。' in compact(enrollments[0]['text']), \
         'The free enrollment terms must clearly apply to self-weight stretch plans.'
-    check_pay_as_you_go(scan, price, payg_prices)
+    assert 'payg-title' not in scan.ids \
+        and not any(has_class(element, name) for element in scan.elements
+                    for name in ('payg-plan', 'payg-heading', 'payg-options', 'payg-price')), \
+        'Show pay-as-you-go pricing only in the table rows, without the former standalone block.'
 
 
 def checked_payg_prices(data):
@@ -665,50 +668,6 @@ def checked_payg_prices(data):
     assert prices.get('unconfirmed_price_display') in {None, 'contact_store'}, \
         'Unconfirmed pay-as-you-go prices require the explicit contact_store display mode or remain pending.'
     return prices
-
-
-def check_pay_as_you_go(scan, price_region, prices):
-    plans = [element for element in scan.elements
-             if has_class(element, 'payg-plan') and is_within(element, price_region)]
-    assert len(plans) == 1 and '都度払い' in compact(plans[0]['text']) \
-        and '1回30分' in compact(plans[0]['text']), 'Show one separate 30-minute pay-as-you-go plan.'
-    options = [element for element in scan.elements
-               if has_class(element, 'payg-options') and is_within(element, plans[0])]
-    assert len(options) == 1, 'Pay-as-you-go must have one time-band comparison.'
-    cards = [element for element in scan.elements if element['parent'] is options[0]]
-    assert len(cards) == 2, 'Show both pay-as-you-go time bands.'
-    for card, (field, label) in zip(cards, PAYG_OPTIONS):
-        headings = [element for element in scan.elements
-                    if element['tag'] == 'h4' and is_within(element, card)]
-        figures = [element for element in scan.elements
-                   if has_class(element, 'payg-price') and is_within(element, card)]
-        pending = [element for element in scan.elements
-                   if 'data-pending-content' in element['attrs'] and is_within(element, card)]
-        inquiries = [element for element in scan.elements
-                     if 'data-price-inquiry' in element['attrs'] and is_within(element, card)]
-        assert len(headings) == 1 and compact(headings[0]['text']) == label, \
-            f'Pay-as-you-go {field} must show its corresponding time band.'
-        assert len(figures) == 1, f'Pay-as-you-go {field} needs exactly one price, inquiry or pending figure.'
-        if prices[field] is None:
-            if prices.get('unconfirmed_price_display') == 'contact_store':
-                assert not pending and len(inquiries) == 1 and inquiries[0] is figures[0] \
-                    and figures[0]['tag'] == 'p' and has_class(figures[0], 'payg-price--inquiry') \
-                    and not has_class(figures[0], 'payg-price--pending') \
-                    and figures[0]['attrs'].get('data-price-inquiry') == field \
-                    and compact(figures[0]['all_text']) == '料金は店舗へお問い合わせください', \
-                    f'Unconfirmed pay-as-you-go {field} must show its corresponding public store-inquiry message.'
-            else:
-                assert not inquiries and len(pending) == 1 and pending[0] is figures[0] \
-                    and has_class(figures[0], 'payg-price--pending') \
-                    and not has_class(figures[0], 'payg-price--inquiry') \
-                    and compact(figures[0]['text']) == '料金確認中', \
-                    f'Unconfirmed pay-as-you-go {field} must retain its explicit pending marker.'
-        else:
-            assert type(prices[field]) is int and prices[field] > 0, f'Invalid confirmed price: {field}.'
-            assert not pending and not inquiries and not has_class(figures[0], 'payg-price--pending') \
-                and not has_class(figures[0], 'payg-price--inquiry') \
-                and compact(figures[0]['text']).replace(',', '') == f'{prices[field]}円／回', \
-                f'Confirmed pay-as-you-go {field} must display exactly {prices[field]:,} yen per visit.'
 
 
 def check_trainers(scan, page=PAGE):
