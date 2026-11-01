@@ -697,6 +697,7 @@
 @media(max-width:760px) and (min-aspect-ratio:9/16){.recovery-header~main .hero-visual .hero-photo>img{object-position:58% 10%}}
 
 /* Keep the trainer and stretching movement visible in all three strength photos. */
+#method .feature:first-child .feature-photo>img{object-position:100% 50%}
 #method .feature:nth-child(2) .feature-photo>img{object-position:50% 50%}
 #method .feature:nth-child(3) .feature-photo>img{object-position:50% 65%}
 
