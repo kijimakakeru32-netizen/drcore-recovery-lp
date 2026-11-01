@@ -498,6 +498,7 @@
 #first-visit .first-visit-card>img{aspect-ratio:2.1}
 #first-visit .first-visit-card:first-child>img{object-position:50% 25%}
 #first-visit .first-visit-card:nth-child(2)>img{object-position:50% 25%}
+#first-visit .first-visit-card:nth-child(3)>img{object-position:50% 32%}
 #first-visit .first-visit-card>img[src$=".svg"]{object-fit:contain}
 #first-visit .first-visit-card h3{font-size:18px;line-height:1.75;margin-top:16px}
 #first-visit .first-visit-card>p{font-size:16px;line-height:1.85;margin-top:12px}
