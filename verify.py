@@ -106,7 +106,6 @@ HOME_COPY = {
         '平日昼なら、1回4,750円〜',
         '※平日10:00〜15:00・月8回の場合',
         '1回30分だから、気軽に通えて継続しやすい',
-        '入会金0円',
         '平日デイタイムプラン平日10:00〜15:00',
         'レギュラープラン平日10:00〜15:00以外・土日祝',
     ),
@@ -518,8 +517,7 @@ def check_home(scan, page=PAGE, store=None):
     check_store_identity(scan, page, store)
     check_store_navigation(scan, page)
     assert has_amount(text, 1000), 'Missing first-trial price: 1,000.'
-    assert re.search(r'(?:[¥￥]0(?!\d)|(?<![\d,])0円)', price), \
-        'Missing the free enrollment fee: 0 yen.'
+    assert '入会金' not in price, 'Remove the enrollment-fee announcement from the pricing section.'
     assert not has_amount(price, 33000) and '体験当日のご入会' not in price, \
         'Do not retain the previous enrollment fee or same-day-only restriction.'
     assert '30分' in text and '月額' in price, '30-minute / monthly service terms are missing.'
@@ -636,21 +634,10 @@ def check_pricing(scan):
                     f'Rate plan {number}, {sessions} sessions: displayed {label} price must be {amount:,} yen.'
             assert not re.search(r'[〜～]', compact(row['text'])), \
                 f'Rate plan {number}, {sessions} sessions: remove starting-price marks only from table prices.'
-    price = next(element for element in scan.elements if element['attrs'].get('id') == 'price')
-    enrollments = [element for element in scan.elements
-                   if element['tag'] == 'article' and has_class(element, 'enrollment-plan')
-                   and is_within(element, price)]
-    assert len(enrollments) == 1, 'Show the enrollment fee in one separate plan card.'
-    assert not any(has_class(element, 'enrollment-base') and is_within(element, price)
-                   for element in scan.elements), 'Remove the enrollment fee from the pricing introduction.'
-    assert has_class(enrollments[0], 'enrollment-plan--free'), \
-        'The enrollment card must show the free self-weight stretch terms.'
-    fees = [element for element in scan.elements
-            if has_class(element, 'enrollment-free-price') and is_within(element, enrollments[0])]
-    assert len(fees) == 1 and compact(fees[0]['text']) == '入会金0円', \
-        'Display the confirmed free enrollment fee.'
-    assert 'すべての自重ストレッチプランが対象です。' in compact(enrollments[0]['text']), \
-        'The free enrollment terms must clearly apply to self-weight stretch plans.'
+    assert 'enrollment-title' not in scan.ids \
+        and not any(has_class(element, name) for element in scan.elements
+                    for name in ('enrollment-plan', 'enrollment-base', 'enrollment-free-price', 'enrollment-free-note')), \
+        'Remove the standalone enrollment-fee block while retaining its shared data value.'
     assert 'payg-title' not in scan.ids \
         and not any(has_class(element, name) for element in scan.elements
                     for name in ('payg-plan', 'payg-heading', 'payg-options', 'payg-price')), \

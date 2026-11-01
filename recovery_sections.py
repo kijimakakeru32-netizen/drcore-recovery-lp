@@ -47,11 +47,6 @@ def render_pricing():
     return '<div class="rate-plans">' + ''.join(blocks) + '</div>'
 
 
-def render_enrollment():
-    data = read_data('recovery-plans.json')
-    return f'''<article class="enrollment-plan enrollment-plan--free" aria-labelledby="enrollment-title"><h3 id="enrollment-title">自重ストレッチは</h3><p class="enrollment-free-price">入会金<strong>{data['enrollment_fee']:,}<small>円</small></strong></p><p class="enrollment-free-note">すべての自重ストレッチプランが対象です。</p></article>'''
-
-
 def render_trainers():
     cards = []
     for trainer in read_data('trainers.json'):
@@ -131,7 +126,6 @@ def render_sections(source, store=None):
         '{{CTA_BOTTOM}}': trial_banner('bottom', destination),
         '{{CTA_STICKY}}': trial_banner('sticky', destination),
         '{{RATE_PLANS}}': render_pricing(),
-        '{{ENROLLMENT}}': render_enrollment(),
         '{{TRAINER_CARDS}}': render_trainers(),
         '{{RECOVERY_FLOW}}': render_booking_content((ROOT / 'templates/partials/recovery-flow.html').read_text(encoding='utf-8'), store),
         '{{RECOVERY_FAQ}}': render_booking_content((ROOT / 'templates/partials/recovery-faq.html').read_text(encoding='utf-8'), store),
