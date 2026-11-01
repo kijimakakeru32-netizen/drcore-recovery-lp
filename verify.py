@@ -1051,10 +1051,14 @@ def check_voices(home, page=PAGE, verify_articles=True, report_prefix=''):
                 f'Article {slug} does not preserve the supplied title.'
         else:
             assert voice['name'] in compact(heading['text']), f'Wrong article title identity: {slug}.'
+        notices = [element for element in article.elements
+                   if has_class(element, 'voice-sample-notice') or has_class(element, 'voice-sample-label')]
+        presentation_text = compact(article.display_text) + compact(article.metadata.values())
+        assert not notices and all(compact([phrase]) not in presentation_text for phrase in (
+            '掲載イメージ（サンプル）',
+            'この文章は確認用のサンプルです。実際のお客様への取材内容ではありません。',
+        )), f'Article {slug} must omit the removed public sample notice and wording.'
         if voice.get('is_sample', True):
-            notices = [element for element in article.elements if has_class(element, 'voice-sample-notice')]
-            assert len(notices) == 1 and '掲載イメージ（サンプル）' in compact(notices[0]['text']), \
-                f'Missing explicit sample notice on article {slug}.'
             assert 'noindex' in {token.strip().lower() for token in article.metadata.get('robots', '').split(',')}, \
                 f'Sample article {slug} must remain noindex.'
         pending = [element for element in article.elements if has_class(element, 'voice-manuscript-pending')]

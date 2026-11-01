@@ -111,13 +111,6 @@ def build_voice_pages(voices, origin=''):
             )
         else:
             body = '<div class="voice-manuscript-pending"><h2>記事本文：原稿確認待ち</h2><p>お客様の声原稿は未提供のため、本文は掲載していません。</p></div>'
-        if paragraphs:
-            sample_description = 'この文章は確認用のサンプルです。実際のお客様への取材内容ではありません。'
-            if not voice.get('photo'):
-                sample_description += '写真は確認待ちです。'
-        else:
-            sample_description = ('原稿の確認待ちです。' if voice.get('photo') else '原稿・写真の確認待ちです。') + '掲載位置と画面構成を確認するためのサンプルです。'
-        sample_notice = f'<aside class="voice-sample-notice" aria-label="サンプル原稿について"><strong>掲載イメージ（サンプル）</strong><p>{sample_description}</p></aside>' if voice.get('is_sample', True) else ''
         metadata = ''
         if origin:
             url = escape(origin.rstrip('/') + f"/voices/{voice['slug']}/")
@@ -131,7 +124,6 @@ def build_voice_pages(voices, origin=''):
             '{{VOICE_CONCERNS}}': escape(voice['main_concerns']),
             '{{VOICE_PHOTO}}': render_voice_photo(voice, '../../'),
             '{{VOICE_BODY}}': body,
-            '{{VOICE_SAMPLE_NOTICE}}': sample_notice,
             '{{ORIGIN_META}}': metadata,
         }
         source = template
