@@ -54,7 +54,7 @@ CONCERN_CARDS = (
     ('golf-mobility.svg', ('スポーツで', '動きづらい')),
 )
 SECTION_ORDER = (
-    'top', 'concerns', 'daytime', 'message', 'method', 'session', 'first-visit', 'voices',
+    'top', 'concerns', 'message', 'method', 'daytime', 'session', 'first-visit', 'voices',
     'trainers', 'price', 'flow', 'faq', 'locations', 'trial',
 )
 HOME_COPY = {
@@ -422,6 +422,11 @@ def check_home(scan, page=PAGE, store=None):
         and daytime['attrs'].get('aria-labelledby') == 'daytime-title' \
         and not is_within(daytime, concern_section), \
         'The weekday-daytime section must stand directly within main, outside the gray concern section.'
+    main_sections = [element for element in scan.elements
+                     if element['tag'] == 'section' and element['parent'] is main]
+    assert any(previous['attrs'].get('id') == 'method' and section is daytime
+               for previous, section in zip(main_sections, main_sections[1:])), \
+        'The independent daytime section must immediately follow the three-strengths section.'
     daytime_contents = [element for element in scan.elements
                         if has_class(element, 'daytime-content') and element['parent'] is daytime]
     assert len(daytime_contents) == 1 and daytime_contents[0]['tag'] == 'div' \
