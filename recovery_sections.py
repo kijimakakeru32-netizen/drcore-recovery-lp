@@ -41,7 +41,7 @@ def render_pricing():
             monthly = plan['sessions'] * per_session
             rows.append(f'''<tr data-sessions="{plan['sessions']}" data-monthly="{monthly}" data-per-session="{per_session}"><th scope="row"><span>{escape(plan['name'])}</span><small>月{plan['sessions']}回</small></th><td><strong>{monthly:,}</strong><span>円</span></td><td><b>{per_session:,}</b><span>円</span></td></tr>''')
         blocks.append(f'''<article class="rate-plan rate-plan--{number}" data-rate-plan="{number}" aria-labelledby="rate-plan-{number}"><h3 id="rate-plan-{number}"><span class="rate-plan-label">{escape(name)}</span><span class="rate-plan-condition">{escape(condition)}</span></h3><div class="price-table-wrap"><table class="price-table"><caption class="visually-hidden">{escape(name)}：{escape(condition)}の月額・1回あたり料金</caption><thead><tr><th scope="col">プラン</th><th scope="col">月額料金</th><th scope="col">1回あたり</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div></article>''')
-    return '<p class="pricing-format-label">定期的に整える、月額プラン</p><div class="rate-plans">' + ''.join(blocks) + '</div>' + render_pay_as_you_go(data)
+    return '<div class="rate-plans">' + ''.join(blocks) + '</div>' + render_pay_as_you_go(data)
 
 
 def render_pay_as_you_go(data):
