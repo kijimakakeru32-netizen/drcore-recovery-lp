@@ -34,7 +34,6 @@ VOICE_PROFILES = {
     'd': ('Dさん', '40代男性', '会社員・ゴルフ愛好家', 'ゴルフをもっと楽しめる身体へ'),
     'c': ('Cさん', '50代女性', '主婦', '姿勢・歩きやすさ'),
 }
-DAYTIME_VOICE_LABEL = '平日昼の利用イメージ（取材・写真確認待ち）'
 VOICE_RESULTS_NOTE = '※個人の感想です。感じ方や変化には個人差があります。'
 PAYG_OPTIONS = (
     ('daytime_price', '平日10:00〜15:00'),
@@ -926,11 +925,11 @@ def check_voices(home, page=PAGE, verify_articles=True, report_prefix=''):
         editorial_labels = [element for element in home.elements
                             if has_class(element, 'voice-editorial-label') and is_within(element, card)]
         if slug == 'a':
-            assert voice.get('editorial_label') == DAYTIME_VOICE_LABEL \
-                and '昼' in voice.get('card_title', ''), \
-                'The A sample must identify its weekday-daytime use scenario as an editorial image.'
-            assert len(editorial_labels) == 1 and compact(editorial_labels[0]['text']) == DAYTIME_VOICE_LABEL, \
-                'The A card must display the pending interview/photo label from its sample data.'
+            assert voice.get('photo') and voice.get('editorial_label') is None and not editorial_labels, \
+                'The A card must show its supplied photo without the former pending interview/photo label.'
+            assert voice.get('card_title') == '在宅ワークの昼休みに、\n自分の身体を整える時間。' \
+                and voice.get('card_intro') == '在宅ワークで座りっぱなしになりがちな毎日。平日昼の30分を身体のメンテナンスに使うことで、午後に向けて気持ちを切り替える時間にもなっています。', \
+                'The A sample must preserve its supplied weekday-daytime title and introduction.'
         else:
             assert not editorial_labels, 'Do not attach the A daytime-image label to other customer cards.'
         for phrase in profile[:2]:
