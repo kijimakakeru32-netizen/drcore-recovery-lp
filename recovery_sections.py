@@ -92,30 +92,10 @@ def render_store_access(store):
 
 def render_booking_content(markup, store=None):
     if store:
-        visit_photo = f'''<img src="./{escape(store['photo'])}" alt="Dr.core{escape(store['name'])}の店内" width="{store['photo_width']}" height="{store['photo_height']}" loading="lazy" decoding="async">'''
-        booking_copy = 'ページ内の「初回体験予約」から、Web予約にお進みください。'
-        booking_link = f'''<a class="text-link" href="{escape(store['reserve'])}" target="_blank" rel="noopener" data-reservation>初回体験予約 <span aria-hidden="true">→</span></a>'''
-        visit_copy = f"ご予約の日時に、{escape(store['name'])}へお越しください。店舗の場所や駅からのアクセスは、店舗情報をご確認ください。"
-        visit_link = '<a class="text-link" href="#access">店舗情報を見る <span aria-hidden="true">→</span></a>'
         faq_booking = 'このページの「初回体験予約」ボタンから、Web予約にお進みください。'
     else:
-        first = load_stores()[0]
-        visit_photo = f'''<img src="./{escape(first['photo'])}" alt="Dr.core{escape(first['name'])}の店内" width="{first['photo_width']}" height="{first['photo_height']}" loading="lazy" decoding="async">'''
-        booking_copy = '店舗を選び、店舗ページの「初回体験予約」からWeb予約にお進みください。'
-        booking_link = '<a class="text-link" href="#locations">店舗を選ぶ <span aria-hidden="true">→</span></a>'
-        visit_copy = 'ご予約の日時に、選んだ店舗へお越しください。月島店・本八幡店の場所は、店舗一覧からご確認いただけます。'
-        visit_link = '<a class="text-link" href="#locations">店舗一覧を見る <span aria-hidden="true">→</span></a>'
         faq_booking = '<a href="#locations">店舗一覧</a>から店舗を選び、店舗ページの「初回体験予約」からWeb予約にお進みください。'
-    for marker, value in {
-        '{{RESERVATION_FLOW_COPY}}': booking_copy,
-        '{{RESERVATION_FLOW_LINK}}': booking_link,
-        '{{STORE_VISIT_PHOTO}}': visit_photo,
-        '{{STORE_VISIT_COPY}}': visit_copy,
-        '{{STORE_VISIT_LINK}}': visit_link,
-        '{{RESERVATION_FAQ}}': faq_booking,
-    }.items():
-        markup = markup.replace(marker, value)
-    return markup
+    return markup.replace('{{RESERVATION_FAQ}}', faq_booking)
 
 
 def render_sections(source, store=None):
@@ -127,7 +107,6 @@ def render_sections(source, store=None):
         '{{CTA_STICKY}}': trial_banner('sticky', destination),
         '{{RATE_PLANS}}': render_pricing(),
         '{{TRAINER_CARDS}}': render_trainers(),
-        '{{RECOVERY_FLOW}}': render_booking_content((ROOT / 'templates/partials/recovery-flow.html').read_text(encoding='utf-8'), store),
         '{{RECOVERY_FAQ}}': render_booking_content((ROOT / 'templates/partials/recovery-faq.html').read_text(encoding='utf-8'), store),
     }
     for marker, markup in replacements.items():

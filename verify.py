@@ -54,7 +54,7 @@ CONCERN_CARDS = (
 )
 SECTION_ORDER = (
     'top', 'concerns', 'message', 'method', 'daytime', 'first-visit', 'voices',
-    'trainers', 'price', 'flow', 'faq', 'locations', 'trial',
+    'trainers', 'price', 'faq', 'locations', 'trial',
 )
 HOME_COPY = {
     'top': (
@@ -513,7 +513,7 @@ def check_home(scan, page=PAGE, store=None):
     check_intro(scan)
     check_pricing(scan)
     check_trainers(scan, page)
-    check_flow_and_faq(scan)
+    check_faq(scan)
     check_store_identity(scan, page, store)
     check_store_navigation(scan, page)
     assert has_amount(text, 1000), 'Missing first-trial price: 1,000.'
@@ -678,30 +678,13 @@ def check_trainers(scan, page=PAGE):
             f'Trainer {trainer["id"]} portrait has the wrong accessible name.'
 
 
-def check_flow_and_faq(scan):
-    flow = next(element for element in scan.elements if element['attrs'].get('id') == 'flow')
-    steps = [element for element in scan.elements
-             if element['tag'] == 'li' and has_class(element, 'recovery-flow-step') and is_within(element, flow)]
-    assert len(steps) == 5, 'Expected five sequential experience steps.'
-    assert steps[0]['parent']['tag'] == 'ol' \
-        and all(step['parent'] is steps[0]['parent'] for step in steps), \
-        'Experience steps must belong to one ordered list.'
-    for index, step in enumerate(steps, 1):
-        children = [element for element in scan.elements if element['parent'] is step]
-        assert len(children) == 3 and has_class(children[0], 'recovery-flow-number') \
-            and children[1]['tag'] == 'figure' and has_class(children[1], 'recovery-flow-image') \
-            and has_class(children[2], 'recovery-flow-copy'), \
-            f'Step {index} must read number, image, then title and explanation in DOM order.'
-        assert compact(children[0]['text']) == f'STEP{index:02}', f'Incorrect step number: {index}.'
-        images = [element for element in scan.elements
-                  if element['tag'] == 'img' and is_within(element, children[1])]
-        assert len(images) == 1 and images[0]['attrs'].get('alt', '').strip(), \
-            f'Step {index} needs one image describing its content.'
-        copy_children = [element for element in scan.elements if element['parent'] is children[2]]
-        assert len(copy_children) >= 2 and copy_children[0]['tag'] == 'h3' \
-            and copy_children[1]['tag'] == 'p' and compact(copy_children[1]['text']), \
-            f'Step {index} must show a title before its explanation.'
-
+def check_faq(scan):
+    assert not {'flow', 'flow-title'}.intersection(scan.ids) \
+        and not any(name.startswith('recovery-flow') for element in scan.elements
+                    for name in element['attrs'].get('class', '').split()), \
+        'Remove the former five-step experience-flow section while keeping the first-visit cards.'
+    assert not any(unquote(urlparse(anchor['attrs'].get('href', '')).fragment) == 'flow'
+                   for anchor in scan.anchors), 'Remove navigation links to the deleted flow section.'
     faq = next(element for element in scan.elements if element['attrs'].get('id') == 'faq')
     questions = [element for element in scan.elements if element['tag'] == 'details' and is_within(element, faq)]
     assert len(questions) == 9, 'Expected nine stretch-specific FAQ disclosures.'
