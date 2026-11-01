@@ -160,7 +160,7 @@ def build_landing_page(voices, stores, origin='', store=None):
         '{{STORE_ACCESS}}': render_store_access(store),
         '{{STORE_CARDS}}': render_store_cards(stores, prefix, store),
         '{{FOOTER_PAGE_LINKS}}': footer_links,
-        '{{TRIAL_STATUS}}': 'ご予約はWebより受け付けています。' if store else 'ご希望の店舗をお選びいただき、初回体験をご予約ください。',
+        '{{TRIAL_STATUS}}': 'ご予約はWebより受け付けています。' if store else 'ご希望の店舗をお選びいただき、<br>初回体験をご予約ください。',
         '{{ORIGIN_META}}': metadata,
     }
     source = render_sections((ROOT / 'templates/recovery-home.html').read_text(encoding='utf-8'), store)
