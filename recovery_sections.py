@@ -57,7 +57,7 @@ def render_pricing():
     data = read_data('recovery-plans.json')
     groups = [
         (1, '平日デイタイムプラン', '平日10:00〜15:00', 0, 'daytime_price'),
-        (2, 'レギュラープラン', '平日10:00〜15:00以外・土日祝', data['other_hours_surcharge'], 'regular_price'),
+        (2, 'レギュラープラン', '全営業時間（平日・土日祝）', data['other_hours_surcharge'], 'regular_price'),
     ]
     blocks = []
     for number, name, condition, surcharge, payg_field in groups:

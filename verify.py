@@ -42,7 +42,7 @@ VOICE_PROFILES = {
 VOICE_RESULTS_NOTE = '※個人の感想です。感じ方や変化には個人差があります。'
 PAYG_OPTIONS = (
     ('daytime_price', '平日10:00〜15:00'),
-    ('regular_price', 'その他の平日・土日祝'),
+    ('regular_price', '全営業時間（平日・土日祝）'),
 )
 TRAINER_PROFILES = (
     ('takakura', '高倉トレーナー'),
@@ -112,7 +112,7 @@ HOME_COPY = {
         '※平日10:00〜15:00・月8回の場合',
         '1回30分だから、気軽に通えて継続しやすい',
         '平日デイタイムプラン平日10:00〜15:00',
-        'レギュラープラン平日10:00〜15:00以外・土日祝',
+        'レギュラープラン全営業時間（平日・土日祝）',
     ),
 }
 VOID_TAGS = {
@@ -754,7 +754,7 @@ def check_pricing(scan):
                       if has_class(element, 'rate-plan-condition') and is_within(element, group)]
         name, condition = (
             ('平日デイタイムプラン', '平日10:00〜15:00') if number == 1 else
-            ('レギュラープラン', '平日10:00〜15:00以外・土日祝')
+            ('レギュラープラン', '全営業時間（平日・土日祝）')
         )
         assert len(labels) == 1 and compact(labels[0]['text']) == name \
             and len(conditions) == 1 and compact(conditions[0]['text']) == condition, \
