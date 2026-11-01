@@ -5,9 +5,9 @@
   "other_hours_surcharge": 1000,
   "pay_as_you_go": {"daytime_price": null, "regular_price": null, "unconfirmed_price_display": "contact_store"},
   "plans": [
-    {"name": "月1プラン", "sessions": 1, "per_session": 6000},
-    {"name": "月2プラン", "sessions": 2, "per_session": 5250},
-    {"name": "月4プラン", "sessions": 4, "per_session": 5000},
-    {"name": "月8プラン", "sessions": 8, "per_session": 4750}
+    {"name": "月1回プラン", "sessions": 1, "per_session": 6000},
+    {"name": "月2回プラン", "sessions": 2, "per_session": 5250},
+    {"name": "月4回プラン", "sessions": 4, "per_session": 5000},
+    {"name": "月8回プラン", "sessions": 8, "per_session": 4750}
   ]
 }
