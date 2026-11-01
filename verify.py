@@ -394,12 +394,9 @@ def check_home(scan, page=PAGE, store=None):
         'Keep the hero visual focused on its photo and copy, with all three features below it.'
     assert not any(is_within(anchor, details[0]) for anchor in scan.anchors), \
         'Remove the service-detail link below the three hero features.'
-    hero_ctas = [anchor for anchor in scan.anchors
-                 if has_class(anchor, 'cta-fixed') and anchor['attrs'].get('data-position') == 'hero']
-    assert len(hero_ctas) == 1 and is_within(hero_ctas[0], hero) \
-        and not is_within(hero_ctas[0], visuals[0]) \
-        and scan.elements.index(visuals[0]) < scan.elements.index(details[0]) < scan.elements.index(hero_ctas[0]), \
-        'Keep the existing hero trial banner after the visual and detail blocks.'
+    assert scan.elements.index(visuals[0]) < scan.elements.index(details[0]) \
+        and not any(has_class(anchor, 'cta-fixed') and is_within(anchor, hero) for anchor in scan.anchors), \
+        'Keep the hero visual before its three features, without a trial CTA inside the hero.'
     concern_lists = [element for element in scan.elements if has_class(element, 'concern-grid')]
     assert len(concern_lists) == 1, 'Expected one concern list.'
     concerns = [element for element in scan.elements if element['tag'] == 'li'
@@ -482,9 +479,9 @@ def check_home(scan, page=PAGE, store=None):
                 f'Training-plan guidance must remain only in the FAQ, not #{region}.'
 
     campaign_ctas = [anchor for anchor in scan.anchors if has_class(anchor, 'cta-fixed')]
-    cta_positions = ('hero', 'intro', 'price', 'bottom', 'sticky')
+    cta_positions = ('intro', 'price', 'bottom', 'sticky')
     assert Counter(anchor['attrs'].get('data-position') for anchor in campaign_ctas) == Counter(cta_positions), \
-        'Expected one shared gold CTA in each hero, introduction, pricing, bottom and floating position.'
+        'Expected one shared gold CTA in each introduction, pricing, bottom and floating position.'
     for anchor in campaign_ctas:
         position = anchor['attrs']['data-position']
         expected_route = store['reserve'] if store else '#locations'

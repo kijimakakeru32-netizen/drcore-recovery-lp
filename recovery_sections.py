@@ -21,11 +21,9 @@ def trial_cta(position, href='#trial'):
     return f'''<a class="cta-fixed" href="{escape(href)}"{external} data-position="{escape(position)}"><span class="cta-fixed__inner"><span class="cta-fixed__top"><span class="cta-fixed__duration">初回<strong>{offer['trial_minutes']}</strong>分</span><time datetime="{escape(offer['deadline'])}">{escape(offer['deadline_label'])}</time><span class="cta-fixed__price"><b>{offer['trial_price']:,}</b><span>円</span></span></span><span class="cta-fixed__main">{escape(offer['button_label'])}<i class="cta-fixed__arrow" aria-hidden="true">→</i></span></span></a>'''
 
 
-def trial_banner(position, href='#trial', hero=False):
+def trial_banner(position, href='#trial'):
     offer = read_data('recovery-offer.json')
     classes = f'campaign-banner campaign-banner--{escape(position)}'
-    if hero:
-        classes += ' hero-trial'
     return f'''<div class="{classes}"><div class="wrap campaign-banner-inner"><p class="campaign-banner-description">{escape(offer['included'])}</p>{trial_cta(position, href)}</div></div>'''
 
 
@@ -143,7 +141,6 @@ def render_booking_content(markup, store=None):
 def render_sections(source, store=None):
     destination = store['reserve'] if store else '#locations'
     replacements = {
-        '{{CTA_HERO}}': trial_banner('hero', destination, hero=True),
         '{{CTA_INTRO}}': trial_banner('intro', destination),
         '{{CTA_PRICE}}': trial_banner('price', destination),
         '{{CTA_BOTTOM}}': trial_banner('bottom', destination),
