@@ -16,10 +16,10 @@
 .campaign-photo{position:relative;margin:0;min-width:0;min-height:304px;overflow:hidden;background:#dfe5d3}
 .campaign-photo picture{position:absolute;inset:0;display:block}
 .campaign-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 40%}
-.campaign-duration{position:absolute;left:14px;top:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:122px;aspect-ratio:1;border:2px solid #d8b451;border-radius:50%;background:linear-gradient(135deg,#fffef6,#faf4df);color:#003d2b;box-shadow:0 3px 10px #172f2420;line-height:1}
-.campaign-duration>span{font-size:16px;font-weight:700;letter-spacing:0;border-bottom:1px solid #c2a45d;padding-bottom:7px}
-.campaign-duration>strong{font-family:var(--body);font-size:65px;line-height:1;font-weight:700;letter-spacing:0}
-.campaign-duration small{font-family:"Yu Mincho","Hiragino Mincho ProN",serif;font-size:23px;margin-left:3px;letter-spacing:0}
+.campaign-duration{position:absolute;left:14px;top:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:122px;height:122px;padding:10px 6px;aspect-ratio:1;border:2px solid #d8b451;border-radius:50%;background:linear-gradient(135deg,#fffef6,#faf4df);color:#003d2b;box-shadow:0 3px 10px #172f2420;line-height:1;text-align:center}
+.campaign-duration>span{flex:none;font-size:14px;font-weight:700;line-height:1.2;letter-spacing:0;white-space:nowrap;border-bottom:1px solid #c2a45d;padding-bottom:4px}
+.campaign-duration>strong{display:inline-flex;align-items:baseline;justify-content:center;flex:none;white-space:nowrap;font-family:var(--body);font-size:58px;line-height:1;font-weight:700;letter-spacing:0}
+.campaign-duration small{flex:none;font-family:"Yu Mincho","Hiragino Mincho ProN",serif;font-size:23px;line-height:1;margin-left:3px;letter-spacing:0}
 .campaign-experience{min-width:0;padding:16px 17px 12px;color:#f7e6a6}
 .campaign-experience>h3{display:flex;align-items:center;justify-content:center;gap:12px;margin:0 0 13px;font-family:"Yu Mincho","Hiragino Mincho ProN",serif;font-size:25px;font-weight:700;line-height:1.3;letter-spacing:.2em;white-space:nowrap}
 .campaign-experience>h3:before,.campaign-experience>h3:after{content:"";flex:1;height:1px;background:#b69743}
@@ -65,9 +65,9 @@
   .campaign-laurel{width:20px;height:48px}
   .campaign-content{grid-template-columns:1fr 1fr}
   .campaign-photo{min-height:285px}
-  .campaign-duration{width:104px;left:11px;top:11px}
-  .campaign-duration>span{font-size:13px;padding-bottom:6px}
-  .campaign-duration>strong{font-size:56px}
+  .campaign-duration{width:104px;height:104px;left:11px;top:11px}
+  .campaign-duration>span{font-size:13px;padding-bottom:4px}
+  .campaign-duration>strong{font-size:50px}
   .campaign-duration small{font-size:19px}
   .campaign-experience{padding:14px 12px 11px}
   .campaign-experience>h3{font-size:22px;gap:8px;margin-bottom:11px}
@@ -91,9 +91,9 @@
   .campaign-content{grid-template-columns:minmax(0,.67fr) minmax(0,1fr)}
   .campaign-photo{min-height:257px}
   .campaign-photo img{object-position:50% 27%}
-  .campaign-duration{top:auto;bottom:12px;left:9px;width:83px;gap:5px}
-  .campaign-duration>span{font-size:10px;padding-bottom:5px}
-  .campaign-duration>strong{font-size:43px}
+  .campaign-duration{top:auto;bottom:24px;left:9px;width:83px;height:83px;gap:4px;padding:6px}
+  .campaign-duration>span{font-size:10px;padding-bottom:3px}
+  .campaign-duration>strong{font-size:38px}
   .campaign-duration small{font-size:16px;margin-left:2px}
   .campaign-experience{padding:11px 9px 10px}
   .campaign-experience>h3{font-size:19px;letter-spacing:.12em;gap:7px;margin-bottom:9px}
