@@ -4,7 +4,7 @@ import hashlib
 import html
 import json
 import re
-from recovery_sections import load_stores, render_sections, render_store_access, render_store_cards, reservation_url
+from recovery_sections import load_stores, read_data, render_sections, render_store_access, render_store_cards
 
 ROOT = Path(__file__).resolve().parent
 DIST = ROOT / 'dist'
@@ -110,6 +110,7 @@ def render_tracking(source):
 
 def build_voice_pages(voices, origin=''):
     template = (ROOT / 'templates/recovery-voice.html').read_text(encoding='utf-8')
+    voice_reservation = read_data('recovery-offer.json')['voice_reserve']
     for voice in voices:
         title = voice.get('article_title') or f"{voice['name']}のお客様の声"
         paragraphs = voice.get('paragraphs')
@@ -126,7 +127,7 @@ def build_voice_pages(voices, origin=''):
             url = escape(origin.rstrip('/') + f"/voices/{voice['slug']}/")
             metadata = f'<link rel="canonical" href="{url}"><meta property="og:url" content="{url}">'
         replacements = {
-            '{{RESERVATION_URL}}': escape(reservation_url()),
+            '{{RESERVATION_URL}}': escape(voice_reservation),
             '{{VOICE_ID}}': escape(voice['slug']),
             '{{VOICE_TITLE}}': escape(title),
             '{{VOICE_IDENTITY}}': escape(voice_identity(voice)),
@@ -170,7 +171,7 @@ def build_landing_page(voices, stores, origin='', store=None):
         '{{STORE_ACCESS}}': render_store_access(store),
         '{{STORE_CARDS}}': render_store_cards(stores, prefix, store),
         '{{FOOTER_PAGE_LINKS}}': footer_links,
-        '{{TRIAL_STATUS}}': 'ご予約はWebより受け付けています。' if store else 'ご希望の店舗をお選びいただき、<br>初回体験をご予約ください。',
+        '{{TRIAL_STATUS}}': 'ご予約はWebより受け付けています。' if store else '本八幡店の初回体験を、<br>Webからご予約いただけます。',
         '{{ORIGIN_META}}': metadata,
     }
     source = render_sections((ROOT / 'templates/recovery-home.html').read_text(encoding='utf-8'), store)

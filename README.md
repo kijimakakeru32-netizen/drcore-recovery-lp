@@ -18,15 +18,16 @@
 - [月島店](https://drcore-recovery-lp.netlify.app/gyms/tsukishima/)
 - [本八幡店](https://drcore-recovery-lp.netlify.app/gyms/motoyawata/)
 
-予約CTAは全ページで自重ストレッチ専用の予約画面を別タブで直接開きます。トップと共通のお客様の声の記事は両店舗を選べる予約URL、店舗LPはそれぞれの店舗専用URLを使用します。各店舗の予約URLと店舗名・住所・駅徒歩・写真の対応は `data/recovery-stores.json` で管理します。予約リンクには `target="_blank"` と `rel="noopener"` を設定しています。
+予約CTAは予約画面を別タブで開きます。トップとお客様の声の記事の予約URLは `data/recovery-offer.json`、各店舗LPの予約URLと店舗情報は `data/recovery-stores.json` で管理します。予約リンクには `target="_blank"` と `rel="noopener"` を設定しています。
 
-| ページ | 自重ストレッチ専用予約先 | 店舗ID・コースID |
+| ページ | 予約先 | 店舗ID・コースID |
 | --- | --- | --- |
-| トップ・共通記事 | [両店舗の体験予約](https://reserve.quick-reserve.com/core?view=eyJzdG9yZXMiOlt7ImlkIjozNDEsImNvdXJzZUlkcyI6WzM2ODddfSx7ImlkIjoyMzEsImNvdXJzZUlkcyI6WzM2ODhdfV0sInZlcnNpb24iOjJ9) | 本八幡：341・3687／月島：231・3688 |
+| トップ | [本八幡店の体験予約（2メニュー）](https://reserve.quick-reserve.com/core?view=eyJzdG9yZXMiOlt7ImlkIjozNDEsImNvdXJzZUlkcyI6WzMxNjcsMzY4N119XSwidmVyc2lvbiI6Mn0%3D) | 341・3167、3687 |
+| お客様の声の記事 | [両店舗のストレッチ体験予約](https://reserve.quick-reserve.com/core?view=eyJzdG9yZXMiOlt7ImlkIjozNDEsImNvdXJzZUlkcyI6WzM2ODddfSx7ImlkIjoyMzEsImNvdXJzZUlkcyI6WzM2ODhdfV0sInZlcnNpb24iOjJ9) | 本八幡：341・3687／月島：231・3688 |
 | 本八幡店 | [本八幡店の体験予約](https://reserve.quick-reserve.com/core?view=eyJzdG9yZXMiOlt7ImlkIjozNDEsImNvdXJzZUlkcyI6WzM2ODddfV0sInZlcnNpb24iOjJ9) | 341・3687 |
 | 月島店 | [月島店の体験予約](https://reserve.quick-reserve.com/core?view=eyJzdG9yZXMiOlt7ImlkIjoyMzEsImNvdXJzZUlkcyI6WzM2ODhdfV0sInZlcnNpb24iOjJ9) | 231・3688 |
 
-3つのURLの `view` をデコードし、トップ用には上記2店舗・2コースが含まれ、各店舗用には対応する1店舗・1コースのみが含まれることを確認しています。いずれも予約データの `version` は2です。
+各URLの `view` に上記の店舗IDとコースIDが含まれます。予約データの `version` はいずれも2です。
 
 初回体験の概要の末尾・料金の後・ページ末尾の3箇所に、緑とゴールドの体験予約バナーを配置しています。「あなたの柔軟性に合わせて、マンツーマン。」の見出しに続き、「11/30まで」を「初回1,000円キャンペーン実施中」より先に表示します。左に既存のストレッチ写真と「まずは体験！60分」の円、右に「体験内容」を置き、「カウンセリング＆身体評価15分」「ストレッチ30分」「改善プラン提案15分」を紹介します。下部の大きなゴールドのボタンは「ストレッチ体験をWEB予約する」です。ボタン左上の案内は「WEB予約 簡単30秒」とし、CTAの数字は「11/30まで」と同じサンセリフ書体に統一しています。「体組成・姿勢診断付き」はボタンの外に添えています。ファーストビュー直下にはCTAを置きません。
 

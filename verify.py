@@ -16,7 +16,8 @@ HERO_PHOTO = ROOT / 'assets/recovery-hero-portrait.jpg'
 HERO_LOGO = ROOT / 'assets/logo-transparent.svg'
 GTM_CONTAINER_ID = 'GTM-TJ8DFDN6'
 RESERVATION_URLS = {
-    'all': 'https://reserve.quick-reserve.com/core?view=eyJzdG9yZXMiOlt7ImlkIjozNDEsImNvdXJzZUlkcyI6WzM2ODddfSx7ImlkIjoyMzEsImNvdXJzZUlkcyI6WzM2ODhdfV0sInZlcnNpb24iOjJ9',
+    'all': 'https://reserve.quick-reserve.com/core?view=eyJzdG9yZXMiOlt7ImlkIjozNDEsImNvdXJzZUlkcyI6WzMxNjcsMzY4N119XSwidmVyc2lvbiI6Mn0%3D',
+    'voice': 'https://reserve.quick-reserve.com/core?view=eyJzdG9yZXMiOlt7ImlkIjozNDEsImNvdXJzZUlkcyI6WzM2ODddfSx7ImlkIjoyMzEsImNvdXJzZUlkcyI6WzM2ODhdfV0sInZlcnNpb24iOjJ9',
     'tsukishima': 'https://reserve.quick-reserve.com/core?view=eyJzdG9yZXMiOlt7ImlkIjoyMzEsImNvdXJzZUlkcyI6WzM2ODhdfV0sInZlcnNpb24iOjJ9',
     'motoyawata': 'https://reserve.quick-reserve.com/core?view=eyJzdG9yZXMiOlt7ImlkIjozNDEsImNvdXJzZUlkcyI6WzM2ODddfV0sInZlcnNpb24iOjJ9',
 }
@@ -328,8 +329,8 @@ def check_page(page):
     for reference in scan.assets:
         check_asset(reference, page, visited_css)
 
-    approved_reservations = {store['reserve'] for store in load_stores()} | {RESERVATION_URLS['all']}
-    reservation_scope = bodies[0]['attrs'].get('data-store', 'all')
+    approved_reservations = set(RESERVATION_URLS.values())
+    reservation_scope = bodies[0]['attrs'].get('data-store', 'voice')
     assert reservation_scope in RESERVATION_URLS, 'The page has an unknown reservation store identity.'
     expected_reservation = RESERVATION_URLS[reservation_scope]
     for anchor in scan.anchors:
@@ -567,7 +568,7 @@ def check_campaigns(scan, page, store=None):
         and offer['deadline'] == '2026-11-30' and offer['deadline_label'] == '11/30まで' \
         and offer['button_label'] == 'ストレッチ体験をWEB予約する' \
         and offer.get('reserve') == RESERVATION_URLS['all'] and offer.get('web_note') == 'WEB予約簡単30秒', \
-        'The shared trial offer must retain its confirmed terms, common Recovery reservation URL and 30-second web note.'
+        'The shared trial offer must retain its confirmed terms, top-page reservation URL and 30-second web note.'
     expected_experience = (
         ('assessment', 'カウンセリング＆身体評価', 15),
         ('stretch', 'ストレッチ', 30),
@@ -1124,7 +1125,7 @@ def check_voices(home, page=PAGE, verify_articles=True, report_prefix=''):
                 and '未提供' in compact(pending[0]['text']), f'Missing manuscript-pending disclosure: {slug}.'
         assert '../../#voices' in article.links, f'Missing return link on article {slug}.'
         ctas = [anchor for anchor in article.anchors if anchor['attrs'].get('data-position') == 'voice-article']
-        assert len(ctas) == 1 and ctas[0]['attrs'].get('href') == RESERVATION_URLS['all'] \
+        assert len(ctas) == 1 and ctas[0]['attrs'].get('href') == RESERVATION_URLS['voice'] \
             and compact(ctas[0]['text']) == '初回体験予約' \
             and ctas[0]['attrs'].get('target') == '_blank' \
             and 'noopener' in ctas[0]['attrs'].get('rel', '').split() \
